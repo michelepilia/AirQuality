@@ -6,20 +6,12 @@ function Home(props) {
     <View style={styles.container}>
       <Text style={styles.text}></Text>
       <Text style={styles.kingdomsAir}>Kingdom&#39;s Air</Text>
-      
-      <TouchableOpacity 
-        style={styles.button}
-        onPress={() => props.navigation.navigate('ReadData')}>
-          <Text style={styles.readData}>Read Data</Text>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.readData}>Read Data</Text>
       </TouchableOpacity>
-
       <View style={styles.button2Stack}>
-        <TouchableOpacity 
-          style={styles.button2}
-          onPress={() => props.navigation.navigate('ViewMap')}>
-            <Text style={styles.viewMap}>View Map</Text>
-        </TouchableOpacity>
-        
+        <TouchableOpacity style={styles.button2}></TouchableOpacity>
+        <Text style={styles.viewMap}>View Map</Text>
       </View>
     </View>
   );
