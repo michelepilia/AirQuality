@@ -1,26 +1,32 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 
 function Home(props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}></Text>
-      <Text style={styles.kingdomsAir}>Kingdom&#39;s Air</Text>
-      
-      <TouchableOpacity 
-        style={styles.button}
-        onPress={() => props.navigation.navigate('ReadData')}>
-          <Text style={styles.readData}>Read Data</Text>
+      <Text style={styles.airQuality}>Air Quality</Text>
+      <TouchableOpacity
+        onPress={() => props.navigation.navigate("ViewMap")}
+        style={styles.button2}>
+        <Text style={styles.viewMap}>View Map</Text>
       </TouchableOpacity>
 
-      <View style={styles.button2Stack}>
-        <TouchableOpacity 
-          style={styles.button2}
-          onPress={() => props.navigation.navigate('ViewMap')}>
-            <Text style={styles.viewMap}>View Map</Text>
-        </TouchableOpacity>
-        
-      </View>
+      <TouchableOpacity
+        onPress={() => props.navigation.navigate("ReadData")}
+        style={styles.button3}>
+        <Text style={styles.readData}>Read Data</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => props.navigation.navigate("Login")}
+        style={styles.logoutButton1}>
+        <Image
+          source={require("../assets/images/logout.png")}
+          resizeMode="contain"
+          style={styles.logoutLogo}
+        ></Image>
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -29,15 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  text: {
-    color: "#121212",
-    fontSize: 24,
-    fontFamily: "roboto-regular",
-    textAlign: "center",
-    marginTop: 346,
-    marginLeft: 45
-  },
-  kingdomsAir: {
+  airQuality: {
     height: 73,
     color: "rgba(255,0,0,1)",
     fontSize: 40,
@@ -47,13 +45,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: -275
+    marginTop: 71
   },
-  button: {
+  button2: {
     width: 305,
     height: 93,
     backgroundColor: "rgba(255,0,0,1)",
-    marginTop: 109,
+    marginTop: 287,
+    marginLeft: 35
+  },
+  viewMap: {
+    width: 305,
+    height: 93,
+    color: "rgba(255,255,255,1)",
+    fontSize: 30,
+    fontFamily: "roboto-regular",
+    lineHeight: 93,
+    letterSpacing: 0,
+    textAlign: "center"
+  },
+  button3: {
+    width: 305,
+    height: 93,
+    backgroundColor: "rgba(255,0,0,1)",
+    marginTop: -271,
     marginLeft: 35
   },
   readData: {
@@ -64,35 +79,22 @@ const styles = StyleSheet.create({
     fontFamily: "roboto-regular",
     lineHeight: 93,
     letterSpacing: 0,
-    textAlign: "center"
+    textAlign: "center",
+    marginTop: -1
   },
-  button2: {
-    top: 1,
-    left: 0,
-    width: 305,
-    height: 93,
-    backgroundColor: "rgba(255,0,0,1)",
-    position: "absolute"
+  logoutButton1: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(225,96,96,0)",
+    marginTop: -314,
+    marginLeft: 331
   },
-  viewMap: {
-    top: 0,
-    left: 0,
-    width: 305,
-    height: 93,
-    color: "rgba(255,255,255,1)",
-    position: "absolute",
-    fontSize: 30,
-    fontFamily: "roboto-regular",
-    lineHeight: 93,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button2Stack: {
-    width: 305,
-    height: 94,
-    marginTop: 84,
-    marginLeft: 35
+  logoutLogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
   }
 });
 
 export default Home;
+

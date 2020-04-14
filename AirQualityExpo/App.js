@@ -7,11 +7,15 @@ import * as Font from "expo-font";
 import Home from "./src/screens/Home";
 import ReadData from "./src/screens/ReadData";
 import ViewMap from "./src/screens/ViewMap";
+import Login from "./src/screens/Login";
+import Signup from "./src/screens/Signup";
 
 const DrawerNavigation = createDrawerNavigator({
+  Login: Login,
   Home: Home,
   ReadData: ReadData,
-  ViewMap: ViewMap
+  ViewMap: ViewMap,
+  Signup: Signup
 });
 
 const StackNavigation = createStackNavigator(
@@ -19,9 +23,11 @@ const StackNavigation = createStackNavigator(
     DrawerNavigation: {
       screen: DrawerNavigation
     },
+    Login: Login,
     Home: Home,
     ReadData: ReadData,
-    ViewMap: ViewMap
+    ViewMap: ViewMap,
+    Signup: Signup
   },
   {
     headerMode: "none"

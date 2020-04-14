@@ -4,47 +4,55 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 function ViewMap(props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>View Map</Text>
-      <View style={styles.kingdomsAir1Row}>
-        <Text style={styles.kingdomsAir1}>Kingdom&#39;s Air</Text>
-        <View style={styles.imageStack}>
-          <Image
-            source={require("../assets/images/home_logo.png")}
-            resizeMode="contain"
-            style={styles.image}
-          ></Image>
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate("Home")}
-            style={styles.button}
-          ></TouchableOpacity>
-        </View>
-      </View>
+      <Text style={styles.title}>View Map</Text>
       <Image
         source={require("../assets/images/maps_Milano.jpeg")}
         resizeMode="contain"
-        style={styles.image2}
+        style={styles.mapImg}
       ></Image>
-      <View style={styles.button1Row}>
-        <TouchableOpacity style={styles.button1}>
-          <Text style={styles.pm1}>PM 10</Text>
-        </TouchableOpacity>
-        <View style={styles.button2Stack}>
-          <TouchableOpacity style={styles.button2}></TouchableOpacity>
-          <Text style={styles.co1}>CO2</Text>
-        </View>
+      <View style={styles.button3Row}>
         <TouchableOpacity style={styles.button3}>
-          <Text style={styles.pm3}>Var</Text>
+          <Text style={styles.pm104}>Var</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button2}>
+          <Text style={styles.pm105}>Var</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button1}>
+          <Text style={styles.pm106}>Var</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.button4Row}>
-        <TouchableOpacity style={styles.button4}>
-          <Text style={styles.pm2}>Var</Text>
+      <View style={styles.button6Row}>
+        <TouchableOpacity style={styles.button6}>
+          <Text style={styles.pm101}>PM 10</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button5}>
-          <Text style={styles.pm5}>Var</Text>
+          <Text style={styles.co2}>CO2</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button6}>
-          <Text style={styles.pm4}>Var</Text>
+        <TouchableOpacity style={styles.button4}>
+          <Text style={styles.pm103}>Var</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.airQuality1Row}>
+        <Text style={styles.airQuality1}>Air Quality</Text>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("Home")}
+          style={styles.homeButton1}
+        >
+          <Image
+            source={require("../assets/images/home_logo.png")}
+            resizeMode="contain"
+            style={styles.homelogo}
+          ></Image>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("Login")}
+          style={styles.logoutButton1}
+        >
+          <Image
+            source={require("../assets/images/logout.png")}
+            resizeMode="contain"
+            style={styles.logoutLogo}
+          ></Image>
         </TouchableOpacity>
       </View>
     </View>
@@ -55,7 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  text: {
+  title: {
     height: 73,
     color: "rgba(255,0,0,1)",
     fontSize: 40,
@@ -67,58 +75,18 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginTop: 71
   },
-  kingdomsAir1: {
-    width: 91,
-    height: 30,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 30,
-    letterSpacing: 0,
-    marginTop: 7
-  },
-  image: {
-    top: 0,
-    left: 0,
-    width: 27,
-    height: 38,
-    position: "absolute"
-  },
-  button: {
-    top: 0,
-    left: 1,
-    width: 27,
-    height: 38,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    position: "absolute",
-    opacity: 0
-  },
-  imageStack: {
-    width: 28,
-    height: 38,
-    marginLeft: 216
-  },
-  kingdomsAir1Row: {
-    height: 38,
-    flexDirection: "row",
-    marginTop: -111,
-    marginLeft: 10,
-    marginRight: 30
-  },
-  image2: {
+  mapImg: {
     width: 313,
     height: 403,
-    marginTop: 115,
+    marginTop: 42,
     marginLeft: 32
   },
-  button1: {
+  button3: {
     width: 100,
     height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    borderColor: "rgba(255,0,0,1)",
-    borderWidth: 3
+    backgroundColor: "rgba(230, 230, 230,1)"
   },
-  pm1: {
+  pm104: {
     width: 100,
     height: 40,
     color: "rgba(255,0,0,1)",
@@ -129,38 +97,12 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   button2: {
-    top: 0,
-    left: 0,
     width: 100,
     height: 40,
     backgroundColor: "rgba(230, 230, 230,1)",
-    position: "absolute"
+    marginLeft: 7
   },
-  co1: {
-    top: 0,
-    left: 1,
-    width: 100,
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    position: "absolute",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button2Stack: {
-    width: 101,
-    height: 40,
-    marginLeft: 6
-  },
-  button3: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 6
-  },
-  pm3: {
+  pm105: {
     width: 100,
     height: 40,
     color: "rgba(255,0,0,1)",
@@ -170,19 +112,36 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center"
   },
-  button1Row: {
+  button1: {
+    width: 100,
+    height: 40,
+    backgroundColor: "rgba(230, 230, 230,1)",
+    marginLeft: 6
+  },
+  pm106: {
+    height: 40,
+    color: "rgba(255,0,0,1)",
+    fontSize: 15,
+    fontFamily: "roboto-regular",
+    lineHeight: 40,
+    letterSpacing: 0,
+    textAlign: "center"
+  },
+  button3Row: {
     height: 40,
     flexDirection: "row",
-    marginTop: 38,
+    marginTop: 88,
     marginLeft: 31,
     marginRight: 31
   },
-  button4: {
+  button6: {
     width: 100,
     height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)"
+    backgroundColor: "rgba(230, 230, 230,1)",
+    borderColor: "rgba(255,0,0,1)",
+    borderWidth: 3
   },
-  pm2: {
+  pm101: {
     width: 100,
     height: 40,
     color: "rgba(255,0,0,1)",
@@ -196,9 +155,9 @@ const styles = StyleSheet.create({
     width: 100,
     height: 40,
     backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 7
+    marginLeft: 6
   },
-  pm5: {
+  co2: {
     width: 100,
     height: 40,
     color: "rgba(255,0,0,1)",
@@ -208,13 +167,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center"
   },
-  button6: {
+  button4: {
     width: 100,
     height: 40,
     backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 6
+    marginLeft: 7
   },
-  pm4: {
+  pm103: {
     width: 100,
     height: 40,
     color: "rgba(255,0,0,1)",
@@ -224,13 +183,53 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center"
   },
-  button4Row: {
+  button6Row: {
     height: 40,
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: -90,
     marginLeft: 31,
     marginRight: 31
+  },
+  airQuality1: {
+    width: 91,
+    height: 30,
+    color: "rgba(255,0,0,1)",
+    fontSize: 15,
+    fontFamily: "roboto-regular",
+    lineHeight: 30,
+    letterSpacing: 0,
+    marginTop: 8
+  },
+  homeButton1: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 193
+  },
+  homelogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
+  logoutButton1: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(225,96,96,0)",
+    marginLeft: 10
+  },
+  logoutLogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
+  airQuality1Row: {
+    height: 38,
+    flexDirection: "row",
+    marginTop: -635,
+    marginLeft: 10,
+    marginRight: 17
   }
 });
 
 export default ViewMap;
+
