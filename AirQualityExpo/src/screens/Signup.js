@@ -68,9 +68,9 @@ class Signup extends Component {
 
         <View style={{margin: 20}}>
           <PasswordInputText
-            value={this.state.password}
+            value={this.state.confirmPassword}
             label = "Confirm Password"
-            onChangeText={ (password) => this.setState({ confirmPassword }) }/>
+            onChangeText={ (confirmPassword) => this.setState({ confirmPassword }) }/>
         </View>
 
 
