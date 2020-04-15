@@ -1,68 +1,119 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { AppRegistry, StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import MapView from 'react-native-maps';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 
-function ViewMap(props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>View Map</Text>
-      
-      <MapView
-        style={styles.mapImg}
-        initialRegion={{
-        latitude: 45.506833,
-        longitude: 9.163333,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }}/>
-      
-      <View style={styles.button3Row}>
-        <TouchableOpacity style={styles.button3}>
-          <Text style={styles.pm104}>Var</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button2}>
-          <Text style={styles.pm105}>Var</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button1}>
-          <Text style={styles.pm106}>Var</Text>
-        </TouchableOpacity>
+class ViewMap extends Component{
+
+  state = {
+    mapRegion: null,
+    lastLat: null,
+    lastLong: null,
+  }
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      // Create the object to update this.state.mapRegion through the onRegionChange function
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+      }
+      this.onRegionChange(region, region.latitude, region.longitude);
+    });
+  }
+
+  onRegionChange(region, lastLat, lastLong) {
+    this.setState({
+      mapRegion: region,
+      // If there are no new values set use the the current ones
+      lastLat: lastLat || this.state.lastLat,
+      lastLong: lastLong || this.state.lastLong
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  onMapPress(e) {
+    console.log(e.nativeEvent.coordinate.longitude);
+    let region = {
+      latitude:       e.nativeEvent.coordinate.latitude,
+      longitude:      e.nativeEvent.coordinate.longitude,
+      latitudeDelta:  0.00922*1.5,
+      longitudeDelta: 0.00421*1.5
+    }
+    this.onRegionChange(region, region.latitude, region.longitude);
+  }
+
+  
+
+  render(){
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>View Map</Text>
+        
+        {/* https://snack.expo.io/@michelepilia/5b84d0 */}
+        <MapView
+          style={styles.mapImg}
+          initialRegion={this.state.mapRegion}
+          showsUserLocation={true}
+          followUserLocation={true}
+          onRegionChange={this.onRegionChange.bind(this)}
+          onPress={this.onMapPress.bind(this)}>
+        </MapView>
+        
+        <View style={styles.button3Row}>
+          <TouchableOpacity style={styles.button3}>
+            <Text style={styles.pm104}>Var</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button2}>
+            <Text style={styles.pm105}>Var</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button1}>
+            <Text style={styles.pm106}>Var</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.button6Row}>
+          <TouchableOpacity style={styles.button6}>
+            <Text style={styles.pm101}>PM 10</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button5}>
+            <Text style={styles.co2}>CO2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button4}>
+            <Text style={styles.pm103}>Var</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.airQuality1Row}>
+          <Text style={styles.airQuality1}>Air Quality</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Home")}
+            style={styles.homeButton1}
+          >
+            <Image
+              source={require("../assets/images/home_logo.png")}
+              resizeMode="contain"
+              style={styles.homelogo}
+            ></Image>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Login")}
+            style={styles.logoutButton1}
+          >
+            <Image
+              source={require("../assets/images/logout.png")}
+              resizeMode="contain"
+              style={styles.logoutLogo}
+            ></Image>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.button6Row}>
-        <TouchableOpacity style={styles.button6}>
-          <Text style={styles.pm101}>PM 10</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button5}>
-          <Text style={styles.co2}>CO2</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button4}>
-          <Text style={styles.pm103}>Var</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.airQuality1Row}>
-        <Text style={styles.airQuality1}>Air Quality</Text>
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate("Home")}
-          style={styles.homeButton1}
-        >
-          <Image
-            source={require("../assets/images/home_logo.png")}
-            resizeMode="contain"
-            style={styles.homelogo}
-          ></Image>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate("Login")}
-          style={styles.logoutButton1}
-        >
-          <Image
-            source={require("../assets/images/logout.png")}
-            resizeMode="contain"
-            style={styles.logoutLogo}
-          ></Image>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
