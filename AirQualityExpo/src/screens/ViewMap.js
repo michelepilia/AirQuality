@@ -1,15 +1,21 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import MapView from 'react-native-maps';
 
 function ViewMap(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>View Map</Text>
-      <Image
-        source={require("../assets/images/maps_Milano.jpeg")}
-        resizeMode="contain"
+      
+      <MapView
         style={styles.mapImg}
-      ></Image>
+        initialRegion={{
+        latitude: 45.506833,
+        longitude: 9.163333,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }}/>
+      
       <View style={styles.button3Row}>
         <TouchableOpacity style={styles.button3}>
           <Text style={styles.pm104}>Var</Text>
