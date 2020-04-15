@@ -1,41 +1,49 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialStackedLabelTextbox from "../components/MaterialStackedLabelTextbox";
+import PasswordInputText from 'react-native-hide-show-password-input';
 
-function Login(props) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.materialRightIconTextboxStack}>
-        <MaterialRightIconTextbox
-          style={styles.materialRightIconTextbox}
-        ></MaterialRightIconTextbox>
-        <MaterialRightIconTextbox
-          style={styles.materialRightIconTextbox1}
-        ></MaterialRightIconTextbox>
+export default class Login extends Component{
+
+  state = {
+      password: '',
+  };
+
+
+  render(){
+    return (
+      <View style={styles.container}>
+        <View style={{margin: 20}}>
+                  <PasswordInputText
+                      value={this.state.password}
+                      onChangeText={ (password) => this.setState({ password }) }/>
+              </View>
+
+        <View style={styles.materialStackedLabelTextboxStack}>
+          <View style={[styles.containerInput, this.props.style]}>
+            <Text style={styles.labelInput}>Username</Text>
+            <TextInput placeholder="Input" style={styles.inputStyle}></TextInput>
+          </View>
+        </View>
+
+        <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
+        
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Home")}
+          style={styles.button1}
+        >
+          <Text style={styles.text}>Login</Text>
+        </TouchableOpacity>
+        <Text style={styles.airQuality1}>Air Quality</Text>
       </View>
-      <View style={styles.materialStackedLabelTextboxStack}>
-        <MaterialStackedLabelTextbox
-          style={styles.materialStackedLabelTextbox}
-        ></MaterialStackedLabelTextbox>
-        <MaterialStackedLabelTextbox
-          style={styles.materialStackedLabelTextbox1}
-        ></MaterialStackedLabelTextbox>
-      </View>
-      <Text onPress={() => props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
-      <TouchableOpacity
-        onPress={() => props.navigation.navigate("Home")}
-        style={styles.button1}
-      >
-        <Text style={styles.text}>Login</Text>
-      </TouchableOpacity>
-      <Text style={styles.airQuality1}>Air Quality</Text>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
+    top: 200,
     flex: 1
   },
   materialRightIconTextbox: {
@@ -118,7 +126,28 @@ const styles = StyleSheet.create({
     width: 375,
     alignSelf: "flex-end",
     marginTop: -568
+  },
+  containerInput: {
+    backgroundColor: "transparent",
+    borderColor: "#D9D5DC",
+    borderBottomWidth: 1
+  },
+  labelInput: {
+    color: "rgba(255,0,0,1)",
+    opacity: 0.6,
+    paddingTop: 16,
+    fontSize: 12,
+    fontFamily: "roboto-regular",
+    textAlign: "left"
+  },
+  inputStyle: {
+    flex: 1,
+    color: "#000",
+    alignSelf: "stretch",
+    paddingTop: 8,
+    paddingBottom: 8,
+    fontSize: 16,
+    fontFamily: "roboto-regular",
+    lineHeight: 16
   }
 });
-
-export default Login;
