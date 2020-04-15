@@ -3,39 +3,51 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-nativ
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialStackedLabelTextbox from "../components/MaterialStackedLabelTextbox";
 import PasswordInputText from 'react-native-hide-show-password-input';
+import { TextField } from 'react-native-material-textfield';
 
-export default class Login extends Component{
+class Login extends Component{
 
   state = {
-      password: '',
+      username: '',
+      password: ''
+  };
+
+  handleUsername = (text) => {
+      this.setState({ username: text })
+   }
+  formatText = (text) => {
+    return text.replace(/[^+\d]/g, '');
   };
 
 
   render(){
     return (
       <View style={styles.container}>
+        <Text style={styles.airQuality1}>Air Quality</Text>
         <View style={{margin: 20}}>
-                  <PasswordInputText
-                      value={this.state.password}
-                      onChangeText={ (password) => this.setState({ password }) }/>
-              </View>
-
-        <View style={styles.materialStackedLabelTextboxStack}>
-          <View style={[styles.containerInput, this.props.style]}>
-            <Text style={styles.labelInput}>Username</Text>
-            <TextInput placeholder="Input" style={styles.inputStyle}></TextInput>
-          </View>
+          <TextField style = {styles.inputUser}
+               underlineColorAndroid = "transparent"
+               autoCapitalize = "none"
+               onChangeText = {this.handleUsername}
+               formatText={this.formatText}
+               label="Username"/>
         </View>
+        <View style={{margin: 20}}>
+          <PasswordInputText
+              value={this.state.password}
+              onChangeText={ (password) => this.setState({ password }) }/>
+        </View>
+
+        
 
         <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
         
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate("Home")}
-          style={styles.button1}
-        >
+          style={styles.button1}>
+
           <Text style={styles.text}>Login</Text>
         </TouchableOpacity>
-        <Text style={styles.airQuality1}>Air Quality</Text>
       </View>
     );
   }
@@ -43,7 +55,7 @@ export default class Login extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    top: 200,
+    top: 100,
     flex: 1
   },
   materialRightIconTextbox: {
@@ -93,7 +105,7 @@ const styles = StyleSheet.create({
     fontFamily: "roboto-regular",
     lineHeight: 28,
     textAlign: "center",
-    marginTop: 118,
+    marginTop: 8,
     marginLeft: 121,
     textDecorationLine: 'underline'
   },
@@ -101,7 +113,7 @@ const styles = StyleSheet.create({
     width: 305,
     height: 60,
     backgroundColor: "rgba(255,0,0,1)",
-    marginTop: 147,
+    marginTop: 47,
     marginLeft: 35
   },
   text: {
@@ -125,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: -568
+    marginTop: 0
   },
   containerInput: {
     backgroundColor: "transparent",
@@ -149,5 +161,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "roboto-regular",
     lineHeight: 16
-  }
+  },
+  inputUser: {
+      marginTop: -8,
+      height: 40
+   }
 });
+
+export default Login;
