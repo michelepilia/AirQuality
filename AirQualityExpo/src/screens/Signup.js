@@ -2,44 +2,89 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialStackedLabelTextbox from "../components/MaterialStackedLabelTextbox";
+import { TextField } from 'react-native-material-textfield';
+import PasswordInputText from 'react-native-hide-show-password-input';
 
-function Signup(props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.airQuality1}>Air Quality</Text>
-      <MaterialRightIconTextbox
-        style={styles.materialRightIconTextbox1}
-      ></MaterialRightIconTextbox>
-      <MaterialStackedLabelTextbox
-        style={styles.materialStackedLabelTextbox1}
-      ></MaterialStackedLabelTextbox>
-      <MaterialRightIconTextbox
-        style={styles.materialRightIconTextbox2}
-      ></MaterialRightIconTextbox>
-      <TouchableOpacity
-        onPress={() => props.navigation.navigate("Home")}
-        style={styles.button1}
-      >
-        <Text style={styles.text}>Signup</Text>
-      </TouchableOpacity>
-      <MaterialStackedLabelTextbox
-        style={styles.materialStackedLabelTextbox2}
-      ></MaterialStackedLabelTextbox>
-      <View style={styles.airQuality2Row}>
-        <Text style={styles.airQuality2}>Air Quality</Text>
+class Signup extends Component {
+
+  state = {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+  };
+
+  handleUsername = (text) => {
+      this.setState({ username: text })
+   };
+
+   handleEmail = (text) => {
+      this.setState({ email: text })
+   }
+   
+  formatText = (text) => {
+    return text.replace(/[^+\d]/g, '');
+  };
+
+  render(){
+    return (
+      <View style={styles.container}>
+
+        <View style={styles.airQuality2Row}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Login")}
+            style={styles.homeButton1}>
+            <Image
+              source={require("../assets/images/home_logo.png")}
+              resizeMode="contain"
+              style={styles.homelogo}></Image>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.airQuality1}>Air Quality</Text>
+
+        <View style={{margin: 20}}>
+          <TextField style = {styles.inputUser}
+               underlineColorAndroid = "transparent"
+               autoCapitalize = "none"
+               onChangeText = {this.handleEmail}
+               formatText={this.formatText}
+               label="Email"/>
+        </View>
+
+        <View style={{margin: 20}}>
+          <TextField style = {styles.inputUser}
+               underlineColorAndroid = "transparent"
+               autoCapitalize = "none"
+               onChangeText = {this.handleUsername}
+               formatText={this.formatText}
+               label="Username"/>
+        </View>
+
+        <View style={{margin: 20}}>
+          <PasswordInputText
+            value={this.state.password}
+            onChangeText={ (password) => this.setState({ password }) }/>
+        </View>
+
+        <View style={{margin: 20}}>
+          <PasswordInputText
+            value={this.state.password}
+            label = "Confirm Password"
+            onChangeText={ (password) => this.setState({ confirmPassword }) }/>
+        </View>
+
+
         <TouchableOpacity
-          onPress={() => props.navigation.navigate("Login")}
-          style={styles.homeButton1}
-        >
-          <Image
-            source={require("../assets/images/home_logo.png")}
-            resizeMode="contain"
-            style={styles.homelogo}
-          ></Image>
+          onPress={() => this.props.navigation.navigate("Home")}
+          style={styles.button1}>
+          <Text style={styles.text}>Signup</Text>
         </TouchableOpacity>
+
       </View>
-    </View>
-  );
+
+
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -56,7 +101,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 71
+    marginTop: 31
   },
   materialRightIconTextbox1: {
     width: 317,
@@ -114,7 +159,8 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 226
+    marginLeft: 310, 
+    marginTop: 10
   },
   homelogo: {
     width: 27,
@@ -124,7 +170,7 @@ const styles = StyleSheet.create({
   airQuality2Row: {
     height: 38,
     flexDirection: "row",
-    marginTop: -333,
+    marginTop: 30,
     marginLeft: 10,
     marginRight: 21
   }
