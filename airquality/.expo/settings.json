@@ -1,0 +1,8 @@
+{
+  "urlRandomness": "pd-b9p",
+  "hostType": "lan",
+  "lanType": "ip",
+  "dev": true,
+  "minify": false,
+  "https": false
+}

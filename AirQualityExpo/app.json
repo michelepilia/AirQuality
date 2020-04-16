@@ -10,10 +10,10 @@
       "web"
     ],
     "version": "1.0.0",
-    "icon": "./assets/images/king_icon.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/king_splash.jpg",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

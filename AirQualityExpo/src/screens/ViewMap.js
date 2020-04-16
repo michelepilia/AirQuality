@@ -1,15 +1,33 @@
 import React, { Component } from "react";
 import { AppRegistry, StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import MapView from 'react-native-maps';
-import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
 class ViewMap extends Component{
 
   state = {
+    location: {},
+    errorMessage: '',
     mapRegion: null,
     lastLat: null,
     lastLong: null,
+  }
+
+
+  componentWillMount() {
+    this.geoLocation();
+    
+  }
+
+  geoLocation = async () => {
+    const {status} = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      console.log('bruschi');
+
+      this.setState({
+        errorMessage: 'PERMISSION NOT GRANTED',
+      });
+    }  
   }
 
   componentDidMount() {
