@@ -19,14 +19,20 @@ class ViewMap extends Component{
   }
 
   geoLocation = async () => {
-    const {status} = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      console.log('bruschi');
+    try{
+      const {status} = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        console.log('bruschi');
 
-      this.setState({
-        errorMessage: 'PERMISSION NOT GRANTED',
-      });
-    }  
+        this.setState({
+          errorMessage: 'PERMISSION NOT GRANTED',
+        });
+      } else {
+        console.log("granted");
+      }
+    } catch {
+      console.log("line 34");
+      this.errorFunction();}
   }
 
   options = {
