@@ -6,7 +6,6 @@ import * as Permissions from 'expo-permissions';
 class ViewMap extends Component{
 
   state = {
-    location: {},
     errorMessage: '',
     mapRegion: null,
     lastLat: null,
@@ -30,6 +29,12 @@ class ViewMap extends Component{
     }  
   }
 
+  options = {
+    enableHighAccuracy: false,
+    timeout: 5000,
+    maximumAge: 0
+  };
+
   componentDidMount() {
     this.watchID = navigator.geolocation.watchPosition((position) => {
       // Create the object to update this.state.mapRegion through the onRegionChange function
@@ -40,7 +45,11 @@ class ViewMap extends Component{
         longitudeDelta: 0.00421*1.5
       }
       this.onRegionChange(region, region.latitude, region.longitude);
-    });
+    }, this.errorFunction, this.options);
+  }
+
+  errorFunction() {
+    console.log("Sarti");
   }
 
   onRegionChange(region, lastLat, lastLong) {
