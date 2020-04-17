@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import * as Progress from 'react-native-progress';
 
 const micron = "\u00b5";
@@ -64,89 +64,142 @@ class ReadData extends Component {
         <Text style={styles.title}>Read Data</Text>
 
         <View style={styles.rect}>
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.coordTxt}>
+              <Text>Coordinates: {this.state.latitude}°N, {this.state.longitude}°E</Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("ViewMap")}
+                style={styles.locationButton}>
+                <Image
+                  source={require("../assets/images/location.png")}
+                  resizeMode="contain"
+                  style={styles.locationLogo}
+                ></Image>
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.parameterTxt}>
-            <Text>Coordinates: {this.state.latitude}°N, {this.state.longitude}°E</Text>
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Altitude: {this.state.altitude[0]} mt.</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.altitude[0], 
+                                      this.state.altitude[1], this.state.altitude[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.altitude[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.altitude[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>Altitude: {this.state.altitude[0]} mt.</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.altitude[0], 
-                                    this.state.altitude[1], this.state.altitude[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Temperature: {this.state.temperature[0]}°</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.temperature[0], 
+                                      this.state.temperature[1], this.state.temperature[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.temperature[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.temperature[2]}</Text>
+              </View> 
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>Temperature: {this.state.temperature[0]}°</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.temperature[0], 
-                                    this.state.temperature[1], this.state.temperature[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Humidity: {this.state.humidity[0]}%</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.humidity[0], 
+                                      this.state.humidity[1], this.state.humidity[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.humidity[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.humidity[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>Humidity: {this.state.humidity[0]}%</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.humidity[0], 
-                                    this.state.humidity[1], this.state.humidity[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Pressure: {this.state.pressure[0]} Pa</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pressure[0], 
+                                      this.state.pressure[1], this.state.pressure[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pressure[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pressure[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>Pressure: {this.state.pressure[0]} Pa</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.pressure[0], 
-                                    this.state.pressure[1], this.state.pressure[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>TVOCs: {this.state.tvocs[0]} ppb</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.tvocs[0], 
+                                      this.state.tvocs[1], this.state.tvocs[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.tvocs[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.tvocs[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>TVOCs: {this.state.tvocs[0]} ppb</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.tvocs[0], 
-                                    this.state.tvocs[1], this.state.tvocs[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.state.eco2[0]} ppm</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.eco2[0], 
+                                      this.state.eco2[1], this.state.eco2[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.eco2[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.eco2[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>CO<Text style={styles.pedex}>2</Text>: {this.state.eco2[0]} ppm</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.eco2[0], 
-                                    this.state.eco2[1], this.state.eco2[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.state.pm05[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm05[0], 
+                                      this.state.pm05[1], this.state.pm05[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm05[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm05[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>PM<Text style={styles.pedex}>0.5</Text>: {this.state.pm05[0]} {micron}m</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.pm05[0], 
-                                    this.state.pm05[1], this.state.pm05[2])} 
-                                    width={200} />
-            
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.state.pm1[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm1[0], 
+                                      this.state.pm1[1], this.state.pm1[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm1[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm1[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>PM<Text style={styles.pedex}>1</Text>: {this.state.pm1[0]} {micron}m</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.pm1[0], 
-                                    this.state.pm1[1], this.state.pm1[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.state.pm25[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm25[0], 
+                                      this.state.pm25[1], this.state.pm25[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm25[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm25[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>PM<Text style={styles.pedex}>2.5</Text>: {this.state.pm25[0]} {micron}m</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.pm25[0], 
-                                    this.state.pm25[1], this.state.pm25[2])} 
-                                    width={200} />
-          </View>
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.state.pm4[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm4[0], 
+                                      this.state.pm4[1], this.state.pm4[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm4[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm4[2]}</Text>
+              </View>
+            </View>
 
-          <View style={styles.parameterBar}>
-            <Text>PM<Text style={styles.pedex}>4</Text>: {this.state.pm4[0]} {micron}m</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.pm4[0], 
-                                    this.state.pm4[1], this.state.pm4[2])} 
-                                    width={200} />
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.state.pm10[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm10[0], 
+                                      this.state.pm10[1], this.state.pm10[2])} 
+                                      width={200} />
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm10[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm10[2]}</Text>
+              </View>               
+            </View>
+          </ScrollView>
           </View>
-
-          <View style={styles.parameterBar}>
-            <Text>PM<Text style={styles.pedex}>10</Text>: {this.state.pm10[0]} {micron}m</Text>
-            <Progress.Bar progress={this.normalizeOutput(this.state.pm10[0], 
-                                    this.state.pm10[1], this.state.pm10[2])} 
-                                    width={200} />
-          </View>
-        </View>
         
       </View>
     );
@@ -157,22 +210,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  linearGauge:{
-    width:"700px",
-    height:"30px"
-  },
   rect: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     width: 'auto',
-    height: 'auto',
+    height: 530,
     backgroundColor: "rgba(230, 230, 230,1)",
-    marginTop: 50,
+    marginTop: 20,
     marginLeft: 30,
     marginRight: 30,
     padding: 20
   },
+  scrollView:{},
   title: {  
     height: 73,
     color: "rgba(255,0,0,1)",
@@ -183,7 +232,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 20
+    marginTop: 25
   },
   airQuality: {
     width: 91,
@@ -206,6 +255,16 @@ const styles = StyleSheet.create({
     height: 38,
     marginTop: 1
   },
+  locationButton: {
+    width: 27,
+    height: 27,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 20,
+  },
+  locationLogo: {
+    width: 27,
+    height: 27,
+  },
   logoutButton: {
     width: 27,
     height: 38,
@@ -225,15 +284,31 @@ const styles = StyleSheet.create({
     marginRight: 17
   },
   parameterBar:{
-    marginTop: 5,
+    marginTop: 15,
     marginBottom: 5
   },
-  parameterTxt:{
+  coordTxt:{
+    textAlign: 'center',
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 15,
+    display: "flex",
+    flexDirection: "row"
   },
   pedex:{
     fontSize: 10,
+  },
+  minValue:{
+    marginLeft: 0,
+  },
+  maxValue:{
+    marginLeft: 165,
+  },
+  edgesContainer:{
+    display: "flex",
+    flexDirection: "row"
+  },
+  parameterLabel:{
+    marginBottom: 10
   }
 });
 
