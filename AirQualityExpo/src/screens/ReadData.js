@@ -2,35 +2,34 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import * as Progress from 'react-native-progress';
 
+const micron = "\u00b5";
 
 class ReadData extends Component {
 
   state = {
     temperature: [10.0, 0.5, 20], //[value, minValue, maxValue]
-    humidity: 0.0,
-    pressure: 0.0,
-    altitude: 0.0,
-    tvocs: 0.0,
-    eco2: 0.0,
-    pm05: 0.0,
-    pm1: 0.0,
-    pm25: 0.0,
-    pm4: 0.0,
-    pm10: 0.0,
-    latitude: 0.0,
-    longitude: 0.0
+    humidity: [10.0, 0.5, 20],
+    pressure: [10.0, 0.5, 20],
+    altitude: [150, 0, 680], //Deciso di lasciare la media in mezzo
+    tvocs: [10.0, 0.5, 20],
+    eco2: [10.0, 0.5, 20],
+    pm05: [10.0, 0.5, 20],
+    pm1: [10.0, 0.5, 20],
+    pm25: [10.0, 0.5, 20],
+    pm4: [10.0, 0.5, 20],
+    pm10: [10.0, 0.5, 20],
+    latitude: 45.47,
+    longitude: 9.22
   };
+  //	x′ = (x − xmin) / (xmax − xmin)
 
-  temperature = {
-    value: 0,
-    min: 0,
-    max: 10
+
+  
+  normalizeOutput(value, xmin, xmax){
+    return ((value-xmin)/(xmax-xmin));
   }
 
 
-  _handleGaugeChange(){
-    alert("Changed");
-  }
 
   render(){
     return (
@@ -65,14 +64,88 @@ class ReadData extends Component {
         <Text style={styles.title}>Read Data</Text>
 
         <View style={styles.rect}>
-          <View>
-            <Text>Temperature</Text>
-            
-            <Progress.Bar progress={this.state.temperature[1]} width={200} />
 
-            <Text>Value: {this.state.temperature}</Text>
+          <View style={styles.parameterTxt}>
+            <Text>Coordinates: {this.state.latitude}°N, {this.state.longitude}°E</Text>
           </View>
 
+          <View style={styles.parameterBar}>
+            <Text>Altitude: {this.state.altitude[0]} mt.</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.altitude[0], 
+                                    this.state.altitude[1], this.state.altitude[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>Temperature: {this.state.temperature[0]}°</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.temperature[0], 
+                                    this.state.temperature[1], this.state.temperature[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>Humidity: {this.state.humidity[0]}%</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.humidity[0], 
+                                    this.state.humidity[1], this.state.humidity[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>Pressure: {this.state.pressure[0]} Pa</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.pressure[0], 
+                                    this.state.pressure[1], this.state.pressure[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>TVOCs: {this.state.tvocs[0]} ppb</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.tvocs[0], 
+                                    this.state.tvocs[1], this.state.tvocs[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>CO<Text style={styles.pedex}>2</Text>: {this.state.eco2[0]} ppm</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.eco2[0], 
+                                    this.state.eco2[1], this.state.eco2[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>PM<Text style={styles.pedex}>0.5</Text>: {this.state.pm05[0]} {micron}m</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.pm05[0], 
+                                    this.state.pm05[1], this.state.pm05[2])} 
+                                    width={200} />
+            
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>PM<Text style={styles.pedex}>1</Text>: {this.state.pm1[0]} {micron}m</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.pm1[0], 
+                                    this.state.pm1[1], this.state.pm1[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>PM<Text style={styles.pedex}>2.5</Text>: {this.state.pm25[0]} {micron}m</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.pm25[0], 
+                                    this.state.pm25[1], this.state.pm25[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>PM<Text style={styles.pedex}>4</Text>: {this.state.pm4[0]} {micron}m</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.pm4[0], 
+                                    this.state.pm4[1], this.state.pm4[2])} 
+                                    width={200} />
+          </View>
+
+          <View style={styles.parameterBar}>
+            <Text>PM<Text style={styles.pedex}>10</Text>: {this.state.pm10[0]} {micron}m</Text>
+            <Progress.Bar progress={this.normalizeOutput(this.state.pm10[0], 
+                                    this.state.pm10[1], this.state.pm10[2])} 
+                                    width={200} />
+          </View>
         </View>
         
       </View>
@@ -91,11 +164,14 @@ const styles = StyleSheet.create({
   rect: {
     display: "flex",
     flexDirection: "column",
-    width: 313,
-    height: 403,
+    alignItems: "center",
+    width: 'auto',
+    height: 'auto',
     backgroundColor: "rgba(230, 230, 230,1)",
     marginTop: 50,
-    marginLeft: 31
+    marginLeft: 30,
+    marginRight: 30,
+    padding: 20
   },
   title: {  
     height: 73,
@@ -107,7 +183,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 51
+    marginTop: 20
   },
   airQuality: {
     width: 91,
@@ -147,6 +223,17 @@ const styles = StyleSheet.create({
     marginTop: 44,
     marginLeft: 10,
     marginRight: 17
+  },
+  parameterBar:{
+    marginTop: 5,
+    marginBottom: 5
+  },
+  parameterTxt:{
+    marginTop: 5,
+    marginBottom: 5
+  },
+  pedex:{
+    fontSize: 10,
   }
 });
 
