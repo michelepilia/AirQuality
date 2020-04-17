@@ -38,8 +38,6 @@ class Login extends Component{
               onChangeText={ (password) => this.setState({ password }) }/>
         </View>
 
-        
-
         <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
         
         <TouchableOpacity

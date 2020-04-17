@@ -1,230 +1,103 @@
 import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
+import * as Progress from 'react-native-progress';
 
-function ReadData(props) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.rect}>
-        <View style={styles.storeButtonStack}>
-          <TouchableOpacity style={styles.storeButton}>
-            <Text style={styles.storeData}>Store Data</Text>
+
+class ReadData extends Component {
+
+  state = {
+    temperature: [10.0, 0.5, 20], //[value, minValue, maxValue]
+    humidity: 0.0,
+    pressure: 0.0,
+    altitude: 0.0,
+    tvocs: 0.0,
+    eco2: 0.0,
+    pm05: 0.0,
+    pm1: 0.0,
+    pm25: 0.0,
+    pm4: 0.0,
+    pm10: 0.0,
+    latitude: 0.0,
+    longitude: 0.0
+  };
+
+  temperature = {
+    value: 0,
+    min: 0,
+    max: 10
+  }
+
+
+  _handleGaugeChange(){
+    alert("Changed");
+  }
+
+  render(){
+    return (
+      <View style={styles.container}>
+
+        <View style={styles.headerRow}>
+          <Text style={styles.airQuality}>Air Quality</Text>
+        
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Home")}
+            style={styles.homeButton}>
+            <Image
+              source={require("../assets/images/home_logo.png")}
+              resizeMode="contain"
+              style={styles.homelogo}
+            ></Image>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Login")}
+            style={styles.logoutButton}
+          >
+            <Image
+              source={require("../assets/images/logout.png")}
+              resizeMode="contain"
+              style={styles.logoutLogo}
+            ></Image>
           </TouchableOpacity>
 
-          <Text style={styles.pm10Altissimo}>PM 10: Altissimo</Text>
         </View>
-      </View>
 
-      <View style={styles.button4Row}>
-        <TouchableOpacity style={styles.button4}>
-          <Text style={styles.pm104}>Var</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button5}>
-          <Text style={styles.pm105}>Var</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button6}>
-          <Text style={styles.pm106}>Var</Text>
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.title}>Read Data</Text>
 
-      <View style={styles.button1Row}>
-        <TouchableOpacity style={styles.button1}>
-          <Text style={styles.pm101}>PM 10</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button2}>
-          <Text style={styles.co2}>CO2</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button3}>
-          <Text style={styles.pm103}>Var</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.rect}>
+          <View>
+            <Text>Temperature</Text>
+            
+            <Progress.Bar progress={this.state.temperature[1]} width={200} />
 
-      <Text style={styles.title}>Read Data</Text>
-      
-      <View style={styles.airQualityRow}>
-        <Text style={styles.airQuality}>Air Quality</Text>
-       
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate("Home")}
-          style={styles.homeButton}>
-          <Image
-            source={require("../assets/images/home_logo.png")}
-            resizeMode="contain"
-            style={styles.homelogo}
-          ></Image>
-        </TouchableOpacity>
+            <Text>Value: {this.state.temperature}</Text>
+          </View>
+
+        </View>
         
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate("Login")}
-          style={styles.logoutButton}
-        >
-          <Image
-            source={require("../assets/images/logout.png")}
-            resizeMode="contain"
-            style={styles.logoutLogo}
-          ></Image>
-        </TouchableOpacity>
-
       </View>
-
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  linearGauge:{
+    width:"700px",
+    height:"30px"
+  },
   rect: {
+    display: "flex",
+    flexDirection: "column",
     width: 313,
     height: 403,
     backgroundColor: "rgba(230, 230, 230,1)",
-    marginTop: 186,
+    marginTop: 50,
     marginLeft: 31
   },
-  storeButton: {
-    top: 202,
-    left: 44,
-    width: 219,
-    height: 66,
-    backgroundColor: "rgba(255,0,0,1)",
-    position: "absolute"
-  },
-  storeData: {
-    width: 219,
-    height: 66,
-    color: "rgba(255,255,255,1)",
-    fontSize: 30,
-    fontFamily: "roboto-regular",
-    lineHeight: 66,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  pm10Altissimo: {
-    top: 0,
-    left: 0,
-    color: "rgba(255,0,0,1)",
-    position: "absolute",
-    fontSize: 30,
-    fontFamily: "roboto-regular",
-    lineHeight: 200,
-    letterSpacing: 0,
-    textAlign: "center",
-    bottom: 0
-  },
-  storeButtonStack: {
-    width: 313,
-    flex: 1
-  },
-  button4: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)"
-  },
-  pm104: {
-    width: 100,
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button5: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 7
-  },
-  pm105: {
-    width: 100,
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button6: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 6
-  },
-  pm106: {
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button4Row: {
-    height: 40,
-    flexDirection: "row",
-    marginTop: 88,
-    marginLeft: 31,
-    marginRight: 31
-  },
-  button1: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    borderColor: "rgba(255,0,0,1)",
-    borderWidth: 3
-  },
-  pm101: {
-    width: 100,
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button2: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 6
-  },
-  co2: {
-    width: 100,
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button3: {
-    width: 100,
-    height: 40,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    marginLeft: 7
-  },
-  pm103: {
-    width: 100,
-    height: 40,
-    color: "rgba(255,0,0,1)",
-    fontSize: 15,
-    fontFamily: "roboto-regular",
-    lineHeight: 40,
-    letterSpacing: 0,
-    textAlign: "center"
-  },
-  button1Row: {
-    height: 40,
-    flexDirection: "row",
-    marginTop: -90,
-    marginLeft: 31,
-    marginRight: 31
-  },
-  title: {
+  title: {  
     height: 73,
     color: "rgba(255,0,0,1)",
     fontSize: 40,
@@ -234,7 +107,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: -597
+    marginTop: 51
   },
   airQuality: {
     width: 91,
@@ -268,10 +141,10 @@ const styles = StyleSheet.create({
     height: 38,
     marginTop: 1
   },
-  airQualityRow: {
+  headerRow: {
     height: 38,
     flexDirection: "row",
-    marginTop: -111,
+    marginTop: 44,
     marginLeft: 10,
     marginRight: 17
   }

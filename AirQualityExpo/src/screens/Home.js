@@ -1,34 +1,38 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 
-function Home(props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.airQuality}>Air Quality</Text>
-      <TouchableOpacity
-        onPress={() => props.navigation.navigate("ViewMap")}
-        style={styles.button2}>
-        <Text style={styles.viewMap}>View Map</Text>
-      </TouchableOpacity>
+class Home extends Component{
+  render(){
+    return (
+      <View style={styles.container}>
 
-      <TouchableOpacity
-        onPress={() => props.navigation.navigate("ReadData")}
-        style={styles.button3}>
-        <Text style={styles.readData}>Read Data</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Login")}
+          style={styles.logoutButton1}>
+          <Image
+            source={require("../assets/images/logout.png")}
+            resizeMode="contain"
+            style={styles.logoutLogo}
+          ></Image>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => props.navigation.navigate("Login")}
-        style={styles.logoutButton1}>
-        <Image
-          source={require("../assets/images/logout.png")}
-          resizeMode="contain"
-          style={styles.logoutLogo}
-        ></Image>
-      </TouchableOpacity>
+        <Text style={styles.airQuality}>Air Quality</Text>
 
-    </View>
-  );
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("ReadData")}
+          style={styles.readDataBtn}>
+          <Text style={styles.readDataLabel}>Read Data</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("ViewMap")}
+          style={styles.viewMapBtn}>
+          <Text style={styles.viewMapLabel}>View Map</Text>
+        </TouchableOpacity>
+
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -45,16 +49,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 71
+    marginTop: 51
   },
-  button2: {
+  viewMapBtn: {
     width: 305,
     height: 93,
     backgroundColor: "rgba(255,0,0,1)",
-    marginTop: 287,
+    marginTop: 50,
     marginLeft: 35
   },
-  viewMap: {
+  viewMapLabel: {
     width: 305,
     height: 93,
     color: "rgba(255,255,255,1)",
@@ -64,14 +68,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center"
   },
-  button3: {
+  readDataBtn: {
     width: 305,
     height: 93,
     backgroundColor: "rgba(255,0,0,1)",
-    marginTop: -271,
+    marginTop: 130,
     marginLeft: 35
   },
-  readData: {
+  readDataLabel: {
     width: 305,
     height: 93,
     color: "rgba(255,255,255,1)",
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
-    marginTop: -314,
+    marginTop: 44,
     marginLeft: 331
   },
   logoutLogo: {
