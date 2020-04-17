@@ -82,7 +82,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>Altitude: {this.state.altitude[0]} mt.</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.altitude[0], 
                                       this.state.altitude[1], this.state.altitude[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.altitude[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.altitude[2]}</Text>
@@ -93,7 +93,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>Temperature: {this.state.temperature[0]}°</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.temperature[0], 
                                       this.state.temperature[1], this.state.temperature[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.temperature[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.temperature[2]}</Text>
@@ -104,7 +104,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>Humidity: {this.state.humidity[0]}%</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.humidity[0], 
                                       this.state.humidity[1], this.state.humidity[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.humidity[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.humidity[2]}</Text>
@@ -115,7 +115,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>Pressure: {this.state.pressure[0]} Pa</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pressure[0], 
                                       this.state.pressure[1], this.state.pressure[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.pressure[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.pressure[2]}</Text>
@@ -126,7 +126,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>TVOCs: {this.state.tvocs[0]} ppb</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.tvocs[0], 
                                       this.state.tvocs[1], this.state.tvocs[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.tvocs[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.tvocs[2]}</Text>
@@ -137,7 +137,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.state.eco2[0]} ppm</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.eco2[0], 
                                       this.state.eco2[1], this.state.eco2[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.eco2[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.eco2[2]}</Text>
@@ -148,7 +148,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.state.pm05[0]} {micron}m</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pm05[0], 
                                       this.state.pm05[1], this.state.pm05[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.pm05[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.pm05[2]}</Text>
@@ -159,7 +159,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.state.pm1[0]} {micron}m</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pm1[0], 
                                       this.state.pm1[1], this.state.pm1[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.pm1[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.pm1[2]}</Text>
@@ -170,7 +170,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.state.pm25[0]} {micron}m</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pm25[0], 
                                       this.state.pm25[1], this.state.pm25[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.pm25[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.pm25[2]}</Text>
@@ -181,7 +181,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.state.pm4[0]} {micron}m</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pm4[0], 
                                       this.state.pm4[1], this.state.pm4[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.pm4[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.pm4[2]}</Text>
@@ -192,7 +192,7 @@ class ReadData extends Component {
               <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.state.pm10[0]} {micron}m</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pm10[0], 
                                       this.state.pm10[1], this.state.pm10[2])} 
-                                      width={200} />
+                                      width={270} color="red"/>
               <View style={styles.edgesContainer}>
                 <Text style={styles.minValue}>{this.state.pm10[1]}</Text>
                 <Text style={styles.maxValue}>{this.state.pm10[2]}</Text>
@@ -259,11 +259,13 @@ const styles = StyleSheet.create({
     width: 27,
     height: 27,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 20,
+    marginLeft: 25,
+    marginTop: -15
   },
   locationLogo: {
     width: 27,
     height: 27,
+    marginTop: 10
   },
   logoutButton: {
     width: 27,
@@ -301,7 +303,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   maxValue:{
-    marginLeft: 165,
+    marginLeft: 235,
   },
   edgesContainer:{
     display: "flex",
