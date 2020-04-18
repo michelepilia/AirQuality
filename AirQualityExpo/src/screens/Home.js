@@ -2,7 +2,15 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 
 class Home extends Component{
+
+  state = {
+    token: '',
+  }
+
   render(){
+    const { params } = this.props.navigation.state;
+    const token = params ? params.token : null;
+    this.state.token = token;
     return (
       <View style={styles.container}>
 

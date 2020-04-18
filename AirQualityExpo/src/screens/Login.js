@@ -8,17 +8,46 @@ import { TextField } from 'react-native-material-textfield';
 class Login extends Component{
 
   state = {
-      username: '',
+      email: '',
       password: ''
   };
 
-  handleUsername = (text) => {
-      this.setState({ username: text })
+
+    
+  url = "https://polimi-dima-server.herokuapp.com/api";
+
+  handleEmail = (text) => {
+      this.setState({ email: text })
    }
   formatText = (text) => {
     return text.replace(/[^+\d]/g, '');
   };
 
+  loginFunction(){
+
+    return fetch(this.url+"/user/login", {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify( this.state ),
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        return (response.json());
+      }
+      else {
+        alert("Invalid response");
+      }
+    })
+    .then((json)=>{
+      this.props.navigation.navigate("Home", {token: json.token});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
   render(){
     return (
@@ -28,9 +57,9 @@ class Login extends Component{
           <TextField style = {styles.inputUser}
                underlineColorAndroid = "transparent"
                autoCapitalize = "none"
-               onChangeText = {this.handleUsername}
+               onChangeText = {this.handleEmail}
                formatText={this.formatText}
-               label="Username"/>
+               label="Email"/>
         </View>
         <View style={{margin: 20}}>
           <PasswordInputText
@@ -41,7 +70,7 @@ class Login extends Component{
         <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
         
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("Home")}
+          onPress={() => this.loginFunction()}
           style={styles.button1}>
 
           <Text style={styles.text}>Login</Text>
