@@ -33,6 +33,7 @@
     "react-navigation": "4.0.10",
     "react-navigation-drawer": "~2.3.3",
     "react-navigation-stack": "~1.10.3",
+    "toggle-switch-react-native": "^2.1.0",
     "tslib": "^1.11.1"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import * as Progress from 'react-native-progress';
+import ToggleSwitch from 'toggle-switch-react-native'
 
 const micron = "\u00b5";
 
@@ -19,7 +20,10 @@ class ReadData extends Component {
     pm4: [10.0, 0.5, 20],
     pm10: [10.0, 0.5, 20],
     latitude: 45.47,
-    longitude: 9.22
+    longitude: 9.22,
+    isOnStore: true,
+    isOnHybrid: false,
+    isOnSimulation: true,
   };
   //	x′ = (x − xmin) / (xmax − xmin)
 
@@ -28,8 +32,6 @@ class ReadData extends Component {
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
   }
-
-
 
   render(){
     return (
@@ -62,6 +64,18 @@ class ReadData extends Component {
         </View>
 
         <Text style={styles.title}>Read Data</Text>
+
+        <ToggleSwitch
+          isOn={this.state.isOnStore}
+          onColor="green"
+          offColor="gray"
+          label="Example label"
+          labelStyle={{ color: "black", fontWeight: "900" }}
+          size="large"
+          onToggle={isOnStore => {
+            this.setState({ isOnStore });
+          }}
+        />
 
         <View style={styles.rect}>
           <ScrollView style={styles.scrollView}>
@@ -311,6 +325,10 @@ const styles = StyleSheet.create({
   },
   parameterLabel:{
     marginBottom: 10
+  },
+  toggleLabel:{ 
+    color: "black", 
+    fontWeight: "900" 
   }
 });
 
