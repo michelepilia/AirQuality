@@ -21,9 +21,8 @@ class ReadData extends Component {
     pm10: [10.0, 0.5, 20],
     latitude: 45.47,
     longitude: 9.22,
-    isOnStore: true,
-    isOnHybrid: false,
-    isOnSimulation: true,
+    isOnStore: false,
+    isOnSimulation: false,
   };
   //	x′ = (x − xmin) / (xmax − xmin)
 
@@ -65,17 +64,33 @@ class ReadData extends Component {
 
         <Text style={styles.title}>Read Data</Text>
 
-        <ToggleSwitch
-          isOn={this.state.isOnStore}
-          onColor="green"
-          offColor="gray"
-          label="Example label"
-          labelStyle={{ color: "black", fontWeight: "900" }}
-          size="large"
-          onToggle={isOnStore => {
-            this.setState({ isOnStore });
-          }}
-        />
+        <View style={styles.toggleContainer}>
+          <ToggleSwitch
+            isOn={this.state.isOnStore}
+            onColor="red"
+            offColor="gray"
+            label="Rec"
+            labelStyle={styles.toggleLabel}
+            size="large"
+            onToggle={isOnStore => {
+              this.setState({ isOnStore });
+            }}
+          />
+
+          <ToggleSwitch
+            isOn={this.state.isOnSimulation}
+            onColor="orange"
+            offColor="gray"
+            label="Simulate Data"
+            labelStyle={styles.toggleLabel}
+            size="large"
+            onToggle={isOnSimulation => {
+              this.setState({ isOnSimulation });
+            }}
+          />
+        </View>
+
+        
 
         <View style={styles.rect}>
           <ScrollView style={styles.scrollView}>
@@ -328,7 +343,14 @@ const styles = StyleSheet.create({
   },
   toggleLabel:{ 
     color: "black", 
-    fontWeight: "900" 
+    fontWeight: "normal"
+  },
+  toggleContainer:{
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 20,
   }
 });
 
