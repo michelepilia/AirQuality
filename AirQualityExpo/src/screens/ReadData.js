@@ -3,8 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "rea
 import * as Progress from 'react-native-progress';
 import ToggleSwitch from 'toggle-switch-react-native'
 
-const micron = "\u00b5";
-url = "http://192.168.1.4:3000";
+const micron = "\u00b5"
 
 class ReadData extends Component {
 
@@ -25,9 +24,9 @@ class ReadData extends Component {
     isOnStore: false,
     isOnSimulation: false,
   };
-  //	x′ = (x − xmin) / (xmax − xmin)
+  ////	x′ = (x − xmin) / (xmax − xmin)
 
-
+  url = "http://192.168.1.4:3000";
   
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
@@ -35,9 +34,7 @@ class ReadData extends Component {
 
   readDataFunction(){
 
-    return fetch(this.url, {
-      method: "GET",    
-    })
+    return fetch(this.url)
     .then((response) => {
       console.log(response);
       if (response.status == "200"){
