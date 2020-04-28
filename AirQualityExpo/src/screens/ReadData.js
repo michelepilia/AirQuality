@@ -19,10 +19,11 @@ class ReadData extends Component {
     pm25: [0, 0, 10],
     pm4: [0, 0, 10],
     pm10: [0, 0, 10],
-    latitude: 45.47,
-    longitude: 9.22,
+    latitude: [45.4700000000000,0,0],
+    longitude: [9.222200000000000,0,0],
     isOnStore: false,
     isOnSimulation: true,
+    token: '',
   };
 
   urlSimulation = "http://192.168.1.4:3000";
@@ -30,6 +31,12 @@ class ReadData extends Component {
 
   url ="http://192.168.1.4:3000";
   delay = 5000;
+
+  body1 = {
+    data: "",
+  }
+
+  urlSaveData = "https://polimi-dima-server.herokuapp.com/api/data";
   
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
@@ -50,11 +57,40 @@ class ReadData extends Component {
     });
   }
 
+  saveDataFunction(){
+
+    return fetch(this.urlSaveData, {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.state.token,
+      },
+      body: JSON.stringify( this.body1 ),
+    })
+    .then((response) => {
+      console.log("RESPONSE CODE: "+response.status);
+      if (response.status == "200"){
+        return (response.json());
+      }
+      else {
+        alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+
   componentDidMount() {
     this.timeInterval = setInterval( () =>  {
       this.readDataFunction().then((a)=> {
         //console.log(a);
         this.arduinoDataParser(a);
+        if(this.state.isOnStore) {
+          this.saveDataFunction();
+        }
       });        
     }, this.delay);
   }
@@ -65,6 +101,10 @@ class ReadData extends Component {
   
   // Parser for ArduinoData
   arduinoDataParser = function(body){
+
+    console.log("BODY: "+ body);
+    this.body1.data = body;
+
   // Object
   data = {
     temperature: [10.0, -10, 45], //[value, minValue, maxValue]
@@ -78,9 +118,10 @@ class ReadData extends Component {
     pm25: [0, 0, 10],
     pm4: [0, 0, 10],
     pm10: [0, 0, 10],
-    latitude: 45.47,
-    longitude: 9.22,
+    latitude: [45.4700000000000, 0, 0],
+    longitude: [9.2200000000000, 0, 0]
   };
+
   // Splitting body of the post
   let array = body.split(';');
   // Creating data object keys
@@ -89,8 +130,15 @@ class ReadData extends Component {
   keys.forEach((item, i) => {
 
     data[item][0] = array[i];
+
     if(i==2) {
       data[item][0]/=100;
+    }
+    if(i==11) {
+      data[item][0]=global.latitudePosition;
+    }
+    if(i==12){
+      data[item][0]=global.longitudePosition;
     }
     console.log("##VALUE: " + data[item]);
   });
@@ -103,6 +151,12 @@ class ReadData extends Component {
 
 
   render(){
+
+    const { params } = this.props.navigation.state;
+    const token = params ? params.token : null;
+    this.state.token = token;
+    //console.log("TOKEN: "+this.state.token);
+
     return (
       <View style={styles.container}>
 

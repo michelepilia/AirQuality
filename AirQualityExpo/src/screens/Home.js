@@ -7,10 +7,13 @@ class Home extends Component{
     token: '',
   }
 
-  render(){
+  componentDidMount(){
     const { params } = this.props.navigation.state;
-    const token = params ? params.token : null;
-    this.state.token = token;
+    const token1 = params ? params.token : null;
+    this.setState({token:token1});
+  }
+
+  render(){
     return (
       <View style={styles.container}>
 
@@ -27,7 +30,12 @@ class Home extends Component{
         <Text style={styles.airQuality}>Air Quality</Text>
 
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("ReadData")}
+          onPress={() => {
+
+            console.log(this.state.token);
+            this.props.navigation.navigate("ReadData", {token: this.state.token})}
+          
+          }
           style={styles.readDataBtn}>
           <Text style={styles.readDataLabel}>Read Data</Text>
         </TouchableOpacity>
