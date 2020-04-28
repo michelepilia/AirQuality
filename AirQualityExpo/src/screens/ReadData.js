@@ -4,6 +4,7 @@ import * as Progress from 'react-native-progress';
 import ToggleSwitch from 'toggle-switch-react-native'
 
 const micron = "\u00b5";
+url = "http://192.168.1.4:3000/";
 
 class ReadData extends Component {
 
@@ -31,6 +32,36 @@ class ReadData extends Component {
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
   }
+
+  readDataFunction(){
+
+    return fetch(this.url, {
+      method: "GET",
+      headers:{
+        Accept: 'text/plain',
+      }    
+    })
+    .then((response) => {
+      console.log(response);
+      if (response.status == "200"){
+        return (response.text());
+      }
+      else {
+        alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+    componentDidMount() {
+      setInterval(() => {
+        this.readDataFunction();
+        
+      }, 2000);
+    }
+  
 
   render(){
     return (
