@@ -8,32 +8,32 @@ const micron = "\u00b5"
 class ReadData extends Component {
 
   state = {
-    temperature: [10.0, 0.5, 20], //[value, minValue, maxValue]
-    humidity: [10.0, 0.5, 20],
-    pressure: [10.0, 0.5, 20],
-    altitude: [150, 0, 680], //Deciso di lasciare la media in mezzo
-    tvocs: [10.0, 0.5, 20],
-    eco2: [10.0, 0.5, 20],
-    pm05: [10.0, 0.5, 20],
-    pm1: [10.0, 0.5, 20],
-    pm25: [10.0, 0.5, 20],
-    pm4: [10.0, 0.5, 20],
-    pm10: [10.0, 0.5, 20],
+    temperature: [10.0, -10, 45], //[value, minValue, maxValue]
+    humidity: [10.0, 0, 100],
+    pressure: [10.0, 98000, 103590],
+    altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
+    tvocs: [10.0, 100, 800],
+    eco2: [3750, 2500, 4500],
+    pm05: [0, 0, 10],
+    pm1: [0, 0, 10],
+    pm25: [0, 0, 10],
+    pm4: [0, 0, 10],
+    pm10: [0, 0, 10],
     latitude: 45.47,
     longitude: 9.22,
     isOnStore: false,
     isOnSimulation: false,
   };
-  ////	x′ = (x − xmin) / (xmax − xmin)
+  /////	x′ = (x − xmin) / (xmax − xmin)
 
   url = "http://192.168.1.4:3000";
+  delay = 5000;
   
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
   }
 
   readDataFunction(){
-
     return fetch(this.url)
     .then((response) => {
       if (response.status == "200"){
@@ -48,14 +48,55 @@ class ReadData extends Component {
     });
   }
 
-    componentDidMount() {
-      setInterval( () =>  {
-        this.readDataFunction().then((a)=> {
-          console.log(a);
-        });        
-      }, 2000);
-    }
+  componentDidMount() {
+    this.timeInterval = setInterval( () =>  {
+      this.readDataFunction().then((a)=> {
+        //console.log(a);
+        this.arduinoDataParser(a);
+      });        
+    }, this.delay);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timeInterval);
+  }
   
+  // Parser for ArduinoData
+  arduinoDataParser = function(body){
+  // Object
+  data = {
+    temperature: [10.0, -10, 45], //[value, minValue, maxValue]
+    humidity: [10.0, 0, 100],
+    pressure: [10.0, 98000, 103590],
+    altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
+    tvocs: [10.0, 100, 800],
+    eco2: [3750, 2500, 4500],
+    pm05: [0, 0, 10],
+    pm1: [0, 0, 10],
+    pm25: [0, 0, 10],
+    pm4: [0, 0, 10],
+    pm10: [0, 0, 10],
+    latitude: 45.47,
+    longitude: 9.22,
+  };
+  // Splitting body of the post
+  let array = body.split(';');
+  // Creating data object keys
+  var keys = Object.keys(data);
+  //var newState={};
+  // Looping on keys to update the values
+  keys.forEach((item, i) => {
+    data[item][0] = array[i];
+    //newState[i] = array[i];
+    console.log("##VALUE: " + data[item]);
+  });
+  this.setState(data);
+
+  //data.timestamp = generateTimestamp();
+
+  return data;
+}
+
 
   render(){
     return (
