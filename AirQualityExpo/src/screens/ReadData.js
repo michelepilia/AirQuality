@@ -36,7 +36,6 @@ class ReadData extends Component {
 
     return fetch(this.url)
     .then((response) => {
-      console.log(response);
       if (response.status == "200"){
         return (response.text());
       }
@@ -50,9 +49,10 @@ class ReadData extends Component {
   }
 
     componentDidMount() {
-      setInterval(() => {
-        this.readDataFunction();
-        
+      setInterval( () =>  {
+        this.readDataFunction().then((a)=> {
+          console.log(a);
+        });        
       }, 2000);
     }
   
