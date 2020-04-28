@@ -22,11 +22,13 @@ class ReadData extends Component {
     latitude: 45.47,
     longitude: 9.22,
     isOnStore: false,
-    isOnSimulation: false,
+    isOnSimulation: true,
   };
-  /////	x′ = (x − xmin) / (xmax − xmin)
 
-  url = "http://192.168.1.4:3000";
+  urlSimulation = "http://192.168.1.4:3000";
+  urlReal = "http://192.168.1.0:3000";
+
+  url ="http://192.168.1.4:3000";
   delay = 5000;
   
   normalizeOutput(value, xmin, xmax){
@@ -154,6 +156,13 @@ class ReadData extends Component {
             size="large"
             onToggle={isOnSimulation => {
               this.setState({ isOnSimulation });
+              if(isOnSimulation){
+                this.url=this.urlSimulation
+              }
+              else {
+                this.url = this.urlReal;
+              }
+              //alert(this.url);
             }}
           />
         </View>
