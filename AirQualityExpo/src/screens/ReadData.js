@@ -10,7 +10,7 @@ class ReadData extends Component {
   state = {
     temperature: [10.0, -10, 45], //[value, minValue, maxValue]
     humidity: [10.0, 0, 100],
-    pressure: [10.0, 98000, 103590],
+    pressure: [10.0, 980, 1035],
     altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
     tvocs: [10.0, 100, 800],
     eco2: [3750, 2500, 4500],
@@ -67,7 +67,7 @@ class ReadData extends Component {
   data = {
     temperature: [10.0, -10, 45], //[value, minValue, maxValue]
     humidity: [10.0, 0, 100],
-    pressure: [10.0, 98000, 103590],
+    pressure: [10.0, 980, 1035],
     altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
     tvocs: [10.0, 100, 800],
     eco2: [3750, 2500, 4500],
@@ -83,11 +83,13 @@ class ReadData extends Component {
   let array = body.split(';');
   // Creating data object keys
   var keys = Object.keys(data);
-  //var newState={};
   // Looping on keys to update the values
   keys.forEach((item, i) => {
+
     data[item][0] = array[i];
-    //newState[i] = array[i];
+    if(i==2) {
+      data[item][0]/=100;
+    }
     console.log("##VALUE: " + data[item]);
   });
   this.setState(data);
@@ -207,7 +209,7 @@ class ReadData extends Component {
             </View>
 
             <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>Pressure: {this.state.pressure[0]} Pa</Text>
+              <Text style={styles.parameterLabel}>Pressure: {this.state.pressure[0]} hPa</Text>
               <Progress.Bar progress={this.normalizeOutput(this.state.pressure[0], 
                                       this.state.pressure[1], this.state.pressure[2])} 
                                       width={270} color="red"/>
