@@ -101,9 +101,10 @@ class ReadData extends Component {
   
   // Parser for ArduinoData
   arduinoDataParser = function(body){
-
-    console.log("BODY: "+ body);
-    this.body1.data = body;
+    var string1 = body;
+    string1.concat(";",global.latitudePosition,";",global.longitudePosition);
+    console.log("BODY: "+ string1);
+    this.body1.data = string1;
 
   // Object
   data = {
