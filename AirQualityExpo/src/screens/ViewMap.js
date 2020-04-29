@@ -25,8 +25,6 @@ class ViewMap extends Component{
         longitudeDelta: 0.00421*1.5
       }
       this.onRegionChange(region, region.latitude, region.longitude);
-      global.latitudePosition = region.latitude;
-      global.longitudePosition = region.longitude;
       
     }, this.errorFunction, this.options);
     

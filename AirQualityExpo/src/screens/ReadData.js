@@ -26,10 +26,10 @@ class ReadData extends Component {
     token: '',
   };
 
-  urlSimulation = "http://192.168.1.4:3000";
+  urlSimulation = "http://172.17.0.97:3000";
   urlReal = "http://192.168.1.0:3000";
 
-  url ="http://192.168.1.4:3000";
+  url = "http://172.17.0.97:3000";
   delay = 5000;
 
   body1 = {
@@ -82,6 +82,52 @@ class ReadData extends Component {
     });
   }
 
+  geoLocation = async () => {
+    try{
+      const {status} = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        console.log('bruschi');
+
+        this.setState({
+          errorMessage: 'PERMISSION NOT GRANTED',
+        });
+      } else {
+        console.log("granted");
+      }
+    } catch {
+      console.log("line 34");
+      this.errorFunction();}
+  }
+
+  errorFunction() {
+    console.log("Sarti");
+  }
+
+  options = {
+    enableHighAccuracy: false,
+    timeout: 5000,
+    maximumAge: 0
+  };
+
+  componentWillMount() {
+    this.geoLocation();
+
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      // Create the object to update this.state.mapRegion through the onRegionChange function
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+      }
+      this.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      })
+      
+    }, this.errorFunction, this.options);
+    
+  }
 
   componentDidMount() {
     this.timeInterval = setInterval( () =>  {
@@ -97,12 +143,13 @@ class ReadData extends Component {
 
   componentWillUnmount() {
     clearInterval(this.timeInterval);
+    navigator.geolocation.clearWatch(this.watchID);
   }
   
   // Parser for ArduinoData
   arduinoDataParser = function(body){
     var string1 = body;
-    string1.concat(";",global.latitudePosition,";",global.longitudePosition);
+    string1.concat(";",this.state.latitude,";",this.state.longitude);
     console.log("BODY: "+ string1);
     this.body1.data = string1;
 
@@ -136,10 +183,10 @@ class ReadData extends Component {
       data[item][0]/=100;
     }
     if(i==11) {
-      data[item][0]=global.latitudePosition;
+      data[item][0]=this.state.latitude;
     }
     if(i==12){
-      data[item][0]=global.longitudePosition;
+      data[item][0]=this.state.longitude;
     }
     console.log("##VALUE: " + data[item]);
   });
