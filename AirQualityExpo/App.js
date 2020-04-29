@@ -9,13 +9,15 @@ import ReadData from "./src/screens/ReadData";
 import ViewMap from "./src/screens/ViewMap";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
+import Settings from "./src/screens/Settings";
 
 const DrawerNavigation = createDrawerNavigator({
   Login: Login,
   Home: Home,
   ReadData: ReadData,
   ViewMap: ViewMap,
-  Signup: Signup
+  Signup: Signup,
+  Settings: Settings
 });
 
 const StackNavigation = createStackNavigator(
@@ -27,7 +29,8 @@ const StackNavigation = createStackNavigator(
     Home: Home,
     ReadData: ReadData,
     ViewMap: ViewMap,
-    Signup: Signup
+    Signup: Signup,
+    Settings: Settings
   },
   {
     headerMode: "none"

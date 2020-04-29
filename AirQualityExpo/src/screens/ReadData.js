@@ -19,8 +19,8 @@ class ReadData extends Component {
     pm25: [0, 0, 10],
     pm4: [0, 0, 10],
     pm10: [0, 0, 10],
-    latitude: [45.4700000000000,0,0],
-    longitude: [9.222200000000000,0,0],
+    latitude: [45.47,0,0],
+    longitude: [9.22,0,0],
     isOnStore: false,
     isOnSimulation: true,
     token: '',
@@ -55,6 +55,14 @@ class ReadData extends Component {
     .catch((error) => {
       console.error(error);
     });
+  }
+
+  cutCoordString(coord){
+    var coordStr = coord.toString();
+    var arrayStr = coordStr.split(".");
+    arrayStr[1] = arrayStr[1].substring(0, 4);
+    var res = arrayStr[0].concat(".", arrayStr[1]);
+    return res;
   }
 
   saveDataFunction(){
@@ -166,8 +174,8 @@ class ReadData extends Component {
     pm25: [0, 0, 10],
     pm4: [0, 0, 10],
     pm10: [0, 0, 10],
-    latitude: [45.4700000000000, 0, 0],
-    longitude: [9.2200000000000, 0, 0]
+    latitude: [45.47, 0, 0],
+    longitude: [9.22, 0, 0]
   };
 
   // Splitting body of the post
@@ -210,7 +218,17 @@ class ReadData extends Component {
 
         <View style={styles.headerRow}>
           <Text style={styles.airQuality}>Air Quality</Text>
-        
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Settings")}
+            style={styles.settingsButton}>
+            <Image
+              source={require("../assets/images/settings_logo.jpeg")}
+              resizeMode="contain"
+              style={styles.settingslogo}
+            ></Image>
+          </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate("Home")}
             style={styles.homeButton}>
@@ -274,7 +292,7 @@ class ReadData extends Component {
         <View style={styles.rect}>
           <ScrollView style={styles.scrollView}>
             <View style={styles.coordTxt}>
-              <Text>Coordinates: {this.state.latitude}°N, {this.state.longitude}°E</Text>
+              <Text>Coordinates: {this.cutCoordString(this.state.latitude)}°N, {this.cutCoordString(this.state.longitude)}°E</Text>
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate("ViewMap")}
                 style={styles.locationButton}>
@@ -452,11 +470,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     marginTop: 8
   },
+  settingsButton: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 163
+  },
+  settingslogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
   homeButton: {
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 193
+    marginLeft: 10
   },
   homelogo: {
     width: 27,
