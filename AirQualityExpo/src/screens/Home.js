@@ -7,28 +7,40 @@ class Home extends Component{
     token: '',
   }
 
+  
+  constructor() {
+    super();
+    global.urlSimulation = "http://192.168.1.4:3000";
+    global.urlReal  = "http://192.168.1.0:3000";
+    global.currentUrl = "http://192.168.1.4:3000";
+    global.delay = 5000;
+  }
+
   componentDidMount(){
     const { params } = this.props.navigation.state;
-    const token1 = params ? params.token : null;
-    this.setState({token:token1});
+    const token = params ? params.token : null;
+    this.setState({token : token});
   }
 
   render(){
     return (
       <View style={styles.container}>
 
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("Login")}
-          style={styles.logoutButton1}>
-          <Image
-            source={require("../assets/images/logout.png")}
-            resizeMode="contain"
-            style={styles.logoutLogo}
-          ></Image>
-        </TouchableOpacity>
+        <View style={styles.headerRow}>
+          
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Login")}
+            style={styles.logoutButton1}>
+            <Image
+              source={require("../assets/images/logout.png")}
+              resizeMode="contain"
+              style={styles.logoutLogo}
+            ></Image>
+          </TouchableOpacity>
 
+        
+        </View>
         <Text style={styles.airQuality}>Air Quality</Text>
-
         <TouchableOpacity
           onPress={() => {
 
@@ -44,6 +56,12 @@ class Home extends Component{
           onPress={() => this.props.navigation.navigate("ViewMap")}
           style={styles.viewMapBtn}>
           <Text style={styles.viewMapLabel}>View Map</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Stats", {token: this.state.token})}
+          style={styles.viewMapBtn}>
+          <Text style={styles.viewMapLabel}>Historical Data</Text>
         </TouchableOpacity>
 
       </View>
@@ -102,6 +120,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: -1
   },
+  statsButton: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 163
+  },
   logoutButton1: {
     width: 27,
     height: 38,
@@ -113,7 +137,19 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     marginTop: 1
-  }
+  },
+  headerRow: {
+    height: 38,
+    flexDirection: "row",
+    marginTop: 44,
+    marginLeft: 10,
+    marginRight: 17
+  },
+  statsLogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
 });
 
 export default Home;

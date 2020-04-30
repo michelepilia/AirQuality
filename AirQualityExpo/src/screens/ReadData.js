@@ -26,11 +26,12 @@ class ReadData extends Component {
     token: '',
   };
 
-  urlSimulation = "http://172.17.0.97:3000";
+
+  urlSimulation = "http://192.168.1.4:3000";
   urlReal = "http://192.168.1.0:3000";
 
-  url = "http://172.17.0.97:3000";
-  delay = 5000;
+  //url = "http://192.168.1.4:3000";
+ // delay = 5000;
 
   body1 = {
     data: "",
@@ -43,7 +44,7 @@ class ReadData extends Component {
   }
 
   readDataFunction(){
-    return fetch(this.url)
+    return fetch(global.currentUrl)
     .then((response) => {
       if (response.status == "200"){
         return (response.text());
@@ -118,6 +119,7 @@ class ReadData extends Component {
   };
 
   componentWillMount() {
+    //alert("WILL MOUNT EXECUTED");
     this.geoLocation();
 
     this.watchID = navigator.geolocation.watchPosition((position) => {
@@ -138,6 +140,7 @@ class ReadData extends Component {
   }
 
   componentDidMount() {
+    //alert("MOUNTING");
     this.timeInterval = setInterval( () =>  {
       this.readDataFunction().then((a)=> {
         //console.log(a);
@@ -146,16 +149,23 @@ class ReadData extends Component {
           this.saveDataFunction();
         }
       });        
-    }, this.delay);
+    }, global.delay);
+    const { params } = this.props.navigation.state;
+    const token = params ? params.token : null;
+    this.state.token = token;
+
   }
 
   componentWillUnmount() {
     clearInterval(this.timeInterval);
+    //alert("UNMOUNTING");
     navigator.geolocation.clearWatch(this.watchID);
   }
   
   // Parser for ArduinoData
   arduinoDataParser = function(body){
+
+    //alert("reading data: delay is = " +global.delay);
     var string1 = body;
     string1.concat(";",this.state.latitude,";",this.state.longitude);
     console.log("BODY: "+ string1);
@@ -206,12 +216,16 @@ class ReadData extends Component {
 }
 
 
+
   render(){
 
-    const { params } = this.props.navigation.state;
-    const token = params ? params.token : null;
-    this.state.token = token;
-    //console.log("TOKEN: "+this.state.token);
+    if(this.state.isOnSimulation){
+      global.currentUrl = global.urlSimulation
+    }
+    else {
+      global.currentUrl = global.urlReal;
+    }
+    //alert("Reading data!");
 
     return (
       <View style={styles.container}>
@@ -220,7 +234,12 @@ class ReadData extends Component {
           <Text style={styles.airQuality}>Air Quality</Text>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Settings")}
+            onPress={() => 
+                          {
+                            this.props.navigation.navigate("Settings", {token: this.state.token});
+                            clearInterval(this.timeInterval);
+                          }                                            
+                    }
             style={styles.settingsButton}>
             <Image
               source={require("../assets/images/settings_logo.jpeg")}
@@ -230,7 +249,10 @@ class ReadData extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Home")}
+            onPress={() => {this.props.navigation.navigate("Home")
+                           clearInterval(this.timeInterval)
+                          }
+                          }
             style={styles.homeButton}>
             <Image
               source={require("../assets/images/home_logo.png")}
@@ -240,7 +262,10 @@ class ReadData extends Component {
           </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
+            onPress={() =>{this.props.navigation.navigate("Login")
+                          clearInterval(this.timeInterval)
+                        }
+                        }
             style={styles.logoutButton}
           >
             <Image
@@ -277,10 +302,10 @@ class ReadData extends Component {
             onToggle={isOnSimulation => {
               this.setState({ isOnSimulation });
               if(isOnSimulation){
-                this.url=this.urlSimulation
+                global.currentUrl=global.urlSimulation
               }
               else {
-                this.url = this.urlReal;
+                global.currentUrl = global.urlReal;
               }
               //alert(this.url);
             }}

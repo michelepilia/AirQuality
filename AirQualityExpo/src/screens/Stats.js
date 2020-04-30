@@ -1,44 +1,20 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, Slider } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import { TextField } from 'react-native-material-textfield';
 
-class Settings extends Component{
+class Stats extends Component{
 
   state = {
     token: '',
-    username: 'pry',
-    delay: global.delay,
-  }
-
-  username = "admin";
-  tokenValid = "valid/expired";
-
-  handleSimulationUrl = (text) => {
-    global.urlSimulation= text;
-  }
-      
-  handleArduinoUrl = (text) => {
-    global.urlReal = text;  
-  }
-
-  changeDelayValue = (value) => {
-    var delay = value*1000;
-    global.delay=delay;
-    this.setState({delay: delay});
-    //alert(global.delay);
   }
 
   componentDidMount(){
     const { params } = this.props.navigation.state;
-
-    const token = params ? params.token : null;
-   //const delay = params ? params.delay : null;
-
-    this.setState({token : token});
+    const token1 = params ? params.token : null;
+    this.setState({token:token1});
   }
 
   render(){
-
     return (
       <View style={styles.container}>
 
@@ -68,43 +44,7 @@ class Settings extends Component{
 
         </View>
 
-        <Text style={styles.title}>Settings</Text>
-        
-        <View> 
-            <Text>Utente: {this.state.username}</Text>
-            <Text>Token: {this.state.token}</Text>
-        </View>
-
-        <View>
-        <TextField style = {styles.inputUrl}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleSimulationUrl}
-               formatText={this.formatText}
-               placeholder = {global.urlSimulation}
-               label="Simulation Server URL"/>
-        <TextField style = {styles.inputUrl}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleArduinoUrl}
-               formatText={this.formatText}
-               placeholder = {global.urlReal}
-               label="Arduino Wi-Fi URL"/>
-        </View>
-
-        <View>
-          <Text>Read data every: {this.state.delay/1000} seconds</Text>
-          <Slider
-            style={{width: 200, height: 40, marginLeft: "auto", marginRight: "auto"}}
-            minimumValue={3}
-            maximumValue={10}
-            minimumTrackTintColor="rgb(255,0,0)"
-            maximumTrackTintColor="rgb(255,0,0)"
-            step={1}
-            onValueChange = {this.changeDelayValue}
-           />
-
-        </View>
+        <Text style={styles.title}>Historical Data</Text>
 
       </View>
     );
@@ -207,4 +147,4 @@ const styles = StyleSheet.create({
  }
 });
 
-export default Settings;
+export default Stats;
