@@ -6,7 +6,7 @@ class Settings extends Component{
 
   state = {
     token: '',
-    username: 'pry',
+    username: 'test@pry.it',
     delay: global.delay,
   }
 
@@ -69,43 +69,50 @@ class Settings extends Component{
         </View>
 
         <Text style={styles.title}>Settings</Text>
-        
-        <View> 
-            <Text>Utente: {this.state.username}</Text>
-            <Text>Token: {this.state.token}</Text>
+        <View style = {styles.mainView}>
+          <Text style={{marginTop:35, marginLeft: 15}}>User Info</Text>
+          <View style = {{flexDirection:"column", marginTop: 15, marginLeft: 15}}> 
+              <Text style={{marginTop:5}}>User: {this.state.username}</Text>
+              <Text style={{marginTop:5}}>First Name: Pry</Text>
+              <Text style={{marginTop:5}}>Last Name: Punjabi</Text>
+              <Text style={{marginTop:5}}>Gender: female</Text>
+              <Text style={{marginTop:5}}>Birthday: 11/01/1963</Text>
+              <Text style={{marginTop:5}}>Token status: {this.state.token}</Text>
+          </View>
+          <Text style={{marginTop:35, marginLeft: 15}}>Read data from: </Text>
+          <View style = {{marginTop:5, marginLeft: 15, marginRight: 15}}>
+          <TextField style = {styles.inputUrl}
+                underlineColorAndroid = "transparent"
+                autoCapitalize = "none"
+                onChangeText = {this.handleSimulationUrl}
+                formatText={this.formatText}
+                placeholder = {global.urlSimulation}
+                label="Simulation Server URL"/>
+          <TextField style = {styles.inputUrl}
+                underlineColorAndroid = "transparent"
+                autoCapitalize = "none"
+                onChangeText = {this.handleArduinoUrl}
+                formatText={this.formatText}
+                placeholder = {global.urlReal}
+                label="Arduino Wi-Fi URL"/>
+          </View>
+
+          <View style = {{marginTop:20}}>
+            <Text style ={{marginLeft:15}}>Read data every {this.state.delay/1000} seconds</Text>
+            <Slider
+              style={{width: 230, height: 40}}
+              minimumValue={3}
+              maximumValue={10}
+              minimumTrackTintColor="rgb(255,0,0)"
+              maximumTrackTintColor="rgb(255,0,0)"
+              step={1}
+              value = {5}
+              onValueChange = {this.changeDelayValue}
+              thumbTintColor = "rgb(255,10,10)"
+            />
+
+          </View>
         </View>
-
-        <View>
-        <TextField style = {styles.inputUrl}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleSimulationUrl}
-               formatText={this.formatText}
-               placeholder = {global.urlSimulation}
-               label="Simulation Server URL"/>
-        <TextField style = {styles.inputUrl}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleArduinoUrl}
-               formatText={this.formatText}
-               placeholder = {global.urlReal}
-               label="Arduino Wi-Fi URL"/>
-        </View>
-
-        <View>
-          <Text>Read data every: {this.state.delay/1000} seconds</Text>
-          <Slider
-            style={{width: 200, height: 40, marginLeft: "auto", marginRight: "auto"}}
-            minimumValue={3}
-            maximumValue={10}
-            minimumTrackTintColor="rgb(255,0,0)"
-            maximumTrackTintColor="rgb(255,0,0)"
-            step={1}
-            onValueChange = {this.changeDelayValue}
-           />
-
-        </View>
-
       </View>
     );
   }
@@ -203,8 +210,17 @@ const styles = StyleSheet.create({
   },
   inputUrl: {
     marginTop: -8,
-    height: 40
- }
+    height: 40,
+    marginLeft: 15,
+    marginRight:15,
+    width:300
+ }, 
+ mainView: {
+   backgroundColor: "rgba(255,5,5,0.05)",
+   marginLeft: 20,
+   marginRight: 20,
+   marginTop:10
+ },
 });
 
 export default Settings;
