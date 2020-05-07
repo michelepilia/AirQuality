@@ -8,6 +8,25 @@ class Stats extends Component{
     token: '',
   }
 
+  urlSaveData = "https://polimi-dima-server.herokuapp.com/api/data?offset=0&limit=1";
+
+  retrieveData(){
+    return fetch(this.urlSaveData)
+    .then((response) => {
+      console.log("RESPONSE CODE: "+response.status);
+      if (response.status == "200"){
+        return (response.json());
+      }
+      else {
+        alert("Invalid response");
+      }
+    })
+    .then((response) => console.log(response))
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   componentDidMount(){
     const { params } = this.props.navigation.state;
     const token1 = params ? params.token : null;
@@ -43,6 +62,16 @@ class Stats extends Component{
           </TouchableOpacity>
 
         </View>
+
+        <TouchableOpacity
+          onPress={() => {
+            console.log("TOKEN: "+this.state.token);
+            this.retrieveData();
+          }
+          }
+          style={styles.viewMapBtn}>
+          <Text style={styles.viewMapLabel}>Retrieve Data</Text>
+        </TouchableOpacity>
 
         <Text style={styles.title}>Historical Data</Text>
 

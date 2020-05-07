@@ -59,7 +59,10 @@ class Home extends Component{
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("Stats", {token: this.state.token})}
+          onPress={() => {
+            this.props.navigation.navigate("Stats", {token: this.state.token})
+          }
+          }
           style={styles.viewMapBtn}>
           <Text style={styles.viewMapLabel}>Historical Data</Text>
         </TouchableOpacity>
