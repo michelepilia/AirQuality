@@ -42,8 +42,8 @@ class Stats extends Component{
     });
   }
 
-  retrieveDataByDate(){
-    return fetch(this.urlDate)
+  retrieveDataByDate(b){
+    return fetch(b)
     .then((response) => {
       console.log("RESPONSE CODE: "+response.status);
       if (response.status == "200"){
@@ -74,7 +74,11 @@ class Stats extends Component{
     if(this.state.startDate!=''){
       console.log("This.state.endDate = "+this.state.endDate);
       if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
-        this.retrieveDataByDate();
+        var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
+        var b = a.concat(this.state.startDate,"T09:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
+        this.setState();
+        console.log("URL: "+b);
+        this.retrieveDataByDate(b);
       }
     }
   }
