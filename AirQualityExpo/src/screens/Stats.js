@@ -20,6 +20,9 @@ class Stats extends Component{
     }
     this.retrieveDataByDate = this.retrieveDataByDate.bind(this);
     this.retrieveData = this.retrieveData.bind(this);
+    this.addOneMeasureToState = this.addOneMeasureToState.bind(this);
+    this.addMeasuresToState = this.addMeasuresToState.bind(this);
+
     this.today={
       year: new Date().getFullYear(),
       month: new Date().getMonth()+1,
@@ -27,9 +30,28 @@ class Stats extends Component{
     }
     this.urlDate = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-15T09:00:00Z&endDate=2020-04-16T23:00:00Z";
     this.url = "https://polimi-dima-server.herokuapp.com/api/data?offset=0&limit=1";
-   // this.startDate = this.today;
+    this.measures = [
+      {
+        temperature: 10.0, 
+        humidity: 10.0,
+        pressure: 10.0,
+        altitude: 150, //Deciso di lasciare la media in mezzo 68 valore max ok
+        tvocs: 10.0,
+        eco2: 3750,
+        pm05: 0,
+        pm1: 0,
+        pm25: 0,
+        pm4: 0,
+        pm10: 0,
+        latitude: 45.47,
+        longitude: 9.22,
+      },
+    ]
+    // this.startDate = this.today;
    // this.endDate = this.today;
   }
+
+
 
   
   retrieveData(){
@@ -49,21 +71,97 @@ class Stats extends Component{
     });
   }
 
-  retrieveDataByDate(b){
-    return fetch(b)
+  retrieveDataByDate(url){
+    return fetch(url)
     .then((response) => {
       console.log("RESPONSE CODE: "+response.status);
       if (response.status == "200"){
-        return (response.json());
+        return ((response.json()));
       }
       else {
-        alert("Invalid response");
+        alert("Invalid response from server");
       }
     })
-    .then((response) => console.log(response))
+    .then((response) => {
+      //console.log(response);
+      this.addMeasuresToState(response);
+    })
     .catch((error) => {
       console.error(error);
     });
+
+  }
+
+  addOneMeasureToState(body){
+
+    //alert("reading data: delay is = " +global.delay);
+    var string1 = body;
+    string1.concat(";",this.state.latitude,";",this.state.longitude);
+    //console.log("BODY: "+ string1);
+    this.body1.data = string1;
+
+    // Object
+    data = {
+      temperature: 25.0, 
+      humidity: 75.0,
+      pressure: 11.0,
+      altitude: 144, //Deciso di lasciare la media in mezzo 68 valore max ok
+      tvocs: 9.0,
+      eco2: 3350,
+      pm05: 12,
+      pm1: 1,
+      pm25: 2,
+      pm4: 5,
+      pm10: 2,
+      latitude: 45.41,
+      longitude: 9.20,
+    };
+
+    // Splitting body of the post
+    let array = body.split(';');
+    // Creating data object keys
+    var keys = Object.keys(data);
+    // Looping on keys to update the values
+    keys.forEach((item, i) => {
+
+      data[item][0] = array[i];
+
+      if(i==2) {
+        data[item][0]/=100;
+      }
+      if(i==11) {
+        data[item][0]=this.state.latitude;
+      }
+      if(i==12){
+        data[item][0]=this.state.longitude;
+      }
+      //console.log("##VALUE: " + data[item]);
+    });
+    var newArray = [this.state.measures, data]
+
+    this.setState({measures:newArray});
+
+    //return data;
+  } 
+
+  addMeasuresToState(body) {
+    //var a = JSON.stringify(body);
+    //console.log("STRINGIFIED: "+a);
+    //let array=body.split()
+    //For the first measure received do...
+    for (let index = 0; index < 1; index++) {
+      var b = JSON.stringify(body[index]);
+      //var newArray = Object.keys(body[index]);
+      console.log(b);
+      /*
+      Now parse each strings by calling addOneMeasureToState(b)
+      Needs to be changed this function
+      */
+      //console.log(newArray[0]);
+
+    }
+    
+
 
   }
 
