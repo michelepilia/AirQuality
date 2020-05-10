@@ -22,6 +22,7 @@ class Stats extends Component{
     this.retrieveData = this.retrieveData.bind(this);
     this.addOneMeasureToState = this.addOneMeasureToState.bind(this);
     this.addMeasuresToState = this.addMeasuresToState.bind(this);
+    this.handleChangeDate = this.handleChangeDate.bind(this);
 
     this.today={
       year: new Date().getFullYear(),
@@ -30,23 +31,7 @@ class Stats extends Component{
     }
     this.urlDate = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-15T09:00:00Z&endDate=2020-04-16T23:00:00Z";
     this.url = "https://polimi-dima-server.herokuapp.com/api/data?offset=0&limit=1";
-    this.measures = [
-      {
-        temperature: 10.0, 
-        humidity: 10.0,
-        pressure: 10.0,
-        altitude: 150, //Deciso di lasciare la media in mezzo 68 valore max ok
-        tvocs: 10.0,
-        eco2: 3750,
-        pm05: 0,
-        pm1: 0,
-        pm25: 0,
-        pm4: 0,
-        pm10: 0,
-        latitude: 45.47,
-        longitude: 9.22,
-      },
-    ]
+    this.measures = [];
     // this.startDate = this.today;
    // this.endDate = this.today;
   }
@@ -145,24 +130,13 @@ class Stats extends Component{
   } 
 
   addMeasuresToState(body) {
-    //var a = JSON.stringify(body);
-    //console.log("STRINGIFIED: "+a);
-    //let array=body.split()
-    //For the first measure received do...
-    for (let index = 0; index < 1; index++) {
-      var b = JSON.stringify(body[index]);
-      //var newArray = Object.keys(body[index]);
-      console.log(b);
-      /*
-      Now parse each strings by calling addOneMeasureToState(b)
-      Needs to be changed this function
-      */
-      //console.log(newArray[0]);
-
+    var x = [];
+    //For the first 3 measures received do...
+    for (let index = 0; index < 3; index++) {
+      x[index] = body[index];
     }
-    
-
-
+    this.setState({measures: x});
+    console.log(this.state.measures);
   }
 
   componentDidMount(){
@@ -175,17 +149,32 @@ class Stats extends Component{
 
   componentDidUpdate() {
     console.log("UPDATING")
-    console.log("This.state.startDate = "+this.state.startDate);
+    //console.log("This.state.startDate = "+this.state.startDate);
+    /*
     if(this.state.startDate!=''){
       console.log("This.state.endDate = "+this.state.endDate);
       if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
         var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
         var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
-        this.setState();
+        console.log("URL: "+b);
+        //this.retrieveDataByDate(b);
+      }
+    }*/
+  }
+
+  handleChangeDate(){
+
+    if(this.state.startDate!=''){
+      console.log("This.state.endDate = "+this.state.endDate);
+      if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
+        var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
+        var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
         console.log("URL: "+b);
         this.retrieveDataByDate(b);
       }
     }
+
+
   }
 
   render(){
@@ -257,7 +246,10 @@ class Stats extends Component{
                   
                 }
               }}
-              onDateChange={(date) => {this.setState({startDate: date})}}
+              onDateChange={(date) => {
+                this.setState({startDate: date});
+                this.handleChangeDate();
+              }}
             />
             <DatePicker
               style={styles.dateInput}
@@ -282,7 +274,10 @@ class Stats extends Component{
                   width:70
                 }
               }}
-              onDateChange={(date) => {this.setState({endDate: date})}}
+              onDateChange={(date) => {
+                this.setState({endDate: date});
+                this.handleChangeDate();
+              }}
             />
           </View>
         </View>
