@@ -8,6 +8,7 @@ import { LineChart,
   ProgressChart,
   ContributionGraph,
   StackedBarChart} from 'react-native-chart-kit';
+import DisplayStats from "./DisplayStats";
 
 class Stats extends Component{
 
@@ -23,6 +24,7 @@ class Stats extends Component{
     this.addOneMeasureToState = this.addOneMeasureToState.bind(this);
     this.addMeasuresToState = this.addMeasuresToState.bind(this);
     this.handleChangeDate = this.handleChangeDate.bind(this);
+    this.getDailyDataByHourMean = this.getDailyDataByHourMean.bind(this);
 
     this.today={
       year: new Date().getFullYear(),
@@ -32,8 +34,9 @@ class Stats extends Component{
     this.urlDate = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-15T09:00:00Z&endDate=2020-04-16T23:00:00Z";
     this.url = "https://polimi-dima-server.herokuapp.com/api/data?offset=0&limit=1";
     this.measures = [];
-    // this.startDate = this.today;
-   // this.endDate = this.today;
+
+    //this.startDate = (this.today.year + '-' + this.today.month + '-' + this.today.day);
+    //this.endDate = (this.today.year + '-' + this.today.month + '-' + this.today.day);
   }
 
 
@@ -131,12 +134,24 @@ class Stats extends Component{
 
   addMeasuresToState(body) {
     var x = [];
-    //For the first 3 measures received do...
-    for (let index = 0; index < 3; index++) {
+    //For the first 6 measures received do...
+    for (let index = 0; index < 5; index++) {
       x[index] = body[index];
     }
     this.setState({measures: x});
     console.log(this.state.measures);
+  }
+
+  /*returns mean ny hours of daily co2 @todo: add the mean functionality*/ 
+  getDailyDataByHourMean(){
+    var a = [];
+    if(this.state.measures==null){
+      return [0,0,0,0,0,0];
+    }
+    for (let index = 0; index < 5; index++) {
+      a[index] = this.state.measures[index].eco2;
+    }
+    return a;
   }
 
   componentDidMount(){
@@ -144,22 +159,17 @@ class Stats extends Component{
     const token1 = params ? params.token : null;
     this.setState({token:token1});
     console.log("MOUNTING HISTORICAL DATA COMPONENT");
+    var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
+    var l = (this.today.year + '-' + this.today.month + '-' + this.today.day);
+    var b = a.concat("2020-04-15","T00:00:00Z&endDate=","2020-04-15","T23:59:59Z");
+
+    console.log("URL: "+b);
+    this.retrieveDataByDate(b);
     
   }
 
   componentDidUpdate() {
     console.log("UPDATING")
-    //console.log("This.state.startDate = "+this.state.startDate);
-    /*
-    if(this.state.startDate!=''){
-      console.log("This.state.endDate = "+this.state.endDate);
-      if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
-        var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
-        var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
-        console.log("URL: "+b);
-        //this.retrieveDataByDate(b);
-      }
-    }*/
   }
 
   handleChangeDate(){
@@ -207,8 +217,11 @@ class Stats extends Component{
         </View>
 
         <Text style={styles.title}>Historical Data</Text>
-
-
+       
+        <View>
+          <DisplayStats dailyData = {this.getDailyDataByHourMean()}/>
+        </View>
+        
         <View 
           style={{
           marginTop:20,
@@ -280,46 +293,6 @@ class Stats extends Component{
               }}
             />
           </View>
-        </View>
-
-        
-        <View>
-          
-          <LineChart
-            data={{
-              labels: ['January', 'February', 'March', 'April'],
-              datasets: [
-                {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                  ],
-                },
-              ],
-            }}
-            width={Dimensions.get('window').width - 16} // from react-native
-            height={220}
-            yAxisLabel={'$'}
-            chartConfig={{
-              backgroundColor: '#1cc910',
-              backgroundGradientFrom: '#eff3ff',
-              backgroundGradientTo: '#efefef',
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
         </View>
       </View>
     );
