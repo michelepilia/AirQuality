@@ -1,7 +1,13 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { TextField } from 'react-native-material-textfield';
 import DatePicker from 'react-native-datepicker';
+import { LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart} from 'react-native-chart-kit';
 
 class Stats extends Component{
 
@@ -25,6 +31,7 @@ class Stats extends Component{
    // this.endDate = this.today;
   }
 
+  
   retrieveData(){
     return fetch(this.url)
     .then((response) => {
@@ -75,7 +82,7 @@ class Stats extends Component{
       console.log("This.state.endDate = "+this.state.endDate);
       if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
         var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
-        var b = a.concat(this.state.startDate,"T09:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
+        var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
         this.setState();
         console.log("URL: "+b);
         this.retrieveDataByDate(b);
@@ -84,8 +91,6 @@ class Stats extends Component{
   }
 
   render(){
-    console.log("rendering HISTORICAL DATA COMPONENT");
-
     return (
       <View style={styles.container}>
 
@@ -112,7 +117,6 @@ class Stats extends Component{
               style={styles.logoutLogo}
             ></Image>
           </TouchableOpacity>
-
         </View>
 
         <Text style={styles.title}>Historical Data</Text>
@@ -182,13 +186,48 @@ class Stats extends Component{
               }}
               onDateChange={(date) => {this.setState({endDate: date})}}
             />
-
           </View>
-          
-
         </View>
 
-
+        
+        <View>
+          
+          <LineChart
+            data={{
+              labels: ['January', 'February', 'March', 'April'],
+              datasets: [
+                {
+                  data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                  ],
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 16} // from react-native
+            height={220}
+            yAxisLabel={'$'}
+            chartConfig={{
+              backgroundColor: '#1cc910',
+              backgroundGradientFrom: '#eff3ff',
+              backgroundGradientTo: '#efefef',
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
       </View>
     );
   }
