@@ -11,6 +11,7 @@ import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import Settings from "./src/screens/Settings";
 import Stats from "./src/screens/Stats";
+import WeeklyReport from "./src/screens/WeeklyReport"
 
 const DrawerNavigation = createDrawerNavigator({
   Login: Login,
@@ -20,6 +21,7 @@ const DrawerNavigation = createDrawerNavigator({
   Signup: Signup,
   Settings: Settings,
   Stats: Stats,
+  WeeklyReport: WeeklyReport,
 });
 
 const StackNavigation = createStackNavigator(
@@ -34,6 +36,7 @@ const StackNavigation = createStackNavigator(
     Signup: Signup,
     Settings: Settings,
     Stats: Stats,
+    WeeklyReport: WeeklyReport,
   },
   {
     headerMode: "none"

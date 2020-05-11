@@ -11,7 +11,7 @@ import { LineChart,
 import DisplayStats from "./DisplayStats";
 import DailyPath from "./DailyPath";
 
-class Stats extends Component{
+class WeeklyReport extends Component{
 
   constructor(props) {
     super(props);
@@ -171,17 +171,25 @@ class Stats extends Component{
   }
 
   componentDidUpdate() {
-    console.log("UPDATING");
+    console.log("UPDATING")
   }
 
   handleChangeDate(){
-    if(this.state.startDate!=''){   
+
+    if(this.state.startDate!=''){
+      console.log("This.state.endDate = "+this.state.endDate);
+      if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
+        var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="
+        var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
+        console.log("URL: "+b);
         this.retrieveDataByDate(b);
       }
     }
-  
 
-  render() {
+
+  }
+
+  render(){
     return (
       <View style={styles.container}>
 
@@ -210,8 +218,25 @@ class Stats extends Component{
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.title}>Daily Report</Text>
-        <View style={{
+        <Text style={styles.title}>WeeklyReport</Text>
+        
+        <TouchableOpacity style={styles.button3}>
+            <Text style={styles.pm104}>Weekly report</Text>
+        </TouchableOpacity>
+        <View>
+          <DisplayStats dailyData = {this.getDailyDataByHourMean()}/>
+        </View>
+        <View>
+          <DailyPath coordinatesSet = {this.coordinatesSet}/>
+        </View>
+        
+        <View 
+          style={{
+          marginTop:20,
+          marginLeft: 20,
+          }}>
+          <Text>Get data by date</Text>
+          <View style={{
             marginTop:10,
             flexDirection:"row",
             marginLeft:'auto',
@@ -222,7 +247,7 @@ class Stats extends Component{
               style={styles.dateInput}
               date={this.state.startDate}
               mode="date"
-              placeholder="Date"
+              placeholder="Start Date"
               format="YYYY-MM-DD"
               minDate={(this.today.year - 120)+"-01-01"}
               maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
@@ -247,16 +272,36 @@ class Stats extends Component{
                 this.handleChangeDate();
               }}
             />
+            <DatePicker
+              style={styles.dateInput}
+              date={this.state.endDate}
+              mode="date"
+              placeholder="End Date"
+              format="YYYY-MM-DD"
+              minDate={(this.today.year - 120)+"-01-01"}
+              maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  left: 0,
+                  top: 4,
+                  marginLeft: 0
+                },
+                dateInput: {
+                  marginLeft: 35,
+                  height:30,
+                  width:70
+                }
+              }}
+              onDateChange={(date) => {
+                this.setState({endDate: date});
+                this.handleChangeDate();
+              }}
+            />
+          </View>
         </View>
-        <TouchableOpacity style={styles.button3}
-            onPress={() => this.props.navigation.navigate("WeeklyReport")}>
-            <Text style={styles.pm104}>Weekly report</Text>
-            
-        </TouchableOpacity>
-        <View>
-          <DailyPath coordinatesSet = {this.coordinatesSet}/>
-        </View>
-        
       </View>
     );
   }
@@ -368,4 +413,4 @@ button3: {
 },
 });
 
-export default Stats;
+export default WeeklyReport;

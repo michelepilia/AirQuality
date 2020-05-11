@@ -237,7 +237,7 @@ class ReadData extends Component {
             onPress={() => 
                           {
                             this.props.navigation.navigate("Settings", {token: this.state.token});
-                            clearInterval(this.timeInterval);
+                            //clearInterval(this.timeInterval);
                           }                                            
                     }
             style={styles.settingsButton}>
@@ -250,7 +250,7 @@ class ReadData extends Component {
 
           <TouchableOpacity
             onPress={() => {this.props.navigation.navigate("Home")
-                           clearInterval(this.timeInterval)
+                           //clearInterval(this.timeInterval)
                           }
                           }
             style={styles.homeButton}>
@@ -263,7 +263,7 @@ class ReadData extends Component {
           
           <TouchableOpacity
             onPress={() =>{this.props.navigation.navigate("Login")
-                          clearInterval(this.timeInterval)
+                          //clearInterval(this.timeInterval)
                         }
                         }
             style={styles.logoutButton}

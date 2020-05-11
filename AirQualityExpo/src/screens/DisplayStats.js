@@ -17,6 +17,7 @@ class DisplayStats extends Component{
         return(
             <View>
                 <Text>Daily Report: automatically displays the daily report</Text>
+                
                 <LineChart
                     data={{
                     labels: ['0-4', '4-8', '8-12', '12-16', '16-20', "20-24"],
