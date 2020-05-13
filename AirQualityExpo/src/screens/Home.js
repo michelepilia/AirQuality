@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 class Home extends Component{
 
@@ -41,31 +42,33 @@ class Home extends Component{
         
         </View>
         <Text style={styles.airQuality}>Air Quality</Text>
-        <TouchableOpacity
-          onPress={() => {
+        <ScrollView style={styles.scrollView}>
+          <TouchableOpacity
+            onPress={() => {
 
-            console.log(this.state.token);
-            this.props.navigation.navigate("ReadData", {token: this.state.token})}
-          
-          }
-          style={styles.readDataBtn}>
-          <Text style={styles.readDataLabel}>Read Data</Text>
-        </TouchableOpacity>
+              console.log(this.state.token);
+              this.props.navigation.navigate("ReadData", {token: this.state.token})}
+            
+            }
+            style={styles.readDataBtn}>
+            <Text style={styles.readDataLabel}>Read Data</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("ViewMap")}
-          style={styles.viewMapBtn}>
-          <Text style={styles.viewMapLabel}>View Map</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("ViewMap")}
+            style={styles.viewMapBtn}>
+            <Text style={styles.viewMapLabel}>View Map</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.navigate("Stats", {token: this.state.token})
-          }
-          }
-          style={styles.viewMapBtn}>
-          <Text style={styles.viewMapLabel}>Historical Data</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate("Stats", {token: this.state.token})
+            }
+            }
+            style={styles.viewMapBtn}>
+            <Text style={styles.viewMapLabel}>Historical Data</Text>
+          </TouchableOpacity>
+        </ScrollView>
 
       </View>
     );
@@ -134,7 +137,8 @@ const styles = StyleSheet.create({
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
     marginTop: 44,
-    marginLeft: 331
+    marginLeft: "auto",
+    marginRight: 10,
   },
   logoutLogo: {
     width: 27,
@@ -152,6 +156,9 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     marginTop: 1
+  },
+  scrollView:{
+    marginBottom: 10,
   },
 });
 

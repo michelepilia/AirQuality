@@ -6,6 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import RNPickerSelect from 'react-native-picker-select';
 import DatePicker from 'react-native-datepicker';
+import { ScrollView } from "react-native-gesture-handler";
 
 class Signup extends Component {
 
@@ -130,97 +131,99 @@ class Signup extends Component {
           </TouchableOpacity>
         </View>
         <Text style={styles.airQuality1}>Air Quality</Text>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.inputView}>
+            <TextField style = {styles.inputUser}
+                underlineColorAndroid = "transparent"
+                autoCapitalize = "none"
+                onChangeText = {this.handleFirstName}
+                formatText={this.formatText}
+                label="First Name"/>
+          </View>
 
-        <View style={styles.inputView}>
-          <TextField style = {styles.inputUser}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleFirstName}
-               formatText={this.formatText}
-               label="First Name"/>
-        </View>
+          <View style={styles.inputView}>
+            <TextField style = {styles.inputUser}
+                underlineColorAndroid = "transparent"
+                autoCapitalize = "none"
+                onChangeText = {this.handleLastName}
+                formatText={this.formatText}
+                label="Last Name"/>
+          </View>
 
-        <View style={styles.inputView}>
-          <TextField style = {styles.inputUser}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleLastName}
-               formatText={this.formatText}
-               label="Last Name"/>
-        </View>
+          <View style={styles.inputView}>
+            <RNPickerSelect
+              placeholder = {{
+                label: 'Gender',
+                value: null,
+                color: '#9EA0A4',
+              }}
+              onValueChange={this.handleGender}
+              items={[
+                  { label: 'Male', value: 'male' },
+                  { label: 'Female', value: 'female' },
+                  { label: 'Other', value: 'other' },
+              ]}
+            />
+          </View>
 
-        <View style={styles.inputView}>
-          <RNPickerSelect
-            placeholder = {{
-              label: 'Gender',
-              value: null,
-              color: '#9EA0A4',
-            }}
-            onValueChange={this.handleGender}
-            items={[
-                { label: 'Male', value: 'male' },
-                { label: 'Female', value: 'female' },
-                { label: 'Other', value: 'other' },
-            ]}
-          />
-        </View>
+          <View style={styles.inputView}>
+            <DatePicker
+              style={styles.dateInput}
+              date={this.state.birthDay}
+              mode="date"
+              placeholder="Birthday"
+              format="YYYY-MM-DD"
+              minDate={(this.today.year - 120)+"-01-01"}
+              maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  left: 0,
+                  top: 4,
+                  marginLeft: 0
+                },
+                dateInput: {
+                  marginLeft: 36
+                }
+              // ... You can check the source to find the other keys.
+              }}
+              onDateChange={(date) => {this.setState({birthDay: date})}}
+            />
+          </View>
 
-        <View style={styles.inputView}>
-          <DatePicker
-            style={styles.dateInput}
-            date={this.state.birthDay}
-            mode="date"
-            placeholder="Birthday"
-            format="YYYY-MM-DD"
-            minDate={(this.today.year - 120)+"-01-01"}
-            maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0
-              },
-              dateInput: {
-                marginLeft: 36
-              }
-            // ... You can check the source to find the other keys.
-            }}
-            onDateChange={(date) => {this.setState({birthDay: date})}}
-          />
-        </View>
-
-        <View style={styles.inputView}>
-          <TextField style = {styles.inputUser}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleEmail}
-               formatText={this.formatText}
-               label="Email"/>
-        </View>
-
-
-        <View style={styles.inputView}>
-          <PasswordInputText
-            value={this.state.password}
-            onChangeText={this.handlePassword}/>
-        </View>
-
-        <View style={styles.inputView}>
-          <PasswordInputText
-            value={this.confirmPassword}
-            label = "Confirm Password"
-            onChangeText={this.handleConfirmPassword}/>
-        </View>
+          <View style={styles.inputView}>
+            <TextField style = {styles.inputUser}
+                underlineColorAndroid = "transparent"
+                autoCapitalize = "none"
+                onChangeText = {this.handleEmail}
+                formatText={this.formatText}
+                label="Email"/>
+          </View>
 
 
-        <TouchableOpacity
-          onPress={() => this.registerFunction()}
-          style={styles.button1}>
-          <Text style={styles.text}>Signup</Text>
-        </TouchableOpacity>
+          <View style={styles.inputView}>
+            <PasswordInputText
+              value={this.state.password}
+              onChangeText={this.handlePassword}/>
+          </View>
+
+          <View style={styles.inputView}>
+            <PasswordInputText
+              value={this.confirmPassword}
+              label = "Confirm Password"
+              onChangeText={this.handleConfirmPassword}/>
+          </View>
+
+
+          <TouchableOpacity
+            onPress={() => this.registerFunction()}
+            style={styles.button1}>
+            <Text style={styles.text}>Signup</Text>
+          </TouchableOpacity>
+        </ScrollView>
+        
 
       </View>
 
@@ -279,7 +282,7 @@ const styles = StyleSheet.create({
     lineHeight: 60,
     letterSpacing: 0,
     textAlign: "center",
-    marginTop: -1
+    marginTop: -1,
   },
   materialStackedLabelTextbox2: {
     width: 317,
@@ -318,6 +321,9 @@ const styles = StyleSheet.create({
   },
   inputView:{
     margin: 5,
+  },
+  scrollView:{
+    marginBottom: 10,
   },
 });
 
