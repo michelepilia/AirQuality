@@ -10,8 +10,8 @@ import ViewMap from "./src/screens/ViewMap";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import Settings from "./src/screens/Settings";
-import Stats from "./src/screens/Stats";
-import WeeklyReport from "./src/screens/WeeklyReport"
+import WeeklyReport from "./src/deprecated_components/WeeklyReport"
+import Historical from "./src/screens/Historical"
 
 const DrawerNavigation = createDrawerNavigator({
   Login: Login,
@@ -20,7 +20,7 @@ const DrawerNavigation = createDrawerNavigator({
   ViewMap: ViewMap,
   Signup: Signup,
   Settings: Settings,
-  Stats: Stats,
+  Historical: Historical,
   WeeklyReport: WeeklyReport,
 });
 
@@ -35,7 +35,7 @@ const StackNavigation = createStackNavigator(
     ViewMap: ViewMap,
     Signup: Signup,
     Settings: Settings,
-    Stats: Stats,
+    Historical: Historical,
     WeeklyReport: WeeklyReport,
   },
   {
