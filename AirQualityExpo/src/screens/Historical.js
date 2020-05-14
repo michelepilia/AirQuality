@@ -13,13 +13,17 @@ class Historical extends Component{
                     {latitude: 10.336240422996532,longitude: 45.51570829484459},
                     {latitude: 9.384687247651794,longitude: 46.1381409051264},
                     ]*/
-        data = [];
+
         this.state = {
             arpaStations : [],
             isLoading : true,
             mapRegion: null,
+            data : [],
+            interestedData : [],
         }
         this.retrieveArpaStationsData.bind(this);
+        this.elaborateData.bind(this);
+        this.alreadyInCollection.bind(this);
     
     }
     API_ID_Key = "dbm71z0uioacgikjukdlvlhfn";
@@ -33,13 +37,66 @@ class Historical extends Component{
             //console.log(responseJson);
             this.setState({
                 isLoading: false,
-                data: responseJson.filter( a => a.comune =="Milano")
+                data: responseJson.filter( (station) => station.comune =="Milano")
             })
-            console.log(this.state.data);
+            this.elaborateData();
+            //console.log(this.state.data);
         })
         .catch((error) => {
             console.error(error);
         });
+    }
+
+    alreadyInCollection(consideredStationId){
+        for (let index = 0; index < this.state.interestedData.length; index++) {
+            if(this.state.interestedData[index].idstazione==consideredStationId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    elaborateData(){
+        var b = [];
+        var x =[];
+
+        //data to be added to interestedData
+        var sensors = [];
+        var stationToAdd = {
+            id:"",
+            name:"",
+            sensors: sensors,
+        }
+/*
+        console.log("LENGTH: "+this.state.data.length);
+        for (let c = 0; c < this.state.data.length; c++) {
+            var consideredStationId = this.state.data[c].idstazione;
+            var consideredStationName = this.state.data[c].idstazione;
+            var consideredSensorId = this.state.data[c].idsensore;
+            
+            if(!this.alreadyInCollection(consideredStationId)){
+                stationToAdd = {
+                    id :consideredStationId,
+                    name:consideredStationName,
+                    sensors: ,
+                }
+
+            }     
+        }
+*/
+        /*for (let index = 0; index < a.length; index++) {
+            x[0] = a[index].nomestazione;
+            x[1] = a[index].idsensore;
+            x[2] = a[index].nometiposensore;
+            b[index]= {key:a[index].idstazione,value:x}
+            for (let k = 0; k < this.state.interestedData.length; k++) {
+                if(interestedData[k].idstazione!=b[index.idstazione]){
+                    interestedData[index] = b[index];               
+                }
+            }
+
+        }*/
+        console.log(b);
     }
 
     componentDidMount() {
@@ -78,12 +135,14 @@ class Historical extends Component{
         }
         else {
 
-            /*let stationsText = this.state.data.map((val,key)=>{
+            let stationsText = this.state.data.map((val,key)=>{
                 return  <View key = {key} style={styles.item}>
                             <Text>Latitude: {val.lat}</Text>
                             <Text>Longitude: {val.lng}</Text>
+                            <Text>Name: {val.nomestazione}</Text>
+                            <Text>Id: {val.idstazione}</Text>
                         </View>
-            });*/
+            });
 
             let stations = this.state.data.map((val,key)=>{
                 return  <MapView.Marker key = {key} style={styles.item}
@@ -91,8 +150,10 @@ class Historical extends Component{
                                 latitude: parseFloat(val.lat),
                                 longitude: parseFloat(val.lng),
                             }}
-                            title={val.nomestazione}
-                            description={"ID: " +val.idstazione}
+                            title={"Nome Stazione: "+val.nomestazione}
+                            description={"ID stazione: "+val.idstazione + 
+                            "\nTipo di sensore: "+val.nometiposensore
+                            +"\nData inizio: " +val.datastart}
                         />
                         
             });
@@ -137,16 +198,9 @@ class Historical extends Component{
                     followUserLocation={true}
                     onRegionChange={this.onRegionChange.bind(this)}
                     onPress={this.onMapPress.bind(this)}>
-                    <MapView.Marker
-                        coordinate={{
-                            latitude: 45.47,
-                            longitude: 9.22
-                        }}
-                        title="ARPA PROVA"
-                        description="SARTI"
-                        />
                     {stations}
                 </MapView>
+                {stationsText}
 
             </ScrollView>
         );
