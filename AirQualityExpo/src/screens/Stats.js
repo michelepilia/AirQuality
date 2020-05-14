@@ -1,19 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
-import { TextField } from 'react-native-material-textfield';
-import DatePicker from 'react-native-datepicker';
-import { LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart} from 'react-native-chart-kit';
-import DisplayStats from "./DisplayStats";
+import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import DailyPath from "./DailyPath";
+import DisplayStats from "./DisplayStats";
 
 class Stats extends Component{
 
   constructor(props) {
+
     super(props);
     this.state = {
       token: '',
@@ -35,9 +28,6 @@ class Stats extends Component{
     this.urlDate = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-15T09:00:00Z&endDate=2020-04-16T23:00:00Z";
     this.url = "https://polimi-dima-server.herokuapp.com/api/data?offset=0&limit=1";
     this.measures = [];
-
-    //this.startDate = (this.today.year + '-' + this.today.month + '-' + this.today.day);
-    //this.endDate = (this.today.year + '-' + this.today.month + '-' + this.today.day);
   }
 
 
@@ -208,55 +198,19 @@ class Stats extends Component{
               style={styles.logoutLogo}
             ></Image>
           </TouchableOpacity>
-        </View>
-
-        <Text style={styles.title}>Daily Report</Text>
-        <View style={{
-            marginTop:10,
-            flexDirection:"row",
-            marginLeft:'auto',
-            marginRight:'auto',
-
-            }}>
-            <DatePicker
-              style={styles.dateInput}
-              date={this.state.startDate}
-              mode="date"
-              placeholder="Date"
-              format="YYYY-MM-DD"
-              minDate={(this.today.year - 120)+"-01-01"}
-              maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0
-                },
-                dateInput: {
-                  marginLeft: 35,
-                  height:30,
-                  width:70
-                  
-                }
-              }}
-              onDateChange={(date) => {
-                this.setState({startDate: date});
-                this.handleChangeDate();
-              }}
-            />
-        </View>
-        <TouchableOpacity style={styles.button3}
+          <TouchableOpacity style={styles.button3}
             onPress={() => this.props.navigation.navigate("WeeklyReport")}>
             <Text style={styles.pm104}>Weekly report</Text>
             
-        </TouchableOpacity>
-        <View>
-          <DailyPath coordinatesSet = {this.coordinatesSet}/>
+          </TouchableOpacity>
         </View>
-        
+
+        <Text style={styles.title}>Daily Report</Text>
+        <ScrollView>
+            <DailyPath coordinatesSet = {this.coordinatesSet}/>
+            <DisplayStats dailyData = {this.getDailyDataByHourMean()}/>
+       </ScrollView>
+
       </View>
     );
   }
