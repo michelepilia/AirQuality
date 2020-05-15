@@ -18,18 +18,21 @@ class Historical extends Component{
             },
             data : [],
             interestedData : [],
+            sensorsData: [],
         }
         this.retrieveArpaStationsData.bind(this);
+        this.retrieveArpaSensorsData.bind(this);
         this.elaborateData.bind(this);
         this.alreadyInCollection.bind(this);
         this.addSensorsInfoToStation.bind(this);
         this.getViewOfSensorsByStationId.bind(this);
+        this.getLastSensorsMeasurements.bind(this);
     
     }
 
     retrieveArpaStationsData(url){
 
-        fetch(url)
+        return fetch(url)
         .then((response) => response.json())
         .then((responseJson) => {
             //console.log(responseJson);
@@ -40,10 +43,29 @@ class Historical extends Component{
             this.elaborateData();
             //console.log(this.state.data);
         })
+        .then(this.retrieveArpaSensorsData("https://www.dati.lombardia.it/resource/nicp-bhqi.json"))
         .catch((error) => {
             console.error(error);
         });
     }
+
+    retrieveArpaSensorsData(url){
+
+      return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+          //console.log(responseJson);
+          this.setState({
+              isLoading: false,
+              sensorsData: responseJson.filter( (sensor) => sensor.stato =="VA"),
+          })
+          this.elaborateData();
+          console.log(this.state.sensorsData);
+      })
+      .catch((error) => {
+          console.error(error);
+      });
+  }
 
     alreadyInCollection(consideredStationId){
         for (let index = 0; index < this.state.interestedData.length; index++) {
@@ -127,14 +149,29 @@ class Historical extends Component{
         return <View key = {sensor.idsensore} style={styles.sensorItem}>
                 <Text>Sensor Id: {sensor.idsensore}</Text>
                 <Text>Sensor Name: {sensor.nometiposensore}</Text>
+                {this.getLastSensorsMeasurements(sensor.idsensore)}
                 </View>
       })
       return sensorsView;
     }
 
+    getLastSensorsMeasurements(sensorId){
+
+      let sensorsMeasurementsView = this.state.sensorsData.filter((sensor)=>{
+        return sensor.idsensore==sensorId})
+        .map((sensor) => {
+        return <View key = {sensor.data} style={styles.sensorItem}>
+                <Text>Time: {sensor.data}</Text>
+                <Text>Value: {sensor.valore}</Text>
+                </View>
+      })
+      return sensorsMeasurementsView;
+
+    }
+
 
     componentDidMount() {
-        return this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
+        this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
     }
 
     onRegionChange(region, lastLat, lastLong) {
