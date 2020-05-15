@@ -121,30 +121,15 @@ class Historical extends Component{
 
     getViewOfSensorsByStationId(stationId){
 
-      let a = this.state.data.filter((station)=>{
+      let sensorsView = this.state.data.filter((station)=>{
         return station.idstazione==stationId})
         .map((sensor) => {
-        return <View key = {sensor.idsensore} style={styles.item}>
-                <Text>Id Sensore: {sensor.idsensore}</Text>
+        return <View key = {sensor.idsensore} style={styles.sensorItem}>
+                <Text>Sensor Id: {sensor.idsensore}</Text>
+                <Text>Sensor Name: {sensor.nometiposensore}</Text>
                 </View>
       })
-      return a;
-      /*
-
-      var stations = this.state.data.filter((station)=>{
-        return parseInt(station.stationId)!=parseInt(stationId);
-      }
-      )
-      //console.log(stations);
-
-      let sensorsInfo = stations.map((sensor)=>{
-        return (  
-                  <View key={sensor.sensorId} style={styles.item}>
-                  <Text>Sensor Id: {sensor.sensorId}</Text>
-                  </View>
-                )
-        })
-      return sensorsInfo;*/
+      return sensorsView;
     }
 
 
@@ -172,8 +157,6 @@ class Historical extends Component{
         this.onRegionChange(region, region.latitude, region.longitude);
     }
 
-
-
     render() {
         if(this.state.isLoading){
             return(
@@ -183,40 +166,24 @@ class Historical extends Component{
             )
         }
         else {
-         
           let stationsText =  this.state.interestedData.map((element) => {
-              return  <View key = {element.stationId} style={styles.item}>
-                        
-                        <Text>StationId: {element.stationId}</Text>
-                        <Text>StationName: {element.sensors[0].stationName}</Text>
-                        <Text>Sensors:</Text>
-                        {this.getViewOfSensorsByStationId(element.stationId)}
-                      </View>
-            });
-            
-          /*
-            let a = this.state.data.filter((station)=>{
-              return station.idstazione==548})
-              .map((sensor) => {
-              return <View key = {sensor.idsensore} style={styles.item}>
-                      <Text>Id Sensore: {sensor.idsensore}</Text>
-                      </View>
-            })
-*/
-            
+            return  <View key = {element.stationId} style={styles.stationItem}>
+                      <Text>StationId: {element.stationId}</Text>
+                      <Text>StationName: {element.sensors[0].stationName}</Text>
+                      <Text>Sensors Information</Text>
+                      {this.getViewOfSensorsByStationId(element.stationId)}
+                    </View>
+          });
 
-            let stations = this.state.data.map((val,key)=>{
-                return  <MapView.Marker key = {key} style={styles.item}
+          let stations = this.state.interestedData.map((station)=>{
+                return  <MapView.Marker key = {station.stationId}
                             coordinate={{
-                                latitude: parseFloat(val.lat),
-                                longitude: parseFloat(val.lng),
+                                latitude: parseFloat(station.sensors[0].lat),
+                                longitude: parseFloat(station.sensors[0].lng),
                             }}
-                            title={"Nome Stazione: "+val.nomestazione}
-                            description={"ID stazione: "+val.idstazione + 
-                            "\nTipo di sensore: "+val.nometiposensore
-                            +"\nData inizio: " +val.datastart}
+                            title={station.sensors[0].stationName}
+                            description={"ID: "+station.stationId}
                         />
-                        
             });
 
         return (
@@ -378,9 +345,14 @@ button3: {
   height: 40,
   backgroundColor: "rgba(230, 230, 230,1)"
 },
-item: {
+stationItem: {
     flex: 1,
-    marginTop:10
+    marginTop:35,
+    backgroundColor:'rgba(255,100,50,0.6)'
+},
+sensorItem: {
+  flex: 1,
+  marginTop:7
 }
 });
 
