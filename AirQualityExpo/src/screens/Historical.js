@@ -7,17 +7,15 @@ class Historical extends Component{
 
     constructor(props){
         super(props);
-        /*stations = [{latitude: 8.860310253579987,longitude: 45.326401500542325}, 
-                    {latitude: 8.914144599002409,longitude: 45.04007657202963}, 
-                    {latitude: 10.17735680898138,longitude:45.87460210989037},
-                    {latitude: 10.336240422996532,longitude: 45.51570829484459},
-                    {latitude: 9.384687247651794,longitude: 46.1381409051264},
-                    ]*/
-
         this.state = {
             arpaStations : [],
             isLoading : true,
-            mapRegion: null,
+            mapRegion: {
+              latitude:      45.47,
+              longitude:      9.22,
+              latitudeDelta:  0.0922*1.5,
+              longitudeDelta: 0.0421*1.5
+            },
             data : [],
             interestedData : [],
         }
@@ -26,8 +24,6 @@ class Historical extends Component{
         this.alreadyInCollection.bind(this);
     
     }
-    API_ID_Key = "dbm71z0uioacgikjukdlvlhfn";
-    API_Secret_Key = "secretCode2wa9uofj7avlbreliz0sto2gjyqtbdegvifhzhpastxyyllz6y";
 
     retrieveArpaStationsData(url){
 
@@ -37,7 +33,7 @@ class Historical extends Component{
             //console.log(responseJson);
             this.setState({
                 isLoading: false,
-                data: responseJson.filter( (station) => station.comune =="Milano")
+                data: responseJson.filter( (station) => station.comune =="Milano").filter((station) => station.datastop==null)
             })
             this.elaborateData();
             //console.log(this.state.data);
@@ -57,46 +53,42 @@ class Historical extends Component{
     }
 
     elaborateData(){
-        var b = [];
-        var x =[];
-
-        //data to be added to interestedData
-        var sensors = [];
-        var stationToAdd = {
-            id:"",
-            name:"",
-            sensors: sensors,
+      
+      var stations = [];
+      var s = [];
+      for (let index = 0; index < this.state.data.length; index++) {
+        /*
+        var sensor = {
+          sensorId :this.state.data[index].idsensore,
+          sensorType: this.state.data[index].nometiposensore,
+          unit: this.state.data[index].unitamisura,
         }
-/*
-        console.log("LENGTH: "+this.state.data.length);
-        for (let c = 0; c < this.state.data.length; c++) {
-            var consideredStationId = this.state.data[c].idstazione;
-            var consideredStationName = this.state.data[c].idstazione;
-            var consideredSensorId = this.state.data[c].idsensore;
-            
-            if(!this.alreadyInCollection(consideredStationId)){
-                stationToAdd = {
-                    id :consideredStationId,
-                    name:consideredStationName,
-                    sensors: ,
-                }
-
-            }     
+        var station = {
+          stationId: this.state.data[index].idstazione,
+          stationName: this.state.data[index].nomestazione,
+          lat:this.state.data[index].lat,
+          lng:this.state.data[index].lng,
         }
-*/
-        /*for (let index = 0; index < a.length; index++) {
-            x[0] = a[index].nomestazione;
-            x[1] = a[index].idsensore;
-            x[2] = a[index].nometiposensore;
-            b[index]= {key:a[index].idstazione,value:x}
-            for (let k = 0; k < this.state.interestedData.length; k++) {
-                if(interestedData[k].idstazione!=b[index.idstazione]){
-                    interestedData[index] = b[index];               
-                }
-            }
-
-        }*/
-        console.log(b);
+        stations[index] = {key:station, value:sensor}
+        */
+        s[index] = {
+          stationId: this.state.data[index].idstazione,
+          stationName: this.state.data[index].nomestazione,
+          lat: this.state.data[index].lat,
+          lng: this.state.data[index].lng,
+          sensorId :this.state.data[index].idsensore,
+          sensorType: this.state.data[index].nometiposensore,
+          unit: this.state.data[index].unitamisura,
+        }
+      }
+      
+      let group = s.reduce((r, a) => {
+        r[a.stationId] = [...r[a.stationId] || [], a];
+        return r;
+       }, {});
+      console.log("group", group);
+      this.setState({interestedData:stations});
+      //console.log(stations);
     }
 
     componentDidMount() {
