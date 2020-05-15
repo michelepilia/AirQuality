@@ -23,6 +23,7 @@ class Historical extends Component{
         this.elaborateData.bind(this);
         this.alreadyInCollection.bind(this);
         this.addSensorsInfoToStation.bind(this);
+        this.getViewOfSensorsByStationId.bind(this);
     
     }
 
@@ -80,7 +81,7 @@ class Historical extends Component{
         return stations2.indexOf(item) == pos;
       })
 
-      console.log(uniqueArray);
+      //console.log(uniqueArray);
       for (let index = 0; index < uniqueArray.length; index++) {
         stations3[index] = {stationId:uniqueArray[index], sensors:[]}
         
@@ -96,10 +97,13 @@ class Historical extends Component{
         r[a.stationId] = [...r[a.stationId] || [], a];
         return r;
        }, {});
-     // console.log(stations3);
     
       this.setState({interestedData:stations3});
-      //console.log(this.state.interestedData);
+      console.log("INTERESTED DATA: ")
+      console.log(this.state.interestedData[0]);
+      console.log("REAL RECEIVED DATA: ");
+      console.log(this.state.data[0]);
+
     }
 
     addSensorsInfoToStation(station, stations3){
@@ -114,6 +118,35 @@ class Historical extends Component{
         }
       }
     }
+
+    getViewOfSensorsByStationId(stationId){
+
+      let a = this.state.data.filter((station)=>{
+        return station.idstazione==stationId})
+        .map((sensor) => {
+        return <View key = {sensor.idsensore} style={styles.item}>
+                <Text>Id Sensore: {sensor.idsensore}</Text>
+                </View>
+      })
+      return a;
+      /*
+
+      var stations = this.state.data.filter((station)=>{
+        return parseInt(station.stationId)!=parseInt(stationId);
+      }
+      )
+      //console.log(stations);
+
+      let sensorsInfo = stations.map((sensor)=>{
+        return (  
+                  <View key={sensor.sensorId} style={styles.item}>
+                  <Text>Sensor Id: {sensor.sensorId}</Text>
+                  </View>
+                )
+        })
+      return sensorsInfo;*/
+    }
+
 
     componentDidMount() {
         return this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
@@ -150,18 +183,26 @@ class Historical extends Component{
             )
         }
         else {
-          console.log(this.state.interestedData);
+         
           let stationsText =  this.state.interestedData.map((element) => {
               return  <View key = {element.stationId} style={styles.item}>
                         
                         <Text>StationId: {element.stationId}</Text>
                         <Text>StationName: {element.sensors[0].stationName}</Text>
-                        {/*element.forEach(sensor => {
-                          return <Text>SensorType: {sensor.sensorType}</Text>    
-                        })*/}
+                        <Text>Sensors:</Text>
+                        {this.getViewOfSensorsByStationId(element.stationId)}
                       </View>
             });
-
+            
+          /*
+            let a = this.state.data.filter((station)=>{
+              return station.idstazione==548})
+              .map((sensor) => {
+              return <View key = {sensor.idsensore} style={styles.item}>
+                      <Text>Id Sensore: {sensor.idsensore}</Text>
+                      </View>
+            })
+*/
             
 
             let stations = this.state.data.map((val,key)=>{
@@ -221,7 +262,6 @@ class Historical extends Component{
                     {stations}
                 </MapView>
                 {stationsText}
-
             </ScrollView>
         );
         }
