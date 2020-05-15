@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
 import { isLoading } from "expo-font";
 import MapView from 'react-native-maps';
+import { AuthSession } from "expo";
 
 class Historical extends Component{
 
@@ -160,7 +161,7 @@ class Historical extends Component{
       let sensorsMeasurementsView = this.state.sensorsData.filter((sensor)=>{
         return sensor.idsensore==sensorId})
         .map((sensor) => {
-        return <View key = {sensor.data} style={styles.sensorItem}>
+        return <View key = {sensor.data} style={styles.measurementItem}>
                 <Text>Time: {sensor.data}</Text>
                 <Text>Value: {sensor.valore}</Text>
                 </View>
@@ -205,9 +206,8 @@ class Historical extends Component{
         else {
           let stationsText =  this.state.interestedData.map((element) => {
             return  <View key = {element.stationId} style={styles.stationItem}>
-                      <Text>StationId: {element.stationId}</Text>
-                      <Text>StationName: {element.sensors[0].stationName}</Text>
-                      <Text>Sensors Information</Text>
+                      <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>Station Name: {element.sensors[0].stationName}</Text>
+                      <Text style={{marginTop:15}}>Latest measurements</Text>
                       {this.getViewOfSensorsByStationId(element.stationId)}
                     </View>
           });
@@ -384,12 +384,21 @@ button3: {
 },
 stationItem: {
     flex: 1,
-    marginTop:35,
-    backgroundColor:'rgba(255,100,50,0.6)'
+    marginTop:45,
+    padding: 15,
+    fontSize: 14,
+    backgroundColor:'rgba(255,100,50,0.6)',
 },
 sensorItem: {
   flex: 1,
-  marginTop:7
+  marginTop:15,
+  fontSize:10
+},
+
+measurementItem: {
+  flex:1,
+  marginLeft:25,
+
 }
 });
 
