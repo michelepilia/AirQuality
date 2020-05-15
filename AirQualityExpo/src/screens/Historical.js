@@ -22,6 +22,7 @@ class Historical extends Component{
         this.retrieveArpaStationsData.bind(this);
         this.elaborateData.bind(this);
         this.alreadyInCollection.bind(this);
+        this.addSensorsInfoToStation.bind(this);
     
     }
 
@@ -55,40 +56,63 @@ class Historical extends Component{
     elaborateData(){
       
       var stations = [];
-      var s = [];
       for (let index = 0; index < this.state.data.length; index++) {
-        /*
-        var sensor = {
-          sensorId :this.state.data[index].idsensore,
-          sensorType: this.state.data[index].nometiposensore,
-          unit: this.state.data[index].unitamisura,
-        }
-        var station = {
+
+        stations[index] = {
           stationId: this.state.data[index].idstazione,
-          stationName: this.state.data[index].nomestazione,
-          lat:this.state.data[index].lat,
-          lng:this.state.data[index].lng,
-        }
-        stations[index] = {key:station, value:sensor}
-        */
-        s[index] = {
-          stationId: this.state.data[index].idstazione,
-          stationName: this.state.data[index].nomestazione,
-          lat: this.state.data[index].lat,
-          lng: this.state.data[index].lng,
-          sensorId :this.state.data[index].idsensore,
-          sensorType: this.state.data[index].nometiposensore,
-          unit: this.state.data[index].unitamisura,
+          value:{
+            stationName: this.state.data[index].nomestazione,
+            lat: this.state.data[index].lat,
+            lng: this.state.data[index].lng,
+            sensorId :this.state.data[index].idsensore,
+            sensorType: this.state.data[index].nometiposensore,
+            unit: this.state.data[index].unitamisura,
+          }
         }
       }
-      
-      let group = s.reduce((r, a) => {
+      var stations2 = [];
+      var stations3 = [];
+
+      stations.forEach((station) => {
+        stations2.push(station.stationId);
+      });
+      uniqueArray = stations2.filter(function(item, pos) {
+        return stations2.indexOf(item) == pos;
+      })
+
+      console.log(uniqueArray);
+      for (let index = 0; index < uniqueArray.length; index++) {
+        stations3[index] = {stationId:uniqueArray[index], sensors:[]}
+        
+      }
+
+      stations.forEach((station)=>{
+          this.addSensorsInfoToStation(station, stations3)
+      })
+      console.log(stations3);
+
+
+      var group = stations.reduce((r, a) => {
         r[a.stationId] = [...r[a.stationId] || [], a];
         return r;
        }, {});
-      console.log("group", group);
+     // console.log(stations3);
+    
       this.setState({interestedData:stations});
-      //console.log(stations);
+      //console.log(this.state.interestedData);
+    }
+
+    addSensorsInfoToStation(station, stations3){
+
+      var indexOfStation;
+      for (let index = 0; index < stations3.length; index++) {
+        console.log('StationId: '+station.stationId +" Station3Id: "+stations3[index].stationId);
+        if(parseInt(stations3[index].stationId)==parseInt(station.stationId)){
+          console.log("equals");
+          indexOfStation = index;
+          stations3[index].sensors.push(station.value);
+        }
+      }
     }
 
     componentDidMount() {
@@ -127,14 +151,21 @@ class Historical extends Component{
         }
         else {
 
-            let stationsText = this.state.data.map((val,key)=>{
-                return  <View key = {key} style={styles.item}>
-                            <Text>Latitude: {val.lat}</Text>
-                            <Text>Longitude: {val.lng}</Text>
-                            <Text>Name: {val.nomestazione}</Text>
-                            <Text>Id: {val.idstazione}</Text>
-                        </View>
-            });
+          var group = this.state.interestedData.reduce((r, a) => {
+            r[a.stationId] = [...r[a.stationId] || [], a];
+            return r;
+          }, {});
+
+            let sensorsInformation = "SENSORS INFO";
+            /*let stationsText =  group.forEach(element => {
+              return  <View key = {key} style={styles.item}>
+                        <Text>StationName: {element[0].stationName}</Text>
+                        <Text>StationId: {element[0].stationId}</Text>
+                        {sensorsInformation}
+                      </View>
+            });*/
+
+            
 
             let stations = this.state.data.map((val,key)=>{
                 return  <MapView.Marker key = {key} style={styles.item}
@@ -192,7 +223,7 @@ class Historical extends Component{
                     onPress={this.onMapPress.bind(this)}>
                     {stations}
                 </MapView>
-                {stationsText}
+                {/*stationsText*/}
 
             </ScrollView>
         );
@@ -311,7 +342,8 @@ button3: {
   backgroundColor: "rgba(230, 230, 230,1)"
 },
 item: {
-    flex: 1
+    flex: 1,
+    marginTop:10
 }
 });
 
