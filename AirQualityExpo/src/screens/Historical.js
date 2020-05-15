@@ -89,7 +89,7 @@ class Historical extends Component{
       stations.forEach((station)=>{
           this.addSensorsInfoToStation(station, stations3)
       })
-      console.log(stations3);
+     // console.log(stations3);
 
 
       var group = stations.reduce((r, a) => {
@@ -98,7 +98,7 @@ class Historical extends Component{
        }, {});
      // console.log(stations3);
     
-      this.setState({interestedData:stations});
+      this.setState({interestedData:stations3});
       //console.log(this.state.interestedData);
     }
 
@@ -106,9 +106,9 @@ class Historical extends Component{
 
       var indexOfStation;
       for (let index = 0; index < stations3.length; index++) {
-        console.log('StationId: '+station.stationId +" Station3Id: "+stations3[index].stationId);
+        //console.log('StationId: '+station.stationId +" Station3Id: "+stations3[index].stationId);
         if(parseInt(stations3[index].stationId)==parseInt(station.stationId)){
-          console.log("equals");
+          //console.log("equals");
           indexOfStation = index;
           stations3[index].sensors.push(station.value);
         }
@@ -150,20 +150,17 @@ class Historical extends Component{
             )
         }
         else {
-
-          var group = this.state.interestedData.reduce((r, a) => {
-            r[a.stationId] = [...r[a.stationId] || [], a];
-            return r;
-          }, {});
-
-            let sensorsInformation = "SENSORS INFO";
-            /*let stationsText =  group.forEach(element => {
-              return  <View key = {key} style={styles.item}>
-                        <Text>StationName: {element[0].stationName}</Text>
-                        <Text>StationId: {element[0].stationId}</Text>
-                        {sensorsInformation}
+          console.log(this.state.interestedData);
+          let stationsText =  this.state.interestedData.map((element) => {
+              return  <View key = {element.stationId} style={styles.item}>
+                        
+                        <Text>StationId: {element.stationId}</Text>
+                        <Text>StationName: {element.sensors[0].stationName}</Text>
+                        {/*element.forEach(sensor => {
+                          return <Text>SensorType: {sensor.sensorType}</Text>    
+                        })*/}
                       </View>
-            });*/
+            });
 
             
 
@@ -223,7 +220,7 @@ class Historical extends Component{
                     onPress={this.onMapPress.bind(this)}>
                     {stations}
                 </MapView>
-                {/*stationsText*/}
+                {stationsText}
 
             </ScrollView>
         );
