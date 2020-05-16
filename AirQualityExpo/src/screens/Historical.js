@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIn
 import { isLoading } from "expo-font";
 import MapView from 'react-native-maps';
 import { AuthSession } from "expo";
+import ArduinoDataFetch from "../components/ArduinoDataFetch";
+
 
 class Historical extends Component{
 
@@ -20,6 +22,7 @@ class Historical extends Component{
             data : [],
             interestedData : [],
             sensorsData: [],
+            arduinoData: [],
         }
         this.retrieveArpaStationsData.bind(this);
         this.retrieveArpaSensorsData.bind(this);
@@ -30,6 +33,8 @@ class Historical extends Component{
         this.getLastSensorsMeasurements.bind(this);
     
     }
+
+    arduinoDataFetch = new ArduinoDataFetch();
 
     retrieveArpaStationsData(url){
 
@@ -61,7 +66,7 @@ class Historical extends Component{
               sensorsData: responseJson.filter( (sensor) => sensor.stato =="VA"),
           })
           this.elaborateData();
-          console.log(this.state.sensorsData);
+         // console.log(this.state.sensorsData);
       })
       .catch((error) => {
           console.error(error);
@@ -122,10 +127,10 @@ class Historical extends Component{
        }, {});
     
       this.setState({interestedData:stations3});
-      console.log("INTERESTED DATA: ")
-      console.log(this.state.interestedData[0]);
-      console.log("REAL RECEIVED DATA: ");
-      console.log(this.state.data[0]);
+     // console.log("INTERESTED DATA: ")
+     // console.log(this.state.interestedData[0]);
+     // console.log("REAL RECEIVED DATA: ");
+     // console.log(this.state.data[0]);
 
     }
 
@@ -173,6 +178,8 @@ class Historical extends Component{
 
     componentDidMount() {
         this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
+        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-28T09:00:00Z&endDate=2020-04-28T23:00:00Z", 
+          (arduinoData)=>this.setState({arduinoData:arduinoData}));
     }
 
     onRegionChange(region, lastLat, lastLong) {
@@ -222,6 +229,13 @@ class Historical extends Component{
                             description={"ID: "+station.stationId}
                         />
             });
+          
+            let dataText = this.state.arduinoData.map((element) => {
+              return <View key = {element.id} style = {styles.measurementItem}>
+                        <Text>{element.id}</Text>
+                        <Text>{element.timestamp}</Text>
+                    </View>
+            })
 
         return (
             <ScrollView style={styles.container}>
@@ -266,6 +280,7 @@ class Historical extends Component{
                     {stations}
                 </MapView>
                 {stationsText}
+                {dataText}
             </ScrollView>
         );
         }
