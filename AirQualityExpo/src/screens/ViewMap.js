@@ -56,6 +56,7 @@ class ViewMap extends Component{
     this.setState({
       followUserLocation: true
     });
+    console.log("pressed arrow");
   }
 
   geoLocation = async () => {
@@ -129,7 +130,7 @@ class ViewMap extends Component{
           followUserLocation={this.state.followUserLocation}
           onUserLocationChange={event => console.log(event.nativeEvent)}
           onPress={() => {}}
-          onPanDrag={() => {console.log('triggering onPanDrag')}}>
+          onMoveShouldSetResponder={() => {this.mapDragged()}}>
             <MapView.Circle
               key = {'1'}
               center = {this.state.latlng}

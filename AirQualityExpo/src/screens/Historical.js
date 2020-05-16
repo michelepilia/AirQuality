@@ -20,6 +20,12 @@ class Historical extends Component{
               latitudeDelta:  0.0922*1.5,
               longitudeDelta: 0.0421*1.5
             },
+            latlng: {
+              latitude: 45.475,
+              longitude: 9.22
+            },
+            followUserLocation: true,
+            showsUserLocation: true,
             data : [],
             interestedData : [],
             sensorsData: [],
@@ -348,28 +354,89 @@ class Historical extends Component{
         this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-28T09:00:00Z&endDate=2020-04-28T16:15:10Z", 
           (arduinoData)=>{this.setState({arduinoData:arduinoData})
                           this.elaborateArduinoData();
-    });
+        });
+
+
+        this.geoLocation().then(()=>{
+          console.log("First log");
+          this.watchID = navigator.geolocation.watchPosition((position) => {
+          // Create the object to update this.state.mapRegion through the onRegionChange function
+          let region = {
+            latitude:       position.coords.latitude,
+            longitude:      position.coords.longitude,
+            latitudeDelta:  0.00922*1.5,
+            longitudeDelta: 0.00421*1.5
+          }
+          if(this.state.followUserLocation){
+            this.setState({
+              mapRegion: region
+            });
+            this.onRegionChange(region);
+          }
+          
+          }, this.errorFunction, this.options)}
+        )
+
     }
 
-    onRegionChange(region, lastLat, lastLong) {
-        this.setState({
-          mapRegion: region,
-          // If there are no new values set use the the current ones
-          lastLat: lastLat || this.state.lastLat,
-          lastLong: lastLong || this.state.lastLong
-        });
-      }
-    
-      onMapPress(e) {
-        console.log(e.nativeEvent.coordinate.longitude);
-        let region = {
-          latitude:       e.nativeEvent.coordinate.latitude,
-          longitude:      e.nativeEvent.coordinate.longitude,
-          latitudeDelta:  0.00922*1.5,
-          longitudeDelta: 0.00421*1.5
-        }
-        this.onRegionChange(region, region.latitude, region.longitude);
+
+    errorFunction() {
+      console.log("Error");
     }
+
+    geoLocation = async () => {
+      try{
+        const {status} = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+          console.log('not granted');
+  
+          this.setState({
+            errorMessage: 'PERMISSION NOT GRANTED',
+          });
+        } else {
+          console.log("granted");
+        }
+      } catch {
+        console.log("error function");
+        this.errorFunction();}
+    }
+  
+    options = {
+      enableHighAccuracy: false,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
+    onRegionChange(region) {
+      this.setState({
+        mapRegion: region
+      });
+    }
+      
+    mapDragged(){
+      this.setState({
+        followUserLocation: false
+      });
+      console.log("Map dragged, follow: " + this.state.followUserLocation);
+    }
+  
+    pressFollow(){
+      this.setState({
+        followUserLocation: true
+      });
+      console.log("Pressed arrow, followTrue");
+    }
+
+    onMapPress(e) {
+      console.log(e.nativeEvent.coordinate.longitude);
+      let region = {
+        latitude:       e.nativeEvent.coordinate.latitude,
+        longitude:      e.nativeEvent.coordinate.longitude,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+      }
+      this.onRegionChange(region);
+  }
 
     render() {
         if(this.state.isLoading){
@@ -465,12 +532,21 @@ class Historical extends Component{
                 <MapView
                     style={styles.mapImg}
                     initialRegion={this.state.mapRegion}
-                    showsUserLocation={true}
-                    followUserLocation={true}
-                    onRegionChange={this.onRegionChange.bind(this)}
-                    onPress={this.onMapPress.bind(this)}>
+                    region = {this.state.mapRegion}
+                    showsUserLocation={this.state.showsUserLocation}
+                    followUserLocation={this.state.followUserLocation}
+                    onUserLocationChange={event => console.log(event.nativeEvent)}
+                    onPress={() => {}}
+                    onMoveShouldSetResponder={() => {this.mapDragged()}}>
                     {stations}
                     {dataMarkers}
+
+                  <TouchableOpacity onPress={()=>{this.pressFollow()}}>
+                    <Image
+                      source={require("../assets/images/arrowMap.jpg")}
+                      style={styles.arrowMapImg}>
+                    </Image>
+                  </TouchableOpacity>
                 </MapView>
                 {stationsText}
                 {dataText}
@@ -574,40 +650,46 @@ const styles = StyleSheet.create({
   inputUrl: {
     marginTop: -8,
     height: 40
- },
- pm104: {
-  width: 100,
-  height: 40,
-  color: "rgba(255,0,0,1)",
-  fontSize: 15,
-  fontFamily: "roboto-regular",
-  lineHeight: 40,
-  letterSpacing: 0,
-  textAlign: "center"
-},
-button3: {
-  width: 100,
-  height: 40,
-  backgroundColor: "rgba(230, 230, 230,1)"
-},
-stationItem: {
+  },
+  pm104: {
+    width: 100,
+    height: 40,
+    color: "rgba(255,0,0,1)",
+    fontSize: 15,
+    fontFamily: "roboto-regular",
+    lineHeight: 40,
+    letterSpacing: 0,
+    textAlign: "center"
+  },
+  button3: {
+    width: 100,
+    height: 40,
+    backgroundColor: "rgba(230, 230, 230,1)"
+  },
+  stationItem: {
+      flex: 1,
+      marginTop:45,
+      padding: 15,
+      fontSize: 14,
+      backgroundColor:'rgba(255,100,50,0.6)',
+  },
+  sensorItem: {
     flex: 1,
-    marginTop:45,
-    padding: 15,
-    fontSize: 14,
-    backgroundColor:'rgba(255,100,50,0.6)',
-},
-sensorItem: {
-  flex: 1,
-  marginTop:15,
-  fontSize:10
-},
+    marginTop:15,
+    fontSize:10
+  },
 
-measurementItem: {
-  flex:1,
-  marginLeft:25,
+  measurementItem: {
+    flex:1,
+    marginLeft:25,
 
-}
+  },
+
+  arrowMapImg:{
+    width: 50,
+    height: 50,
+    transform: [{ rotate: '180deg'}]
+  }
 });
 
 export default Historical;
