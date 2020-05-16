@@ -2,50 +2,157 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
 import { isLoading } from "expo-font";
 import MapView from 'react-native-maps';
+import {Marker} from 'react-native-maps';
+import { AuthSession } from "expo";
+import ArduinoDataFetch from "../components/ArduinoDataFetch";
+
 
 class Historical extends Component{
 
     constructor(props){
         super(props);
-        /*stations = [{latitude: 8.860310253579987,longitude: 45.326401500542325}, 
-                    {latitude: 8.914144599002409,longitude: 45.04007657202963}, 
-                    {latitude: 10.17735680898138,longitude:45.87460210989037},
-                    {latitude: 10.336240422996532,longitude: 45.51570829484459},
-                    {latitude: 9.384687247651794,longitude: 46.1381409051264},
-                    ]*/
-
         this.state = {
             arpaStations : [],
             isLoading : true,
-            mapRegion: null,
+            mapRegion: {
+              latitude:      45.47,
+              longitude:      9.22,
+              latitudeDelta:  0.0922*1.5,
+              longitudeDelta: 0.0421*1.5
+            },
             data : [],
             interestedData : [],
+            sensorsData: [],
+            arduinoData: [],
+            clusters:[]
         }
         this.retrieveArpaStationsData.bind(this);
+        this.retrieveArpaSensorsData.bind(this);
         this.elaborateData.bind(this);
         this.alreadyInCollection.bind(this);
+        this.addSensorsInfoToStation.bind(this);
+        this.getViewOfSensorsByStationId.bind(this);
+        this.getLastSensorsMeasurements.bind(this);
+        this.elaborateArduinoData.bind(this);
+        this.isInsideCluster.bind(this);
+        this.computeDistance.bind(this);
     
     }
-    API_ID_Key = "dbm71z0uioacgikjukdlvlhfn";
-    API_Secret_Key = "secretCode2wa9uofj7avlbreliz0sto2gjyqtbdegvifhzhpastxyyllz6y";
+
+    arduinoDataFetch = new ArduinoDataFetch();
+    nearestClusterId = 0;
+
+    elaborateArduinoData(){
+    
+      let clusters = [];
+      
+      //for each received measure see wheter it is near (200 meter radius) an existing clusters, 
+      //if yes -> add this measure to the CORRECT cluster
+      //else -> create a new cluster with position of the new measure
+      this.state.arduinoData.forEach((element)=>{
+        if(this.isInsideCluster({latitude:element.latitude, longitude:element.longitude},clusters)){
+
+          clusters[this.nearestClusterId].measures.push(element.id);
+        }
+        else{
+          let newCluster = {
+            position: {
+              latitude: element.latitude,
+              longitude: element.longitude,
+            },
+            id: clusters.length,
+            measures: [element.id]
+          };
+          clusters.push(newCluster);
+        }
+      })
+      this.setState({clusters:clusters});
+      console.log(this.state.clusters);
+    }
+
+    isInsideCluster(position, clusters){
+      let minDistance = 999999;
+      let clusterId = 0;
+      let isTrue = false;
+      //console.log("ENTERED IN INSIDE CLUSTER FUNCTION");
+      clusters.forEach((cluster)=>{
+      let distance = this.computeDistance(cluster.position,position);
+        //console.log("COMPUTED DISTANCE: "+distance);
+
+        if(distance<=250){
+          //console.log("IS INSIDE A CLUSTER: "+ clusterId);
+          if(distance<=minDistance){
+            minDistance = distance;
+            this.nearestClusterId = clusterId;
+            isTrue = true;
+          }
+        }
+        //console.log("IS OUTSIDE A CLUSTER");
+        clusterId++;
+      })
+      return isTrue;
+      
+    }
+
+    //Haversine formula
+    computeDistance(position1, position2) {
+      console.log("HEY");
+      const R = 6371e3; 
+      let lat1 = position1.latitude;
+      let lat2 = position2.latitude;
+      let lon1 = position1.longitude;
+      let lon2 = position2.longitude;
+      const φ1 = lat1 * Math.PI/180;
+      const φ2 = lat2 * Math.PI/180;
+      const Δφ = (lat2-lat1) * Math.PI/180;
+      const Δλ = (lon2-lon1) * Math.PI/180;
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+      const d = R * c;
+      console.log("Distance: "+d);
+      return d;
+    }
+
+
 
     retrieveArpaStationsData(url){
 
-        fetch(url)
+        return fetch(url)
         .then((response) => response.json())
         .then((responseJson) => {
             //console.log(responseJson);
             this.setState({
                 isLoading: false,
-                data: responseJson.filter( (station) => station.comune =="Milano")
+                data: responseJson.filter( (station) => station.comune =="Milano").filter((station) => station.datastop==null)
             })
             this.elaborateData();
             //console.log(this.state.data);
         })
+        .then(this.retrieveArpaSensorsData("https://www.dati.lombardia.it/resource/nicp-bhqi.json"))
         .catch((error) => {
             console.error(error);
         });
     }
+
+    retrieveArpaSensorsData(url){
+
+      return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+          //console.log(responseJson);
+          this.setState({
+              isLoading: false,
+              sensorsData: responseJson.filter( (sensor) => sensor.stato =="VA"),
+          })
+          this.elaborateData();
+         // console.log(this.state.sensorsData);
+      })
+      .catch((error) => {
+          console.error(error);
+      });
+  }
 
     alreadyInCollection(consideredStationId){
         for (let index = 0; index < this.state.interestedData.length; index++) {
@@ -57,50 +164,105 @@ class Historical extends Component{
     }
 
     elaborateData(){
-        var b = [];
-        var x =[];
+      
+      var stations = [];
+      for (let index = 0; index < this.state.data.length; index++) {
 
-        //data to be added to interestedData
-        var sensors = [];
-        var stationToAdd = {
-            id:"",
-            name:"",
-            sensors: sensors,
+        stations[index] = {
+          stationId: this.state.data[index].idstazione,
+          value:{
+            stationName: this.state.data[index].nomestazione,
+            lat: this.state.data[index].lat,
+            lng: this.state.data[index].lng,
+            sensorId :this.state.data[index].idsensore,
+            sensorType: this.state.data[index].nometiposensore,
+            unit: this.state.data[index].unitamisura,
+          }
         }
-/*
-        console.log("LENGTH: "+this.state.data.length);
-        for (let c = 0; c < this.state.data.length; c++) {
-            var consideredStationId = this.state.data[c].idstazione;
-            var consideredStationName = this.state.data[c].idstazione;
-            var consideredSensorId = this.state.data[c].idsensore;
-            
-            if(!this.alreadyInCollection(consideredStationId)){
-                stationToAdd = {
-                    id :consideredStationId,
-                    name:consideredStationName,
-                    sensors: ,
-                }
+      }
+      var stations2 = [];
+      var stations3 = [];
 
-            }     
-        }
-*/
-        /*for (let index = 0; index < a.length; index++) {
-            x[0] = a[index].nomestazione;
-            x[1] = a[index].idsensore;
-            x[2] = a[index].nometiposensore;
-            b[index]= {key:a[index].idstazione,value:x}
-            for (let k = 0; k < this.state.interestedData.length; k++) {
-                if(interestedData[k].idstazione!=b[index.idstazione]){
-                    interestedData[index] = b[index];               
-                }
-            }
+      stations.forEach((station) => {
+        stations2.push(station.stationId);
+      });
+      uniqueArray = stations2.filter(function(item, pos) {
+        return stations2.indexOf(item) == pos;
+      })
 
-        }*/
-        console.log(b);
+      //console.log(uniqueArray);
+      for (let index = 0; index < uniqueArray.length; index++) {
+        stations3[index] = {stationId:uniqueArray[index], sensors:[]}
+        
+      }
+
+      stations.forEach((station)=>{
+          this.addSensorsInfoToStation(station, stations3)
+      })
+     // console.log(stations3);
+
+
+      var group = stations.reduce((r, a) => {
+        r[a.stationId] = [...r[a.stationId] || [], a];
+        return r;
+       }, {});
+    
+      this.setState({interestedData:stations3});
+     // console.log("INTERESTED DATA: ")
+     // console.log(this.state.interestedData[0]);
+     // console.log("REAL RECEIVED DATA: ");
+     // console.log(this.state.data[0]);
+
     }
 
+    addSensorsInfoToStation(station, stations3){
+
+      var indexOfStation;
+      for (let index = 0; index < stations3.length; index++) {
+        //console.log('StationId: '+station.stationId +" Station3Id: "+stations3[index].stationId);
+        if(parseInt(stations3[index].stationId)==parseInt(station.stationId)){
+          //console.log("equals");
+          indexOfStation = index;
+          stations3[index].sensors.push(station.value);
+        }
+      }
+    }
+
+    getViewOfSensorsByStationId(stationId){
+
+      let sensorsView = this.state.data.filter((station)=>{
+        return station.idstazione==stationId})
+        .map((sensor) => {
+        return <View key = {sensor.idsensore} style={styles.sensorItem}>
+                <Text>Sensor Id: {sensor.idsensore}</Text>
+                <Text>Sensor Name: {sensor.nometiposensore}</Text>
+                {this.getLastSensorsMeasurements(sensor.idsensore)}
+                </View>
+      })
+      return sensorsView;
+    }
+
+    getLastSensorsMeasurements(sensorId){
+
+      let sensorsMeasurementsView = this.state.sensorsData.filter((sensor)=>{
+        return sensor.idsensore==sensorId})
+        .map((sensor) => {
+        return <View key = {sensor.data} style={styles.measurementItem}>
+                <Text>Time: {sensor.data}</Text>
+                <Text>Value: {sensor.valore}</Text>
+                </View>
+      })
+      return sensorsMeasurementsView;
+
+    }
+
+
     componentDidMount() {
-        return this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
+        this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
+        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-28T09:00:00Z&endDate=2020-04-28T16:15:10Z", 
+          (arduinoData)=>{this.setState({arduinoData:arduinoData})
+                          this.elaborateArduinoData();
+    });
     }
 
     onRegionChange(region, lastLat, lastLong) {
@@ -123,8 +285,6 @@ class Historical extends Component{
         this.onRegionChange(region, region.latitude, region.longitude);
     }
 
-
-
     render() {
         if(this.state.isLoading){
             return(
@@ -134,29 +294,54 @@ class Historical extends Component{
             )
         }
         else {
+          let stationsText =  this.state.interestedData.map((element) => {
+            return  <View key = {element.stationId} style={styles.stationItem}>
+                      <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>Station Name: {element.sensors[0].stationName}</Text>
+                      <Text style={{marginTop:15}}>Latest measurements</Text>
+                      {this.getViewOfSensorsByStationId(element.stationId)}
+                    </View>
+          });
 
-            let stationsText = this.state.data.map((val,key)=>{
-                return  <View key = {key} style={styles.item}>
-                            <Text>Latitude: {val.lat}</Text>
-                            <Text>Longitude: {val.lng}</Text>
-                            <Text>Name: {val.nomestazione}</Text>
-                            <Text>Id: {val.idstazione}</Text>
-                        </View>
-            });
-
-            let stations = this.state.data.map((val,key)=>{
-                return  <MapView.Marker key = {key} style={styles.item}
+          let stations = this.state.interestedData.map((station)=>{
+                return  <Marker key = {station.stationId}
                             coordinate={{
-                                latitude: parseFloat(val.lat),
-                                longitude: parseFloat(val.lng),
+                                latitude: parseFloat(station.sensors[0].lat),
+                                longitude: parseFloat(station.sensors[0].lng),
                             }}
-                            title={"Nome Stazione: "+val.nomestazione}
-                            description={"ID stazione: "+val.idstazione + 
-                            "\nTipo di sensore: "+val.nometiposensore
-                            +"\nData inizio: " +val.datastart}
+                            title={station.sensors[0].stationName}
+                            description={"ID: "+station.stationId}
                         />
-                        
             });
+          
+            let dataText = this.state.arduinoData.map((element) => {
+              return <View key = {element.id} style = {styles.measurementItem}>
+                        <Text>{element.id}</Text>
+                        <Text>{element.timestamp}</Text>
+                        <Text>{element.latitude}</Text>
+                        <Text>{element.longitude}</Text>
+                    </View>
+            })
+          //console.log(this.state.arduinoData);
+          
+          let dataMarkers = this.state.clusters.map((cluster) => {
+            return <View key={cluster.id}>
+                      <MapView.Circle
+                                center={
+                                  cluster.position
+                                }
+                                radius = {250}
+                                strokeWidth = {1}
+                                strkeColor = {'rgba(255,0,0)'}
+                                fillColor = {'rgba(255,100,50,0.2)'}
+                      />
+                      <Marker
+                        coordinate={cluster.position}
+                        title={"ID: "+cluster.id}
+                        description="Sono state effettuate varie misurazioni in questa zona"   
+                      />
+                    </View>
+            
+          })
 
         return (
             <ScrollView style={styles.container}>
@@ -199,9 +384,10 @@ class Historical extends Component{
                     onRegionChange={this.onRegionChange.bind(this)}
                     onPress={this.onMapPress.bind(this)}>
                     {stations}
+                    {dataMarkers}
                 </MapView>
                 {stationsText}
-
+                {dataText}
             </ScrollView>
         );
         }
@@ -318,8 +504,23 @@ button3: {
   height: 40,
   backgroundColor: "rgba(230, 230, 230,1)"
 },
-item: {
-    flex: 1
+stationItem: {
+    flex: 1,
+    marginTop:45,
+    padding: 15,
+    fontSize: 14,
+    backgroundColor:'rgba(255,100,50,0.6)',
+},
+sensorItem: {
+  flex: 1,
+  marginTop:15,
+  fontSize:10
+},
+
+measurementItem: {
+  flex:1,
+  marginLeft:25,
+
 }
 });
 
