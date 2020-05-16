@@ -24,7 +24,8 @@ class Historical extends Component{
             interestedData : [],
             sensorsData: [],
             arduinoData: [],
-            clusters:[]
+            clusters:[],
+            meanValues: [],
         }
         this.retrieveArpaStationsData.bind(this);
         this.retrieveArpaSensorsData.bind(this);
@@ -36,6 +37,8 @@ class Historical extends Component{
         this.elaborateArduinoData.bind(this);
         this.isInsideCluster.bind(this);
         this.computeDistance.bind(this);
+        this.computeMeansForCluster.bind(this);
+        this.computeMeansForAllClusters.bind(this);
     
     }
 
@@ -45,14 +48,12 @@ class Historical extends Component{
     elaborateArduinoData(){
     
       let clusters = [];
-      
       //for each received measure see wheter it is near (200 meter radius) an existing clusters, 
       //if yes -> add this measure to the CORRECT cluster
       //else -> create a new cluster with position of the new measure
       this.state.arduinoData.forEach((element)=>{
         if(this.isInsideCluster({latitude:element.latitude, longitude:element.longitude},clusters)){
-
-          clusters[this.nearestClusterId].measures.push(element.id);
+          clusters[this.nearestClusterId].measures.push(element);
         }
         else{
           let newCluster = {
@@ -61,13 +62,14 @@ class Historical extends Component{
               longitude: element.longitude,
             },
             id: clusters.length,
-            measures: [element.id]
+            measures: [element],
+            meanValues: [],
           };
           clusters.push(newCluster);
         }
       })
       this.setState({clusters:clusters});
-      console.log(this.state.clusters);
+      this.computeMeansForAllClusters();
     }
 
     isInsideCluster(position, clusters){
@@ -96,7 +98,6 @@ class Historical extends Component{
 
     //Haversine formula
     computeDistance(position1, position2) {
-      console.log("HEY");
       const R = 6371e3; 
       let lat1 = position1.latitude;
       let lat2 = position2.latitude;
@@ -111,11 +112,96 @@ class Historical extends Component{
                 Math.sin(Δλ/2) * Math.sin(Δλ/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
       const d = R * c;
-      console.log("Distance: "+d);
       return d;
     }
 
+    computeMeansForAllClusters(){
+      let meanValues = [];
+      this.state.clusters.forEach((cluster)=>{
+        let meanValueToAdd = this.computeMeansForCluster(cluster);
+        meanValues.push(meanValueToAdd);
+      })
+      this.setState({meanValues:meanValues});
+      console.log(this.state.clusters[0]);
+      console.log(this.state.meanValues);
+    }
 
+    computeMeansForCluster(cluster){
+      
+      
+      let meanValues = {
+        altitude: 0,
+        eco2: 0,
+        humidity: 0,
+        pm05: 0,
+        pm1: 0,
+        pm10: 0,
+        pm25: 0,
+        pm4: 0,
+        pressure: 0,
+        temperature: 0,
+        tvocs: 0,
+        clusterId: cluster.id,
+      }
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.altitude+=measure.altitude;
+      })
+      meanValues.altitude/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.eco2+=measure.eco2;
+      })
+      meanValues.eco2/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.humidity+=measure.humidity;
+      })
+      meanValues.humidity/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.pm05+=measure.pm05;
+      })
+      meanValues.pm05/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.pm1+=measure.pm1;
+      })
+      meanValues.pm1/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.pm10+=measure.pm10;
+      })
+      meanValues.pm10/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.pm25+=measure.pm25;
+      })
+      meanValues.pm25/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.pm4+=measure.pm4;
+      })
+      meanValues.pm4/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.pressure+=measure.pressure;
+      })
+      meanValues.pressure/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.temperature+=measure.temperature;
+      })
+      meanValues.temperature/=cluster.measures.length;
+
+      cluster.measures.forEach((measure)=>{
+        meanValues.tvocs+=measure.tvocs;
+      })
+      meanValues.tvocs/=cluster.measures.length;
+
+      return meanValues;
+
+    }
 
     retrieveArpaStationsData(url){
 
