@@ -81,11 +81,11 @@ class Historical extends Component{
 
         if(distance<=250){
           //console.log("IS INSIDE A CLUSTER: "+ clusterId);
-          //if(distance<=minDistance){
-            //minDistance = distance;
+          if(distance<=minDistance){
+            minDistance = distance;
             this.nearestClusterId = clusterId;
             isTrue = true;
-          //}
+          }
         }
         //console.log("IS OUTSIDE A CLUSTER");
         clusterId++;
@@ -323,16 +323,24 @@ class Historical extends Component{
             })
           //console.log(this.state.arduinoData);
           
-          let dataMarkers = this.state.arduinoData.map((element) => {
-            return <Marker key = {element.id}
-                      coordinate={{
-                        latitude: element.latitude,
-                        longitude: element.longitude,
-                      }}
-                    title={"ID: "+element.id}
-                    description={"TS: "+element.timestamp}
-
-            />
+          let dataMarkers = this.state.clusters.map((cluster) => {
+            return <View key={cluster.id}>
+                      <MapView.Circle
+                                center={
+                                  cluster.position
+                                }
+                                radius = {250}
+                                strokeWidth = {1}
+                                strkeColor = {'rgba(255,0,0)'}
+                                fillColor = {'rgba(255,100,50,0.2)'}
+                      />
+                      <Marker
+                        coordinate={cluster.position}
+                        title={"ID: "+cluster.id}
+                        description="Sono state effettuate varie misurazioni in questa zona"   
+                      />
+                    </View>
+            
           })
 
         return (
