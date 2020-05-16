@@ -7,21 +7,26 @@ class ViewMap extends Component{
 
   state = {
     errorMessage: '',
-    mapRegion: null,
-    lastLat: null,
-    lastLong: null,
+    mapRegion: {
+      latitude:       45.4781291,
+      longitude:      9.2277907,
+      latitudeDelta:  0.00922*1.5,
+      longitudeDelta: 0.00421*1.5
+    },
     latlng: {
       latitude: 45.475,
       longitude: 9.22
-    }
+    },
+    followUserLocation: true,
+    showsUserLocation: true,
   }
   radius = 100;
   coordinatesSet = [{latitude:45.475,longitude:9.22}, {latitude:45.476, longitude:9.225}]
- 
-  componentWillMount() {
-    this.geoLocation();
-
-    this.watchID = navigator.geolocation.watchPosition((position) => {
+  
+  componentDidMount() {
+    this.geoLocation().then(()=>{
+      console.log("First log");
+      this.watchID = navigator.geolocation.watchPosition((position) => {
       // Create the object to update this.state.mapRegion through the onRegionChange function
       let region = {
         latitude:       position.coords.latitude,
@@ -29,17 +34,35 @@ class ViewMap extends Component{
         latitudeDelta:  0.00922*1.5,
         longitudeDelta: 0.00421*1.5
       }
-      this.onRegionChange(region, region.latitude, region.longitude);
+      if(this.state.followUserLocation){
+        this.setState({
+          mapRegion: region
+        });
+        this.onRegionChange(region);
+      }
       
-    }, this.errorFunction, this.options);
-    
+      }, this.errorFunction, this.options)}
+    )
+  }
+
+  mapDragged(){
+    this.setState({
+      followUserLocation: false
+    });
+    console.log("Map dragged, follow: " + this.state.followUserLocation);
+  }
+
+  pressFollow(){
+    this.setState({
+      followUserLocation: true
+    });
   }
 
   geoLocation = async () => {
     try{
       const {status} = await Permissions.askAsync(Permissions.LOCATION);
       if (status !== 'granted') {
-        console.log('bruschi');
+        console.log('not granted');
 
         this.setState({
           errorMessage: 'PERMISSION NOT GRANTED',
@@ -48,7 +71,7 @@ class ViewMap extends Component{
         console.log("granted");
       }
     } catch {
-      console.log("line 34");
+      console.log("error function");
       this.errorFunction();}
   }
 
@@ -58,30 +81,21 @@ class ViewMap extends Component{
     maximumAge: 0
   };
 
-  componentDidMount() {
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      // Create the object to update this.state.mapRegion through the onRegionChange function
-      let region = {
-        latitude:       position.coords.latitude,
-        longitude:      position.coords.longitude,
-        latitudeDelta:  0.00922*1.5,
-        longitudeDelta: 0.00421*1.5
-      }
-      this.onRegionChange(region, region.latitude, region.longitude);
-    }, this.errorFunction, this.options);
-  }
+  /*componentDidMount() {
+  }*/
 
   errorFunction() {
-    console.log("Sarti");
+    console.log("Error");
   }
 
-  onRegionChange(region, lastLat, lastLong) {
+  onRegionChange(region) {
     this.setState({
-      mapRegion: region,
-      // If there are no new values set use the the current ones
-      lastLat: lastLat || this.state.lastLat,
-      lastLong: lastLong || this.state.lastLong
+      mapRegion: region
     });
+  }
+
+  onLocationChange(){
+    console.log("Location changed");
   }
 
   componentWillUnmount() {
@@ -89,14 +103,14 @@ class ViewMap extends Component{
   }
 
   onMapPress(e) {
-    console.log(e.nativeEvent.coordinate.longitude);
+    console.log(e.nativeEvent.coordinate);
     let region = {
       latitude:       e.nativeEvent.coordinate.latitude,
       longitude:      e.nativeEvent.coordinate.longitude,
       latitudeDelta:  0.00922*1.5,
       longitudeDelta: 0.00421*1.5
     }
-    this.onRegionChange(region, region.latitude, region.longitude);
+    //this.onRegionChange(region);
   }
 
   
@@ -110,10 +124,12 @@ class ViewMap extends Component{
         <MapView
           style={styles.mapImg}
           initialRegion={this.state.mapRegion}
-          showsUserLocation={true}
-          followUserLocation={true}
-          onRegionChange={this.onRegionChange.bind(this)}
-          onPress={this.onMapPress.bind(this)}>
+          region = {this.state.mapRegion}
+          showsUserLocation={this.state.showsUserLocation}
+          followUserLocation={this.state.followUserLocation}
+          onUserLocationChange={event => console.log(event.nativeEvent)}
+          onPress={() => {}}
+          onPanDrag={() => {console.log('triggering onPanDrag')}}>
             <MapView.Circle
               key = {'1'}
               center = {this.state.latlng}
@@ -121,13 +137,18 @@ class ViewMap extends Component{
               fillColor = {'rgba(255,0,0,0.2)'}
               strokeWidth = {2}
               strokeColor = {'rgba(20,20,255,0.2)'}
-              onRegionChange={this.onRegionChange.bind(this)}
             />
             <MapView.Polyline
               coordinates = {this.coordinatesSet}
               strokeColor = {'rgba(20,20,255,0.2)'}
               strokeWidth = {2}
             />
+            <TouchableOpacity onPress={()=>{this.pressFollow()}}>
+              <Image
+                source={require("../assets/images/arrowMap.jpg")}
+                style={styles.arrowMapImg}>
+              </Image>
+            </TouchableOpacity>
         </MapView>
         
         <View style={styles.button3Row}>
@@ -349,6 +370,11 @@ const styles = StyleSheet.create({
     marginTop: -635,
     marginLeft: 10,
     marginRight: 17
+  },
+  arrowMapImg:{
+    width: 50,
+    height: 50,
+    transform: [{ rotate: '180deg'}]
   }
 });
 
