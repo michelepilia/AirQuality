@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
 import { isLoading } from "expo-font";
 import MapView from 'react-native-maps';
+import {Marker} from 'react-native-maps';
 import { AuthSession } from "expo";
 import ArduinoDataFetch from "../components/ArduinoDataFetch";
 
@@ -23,6 +24,7 @@ class Historical extends Component{
             interestedData : [],
             sensorsData: [],
             arduinoData: [],
+            clusters:[]
         }
         this.retrieveArpaStationsData.bind(this);
         this.retrieveArpaSensorsData.bind(this);
@@ -31,10 +33,89 @@ class Historical extends Component{
         this.addSensorsInfoToStation.bind(this);
         this.getViewOfSensorsByStationId.bind(this);
         this.getLastSensorsMeasurements.bind(this);
+        this.elaborateArduinoData.bind(this);
+        this.isInsideCluster.bind(this);
+        this.computeDistance.bind(this);
     
     }
 
     arduinoDataFetch = new ArduinoDataFetch();
+    nearestClusterId = 0;
+
+    elaborateArduinoData(){
+    
+      let clusters = [];
+      
+      //for each received measure see wheter it is near (200 meter radius) an existing clusters, 
+      //if yes -> add this measure to the CORRECT cluster
+      //else -> create a new cluster with position of the new measure
+      this.state.arduinoData.forEach((element)=>{
+        if(this.isInsideCluster({latitude:element.latitude, longitude:element.longitude},clusters)){
+
+          clusters[this.nearestClusterId].measures.push(element.id);
+        }
+        else{
+          let newCluster = {
+            position: {
+              latitude: element.latitude,
+              longitude: element.longitude,
+            },
+            id: clusters.length,
+            measures: [element.id]
+          };
+          clusters.push(newCluster);
+        }
+      })
+      this.setState({clusters:clusters});
+      console.log(this.state.clusters);
+    }
+
+    isInsideCluster(position, clusters){
+      let minDistance = 999999;
+      let clusterId = 0;
+      let isTrue = false;
+      //console.log("ENTERED IN INSIDE CLUSTER FUNCTION");
+      clusters.forEach((cluster)=>{
+      let distance = this.computeDistance(cluster.position,position);
+        //console.log("COMPUTED DISTANCE: "+distance);
+
+        if(distance<=250){
+          //console.log("IS INSIDE A CLUSTER: "+ clusterId);
+          //if(distance<=minDistance){
+            //minDistance = distance;
+            this.nearestClusterId = clusterId;
+            isTrue = true;
+          //}
+        }
+        //console.log("IS OUTSIDE A CLUSTER");
+        clusterId++;
+      })
+      return isTrue;
+      
+    }
+
+    //Haversine formula
+    computeDistance(position1, position2) {
+      console.log("HEY");
+      const R = 6371e3; 
+      let lat1 = position1.latitude;
+      let lat2 = position2.latitude;
+      let lon1 = position1.longitude;
+      let lon2 = position2.longitude;
+      const φ1 = lat1 * Math.PI/180;
+      const φ2 = lat2 * Math.PI/180;
+      const Δφ = (lat2-lat1) * Math.PI/180;
+      const Δλ = (lon2-lon1) * Math.PI/180;
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+      const d = R * c;
+      console.log("Distance: "+d);
+      return d;
+    }
+
+
 
     retrieveArpaStationsData(url){
 
@@ -178,8 +259,10 @@ class Historical extends Component{
 
     componentDidMount() {
         this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
-        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-28T09:00:00Z&endDate=2020-04-28T23:00:00Z", 
-          (arduinoData)=>this.setState({arduinoData:arduinoData}));
+        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-28T09:00:00Z&endDate=2020-04-28T16:15:10Z", 
+          (arduinoData)=>{this.setState({arduinoData:arduinoData})
+                          this.elaborateArduinoData();
+    });
     }
 
     onRegionChange(region, lastLat, lastLong) {
@@ -220,7 +303,7 @@ class Historical extends Component{
           });
 
           let stations = this.state.interestedData.map((station)=>{
-                return  <MapView.Marker key = {station.stationId}
+                return  <Marker key = {station.stationId}
                             coordinate={{
                                 latitude: parseFloat(station.sensors[0].lat),
                                 longitude: parseFloat(station.sensors[0].lng),
@@ -234,8 +317,23 @@ class Historical extends Component{
               return <View key = {element.id} style = {styles.measurementItem}>
                         <Text>{element.id}</Text>
                         <Text>{element.timestamp}</Text>
+                        <Text>{element.latitude}</Text>
+                        <Text>{element.longitude}</Text>
                     </View>
             })
+          //console.log(this.state.arduinoData);
+          
+          let dataMarkers = this.state.arduinoData.map((element) => {
+            return <Marker key = {element.id}
+                      coordinate={{
+                        latitude: element.latitude,
+                        longitude: element.longitude,
+                      }}
+                    title={"ID: "+element.id}
+                    description={"TS: "+element.timestamp}
+
+            />
+          })
 
         return (
             <ScrollView style={styles.container}>
@@ -278,6 +376,7 @@ class Historical extends Component{
                     onRegionChange={this.onRegionChange.bind(this)}
                     onPress={this.onMapPress.bind(this)}>
                     {stations}
+                    {dataMarkers}
                 </MapView>
                 {stationsText}
                 {dataText}
