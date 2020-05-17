@@ -33,6 +33,8 @@ class Historical extends Component{
             arduinoData: [],
             clusters:[],
             meanValues: [],
+            showClusterInfo: -1,
+
         }
         this.retrieveArpaStationsData.bind(this);
         this.retrieveArpaSensorsData.bind(this);
@@ -129,8 +131,8 @@ class Historical extends Component{
         meanValues.push(meanValueToAdd);
       })
       this.setState({meanValues:meanValues});
-      console.log(this.state.clusters[0]);
-      console.log(this.state.meanValues);
+      //console.log(this.state.clusters);
+      //console.log(this.state.meanValues);
     }
 
     computeMeansForCluster(cluster){
@@ -352,7 +354,7 @@ class Historical extends Component{
 
     componentDidMount() {
         this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
-        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-04-28T09:00:00Z&endDate=2020-04-28T16:15:10Z", 
+        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-05-17T11:51:48Z&endDate=2020-05-17T16:15:10Z", 
           (arduinoData)=>{this.setState({arduinoData:arduinoData})
                           this.elaborateArduinoData();
         });
@@ -492,10 +494,26 @@ class Historical extends Component{
                         coordinate={cluster.position}
                         title={"ID: "+cluster.id}
                         description="Sono state effettuate varie misurazioni in questa zona"   
+                        onPress={()=>this.setState({showClusterInfo:cluster.id})}
                       />
                     </View>
             
           })
+          let selectedClusterMeanValues;
+          if(this.state.showClusterInfo!=-1){
+            filteredValues =  this.state.meanValues.filter(
+              (meanValues)=>meanValues.clusterId==this.state.showClusterInfo)
+            let object = filteredValues[0];
+            console.log(object);
+            selectedClusterMeanValues = Object.keys(object).map(function(keyName, keyIndex) {
+              return<View key={keyIndex} style={styles.meanValueItem}><Text>{keyName} : {object[keyName]}</Text></View>
+            })
+            
+          }
+          else{
+            selectedClusterMeanValues=<View key={1}></View>
+          }
+
 
         return (
             <ScrollView style={styles.container}>
@@ -544,8 +562,9 @@ class Historical extends Component{
                     {dataMarkers}
                 
                 </MapView>
-                {stationsText}
-                {dataText}
+                <View style={styles.stationItem}>
+                {selectedClusterMeanValues}
+                </View>
             </ScrollView>
         );
         }
@@ -673,6 +692,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop:15,
     fontSize:10
+  },
+  meanValueItem:{
+    flex:1,
+    marginLeft:30,
+    padding:2,
+    marginTop:2,
+    fontSize:12,
   },
 
   measurementItem: {
