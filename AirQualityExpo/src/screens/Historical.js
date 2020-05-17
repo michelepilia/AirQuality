@@ -6,6 +6,7 @@ import {Marker} from 'react-native-maps';
 import { AuthSession } from "expo";
 import ArduinoDataFetch from "../components/ArduinoDataFetch";
 import * as Permissions from 'expo-permissions';
+import DataBars from "../components/DataBars";
 
 
 class Historical extends Component{
@@ -465,7 +466,8 @@ class Historical extends Component{
                                 longitude: parseFloat(station.sensors[0].lng),
                             }}
                             title={station.sensors[0].stationName}
-                            description={"ID: "+station.stationId}
+                            description={"ARPA Station"}
+                            pinColor={'blue'}
                         />
             });
           
@@ -488,13 +490,14 @@ class Historical extends Component{
                                 radius = {250}
                                 strokeWidth = {1}
                                 strkeColor = {'rgba(255,0,0)'}
-                                fillColor = {'rgba(255,100,50,0.2)'}
+                                fillColor = {'rgba(255,100,50,0.2)'}           
                       />
                       <Marker
                         coordinate={cluster.position}
-                        title={"ID: "+cluster.id}
-                        description="Sono state effettuate varie misurazioni in questa zona"   
+                        title={"Arduino Data"}
+                        description="Arduino air quality data"   
                         onPress={()=>this.setState({showClusterInfo:cluster.id})}
+                        pinColor={'green'}
                       />
                     </View>
             
@@ -508,6 +511,9 @@ class Historical extends Component{
             selectedClusterMeanValues = Object.keys(object).map(function(keyName, keyIndex) {
               return<View key={keyIndex} style={styles.meanValueItem}><Text>{keyName} : {object[keyName]}</Text></View>
             })
+            selectedClusterMeanValues = <View style={styles.stationItem}>
+              {selectedClusterMeanValues}
+            </View>
             
           }
           else{
@@ -562,9 +568,8 @@ class Historical extends Component{
                     {dataMarkers}
                 
                 </MapView>
-                <View style={styles.stationItem}>
                 {selectedClusterMeanValues}
-                </View>
+                {/*<DataBars data= {selectedClusterMeanValues}/>*/}
             </ScrollView>
         );
         }
@@ -697,7 +702,6 @@ const styles = StyleSheet.create({
     flex:1,
     marginLeft:30,
     padding:2,
-    marginTop:2,
     fontSize:12,
   },
 
