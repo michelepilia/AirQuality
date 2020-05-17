@@ -503,11 +503,12 @@ class Historical extends Component{
             
           })
           let selectedClusterMeanValues;
+          let object;
           if(this.state.showClusterInfo!=-1){
             filteredValues =  this.state.meanValues.filter(
               (meanValues)=>meanValues.clusterId==this.state.showClusterInfo)
-            let object = filteredValues[0];
-            console.log(object);
+              object = filteredValues[0];
+            //console.log(object);
             selectedClusterMeanValues = Object.keys(object).map(function(keyName, keyIndex) {
               return<View key={keyIndex} style={styles.meanValueItem}><Text>{keyName} : {object[keyName]}</Text></View>
             })
@@ -569,7 +570,7 @@ class Historical extends Component{
                 
                 </MapView>
                 {selectedClusterMeanValues}
-                {/*<DataBars data= {selectedClusterMeanValues}/>*/}
+                <DataBars data = {object} showClusterInfo = {this.state.showClusterInfo}/>
             </ScrollView>
         );
         }
