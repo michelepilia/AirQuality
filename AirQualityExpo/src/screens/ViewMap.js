@@ -117,6 +117,14 @@ class ViewMap extends Component{
   
 
   render(){
+
+    let a = <TouchableOpacity onPress={()=>{this.pressFollow()}}>
+              <Image
+                source={require("../assets/images/arrowMap.jpg")}
+                style={styles.arrowMapImg}>
+              </Image>
+            </TouchableOpacity>
+
     return (
       <View style={styles.container}>
         <Text style={styles.title}>View Map</Text>
@@ -144,12 +152,7 @@ class ViewMap extends Component{
               strokeColor = {'rgba(20,20,255,0.2)'}
               strokeWidth = {2}
             />
-            <TouchableOpacity onPress={()=>{this.pressFollow()}}>
-              <Image
-                source={require("../assets/images/arrowMap.jpg")}
-                style={styles.arrowMapImg}>
-              </Image>
-            </TouchableOpacity>
+            {/*a*/}
         </MapView>
         
         <View style={styles.button3Row}>

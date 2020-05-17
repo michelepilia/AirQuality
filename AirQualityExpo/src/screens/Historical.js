@@ -5,6 +5,7 @@ import MapView from 'react-native-maps';
 import {Marker} from 'react-native-maps';
 import { AuthSession } from "expo";
 import ArduinoDataFetch from "../components/ArduinoDataFetch";
+import * as Permissions from 'expo-permissions';
 
 
 class Historical extends Component{
@@ -532,21 +533,16 @@ class Historical extends Component{
                 <MapView
                     style={styles.mapImg}
                     initialRegion={this.state.mapRegion}
-                    region = {this.state.mapRegion}
-                    showsUserLocation={this.state.showsUserLocation}
-                    followUserLocation={this.state.followUserLocation}
-                    onUserLocationChange={event => console.log(event.nativeEvent)}
-                    onPress={() => {}}
-                    onMoveShouldSetResponder={() => {this.mapDragged()}}>
+                    //region = {this.state.mapRegion}
+                    //showsUserLocation={this.state.showsUserLocation}
+                   // followUserLocation={this.state.followUserLocation}
+                   // onUserLocationChange={event => console.log(event.nativeEvent)}
+                   // onPress={() => {}}
+                    //onMoveShouldSetResponder={() => {this.mapDragged()}}
+                    >
                     {stations}
                     {dataMarkers}
-
-                  <TouchableOpacity onPress={()=>{this.pressFollow()}}>
-                    <Image
-                      source={require("../assets/images/arrowMap.jpg")}
-                      style={styles.arrowMapImg}>
-                    </Image>
-                  </TouchableOpacity>
+                
                 </MapView>
                 {stationsText}
                 {dataText}
