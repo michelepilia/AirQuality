@@ -24,6 +24,7 @@ class DataBars extends Component {
         pm1:10,
         pm25:10,
         pm10:10,
+        pm4:10
 
     }
 
@@ -38,6 +39,7 @@ class DataBars extends Component {
         pm1:0,
         pm25:0,
         pm10:0,
+        pm4:0
     }
 
     normalizeOutput(value, xmin, xmax){
@@ -49,132 +51,132 @@ class DataBars extends Component {
         if(this.props.showClusterInfo!=-1){
             console.log(this.props.data);
         return(
-            <ScrollView>
+            <View>
+            <ScrollView style={styles.scrollView}>
                 <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>Altitude: {this.props.data.altitude} mt.</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.altitude, 
-                                        this.minValues.altitude, this.maxValues.altitude)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.altitude}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.altitude}</Text>
+                    <Text style={styles.parameterLabel}>Altitude: {this.props.data.altitude} mt.</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.altitude, 
+                                            this.minValues.altitude, this.maxValues.altitude)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.altitude}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.altitude}</Text>
+                    </View>
                 </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>Temperature: {this.props.data.temperature}°</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.temperature, 
+                                            this.minValues.temperature, this.maxValues.temperature)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.temperature}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.temperature}</Text>
+                    </View> 
+                </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>Humidity: {this.props.data.humidity}%</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.humidity, 
+                                            this.minValues.humidity, this.maxValues.humidity)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.humidity}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.humidity}</Text>
+                    </View>
+                </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>Pressure: {this.props.data.pressure} hPa</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pressure, 
+                                            this.minValues.pressure, this.maxValues.pressure)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.pressure}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.pressure}</Text>
+                    </View>
+                </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>TVOCs: {this.props.data.tvocs} ppb</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.tvocs, 
+                                            this.minValues.tvocs, this.maxValues.tvocs)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.tvocs}</Text>
+                    </View>
+                </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.props.data.eco2} ppm</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.eco2, 
+                                            this.minValues.eco2, this.maxValues.eco2)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.eco2}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.eco2}</Text>
+                    </View>
+                </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.props.data.pm05} {this.micron}m</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm05, 
+                                            this.minValues.pm05, this.maxValues.pm05)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.pm05}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.pm05}</Text>
+                    </View>
+                </View>
+                <View style={styles.parameterBar}>
+                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.props.data.pm1} {this.micron}m</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm1, 
+                                            this.minValues.pm1, this.maxValues.pm1)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.pm1}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.pm1}</Text>
+                    </View>
                 </View>
 
                 <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>Temperature: {this.props.data.temperature}°</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.temperature, 
-                                        this.minValues.temperature, this.maxValues.temperature)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.temperature}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.temperature}</Text>
-                </View> 
+                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.props.data.pm25} {this.micron}m</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm25, 
+                                            this.minValues.pm25, this.maxValues.pm25)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.pm25}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.pm25}</Text>
+                    </View>
                 </View>
 
                 <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>Humidity: {this.props.data.humidity}%</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.humidity, 
-                                        this.minValues.humidity, this.maxValues.humidity)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.humidity}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.humidity}</Text>
-                </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>Pressure: {this.props.data.pressure} hPa</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.pressure, 
-                                        this.minValues.pressure, this.maxValues.pressure)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.pressure}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.pressure}</Text>
-                </View>
+                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.props.data.pm4} {this.micron}m</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm4, 
+                                            this.minValues.pm4, this.maxValues.pm4)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.pm4}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.pm4}</Text>
+                    </View>
                 </View>
 
                 <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>TVOCs: {this.props.data.tvocs} ppb</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.tvocs, 
-                                        this.minValues.tvocs, this.maxValues.tvocs)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.tvocs}</Text>
-                </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.props.data.eco2} ppm</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.eco2, 
-                                        this.minValues.eco2, this.maxValues.eco2)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.eco2}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.eco2}</Text>
-                </View>
+                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.props.data.pm10} {this.micron}m</Text>
+                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm10, 
+                                            this.minValues.pm10, this.maxValues.pm10)} 
+                                            width={270} color="red"/>
+                    <View style={styles.edgesContainer}>
+                        <Text style={styles.minValue}>{this.minValues.pm10}</Text>
+                        <Text style={styles.maxValue}>{this.maxValues.pm10}</Text>
+                    </View>   
                 </View>
 
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.props.data.pm05} {this.micron}m</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.pm05, 
-                                        this.minValues.pm05, this.maxValues.pm05)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.pm05}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.pm05}</Text>
-                </View>
-                </View>
+                
 
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.props.data.pm1} {this.micron}m</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.pm1, 
-                                        this.minValues.pm1, this.maxValues.pm1)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.pm1}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.pm1}</Text>
-                </View>
-                </View>
+                
 
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.props.data.pm25} {this.micron}m</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.pm25, 
-                                        this.minValues.pm25, this.maxValues.pm25)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.pm25}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.pm25}</Text>
-                </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.props.data.pm4} {this.micron}m</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.pm4, 
-                                        this.minValues.pm4, this.maxValues.pm4)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.pm4}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.pm4}</Text>
-                </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.props.data.pm10} {this.micron}m</Text>
-                <Progress.Bar progress={this.normalizeOutput(this.props.data.pm10, 
-                                        this.minValues.pm10, this.maxValues.pm10)} 
-                                        width={270} color="red"/>
-                <View style={styles.edgesContainer}>
-                    <Text style={styles.minValue}>{this.minValues.pm10}</Text>
-                    <Text style={styles.maxValue}>{this.maxValues.pm10}</Text>
-                </View>   
-
-                </View>
             </ScrollView>
+            </View>
 
         );
         }
+        
         else{
             return(<View></View>);
         }
@@ -182,6 +184,7 @@ class DataBars extends Component {
 }
 
 export default DataBars;
+
 
 
 const styles = StyleSheet.create({
@@ -199,7 +202,13 @@ const styles = StyleSheet.create({
       marginRight: 30,
       padding: 20
     },
-    scrollView:{},
+    scrollView:{
+        marginLeft:'auto',
+        marginTop:45,
+        padding:10,
+        marginRight:'auto',
+        backgroundColor:'rgba(255,100,50,0.1)',
+    },
     title: {  
       height: 73,
       color: "rgba(255,0,0,1)",

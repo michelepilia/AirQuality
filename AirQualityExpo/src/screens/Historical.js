@@ -569,9 +569,10 @@ class Historical extends Component{
                     {dataMarkers}
                 
                 </MapView>
-                {selectedClusterMeanValues}
+                {/*selectedClusterMeanValues*/}
                 <DataBars data = {object} showClusterInfo = {this.state.showClusterInfo}/>
             </ScrollView>
+            
         );
         }
     }
