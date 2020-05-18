@@ -45,7 +45,7 @@ class DataBars extends Component {
 
     cifreDecimali = 2;
 
-    width = Dimensions.get('window').width - 20;
+    width = Dimensions.get('window').width - 50;
     barsWidth= this.width-35;
 
     normalizeOutput(value, xmin, xmax){
@@ -57,7 +57,6 @@ class DataBars extends Component {
         return station.idstazione==stationId})
         .map((sensor) => {
         return <View key = {sensor.idsensore} style={styles.sensorItem}>
-                <Text>Sensor Id: {sensor.idsensore}</Text>
                 <Text>Sensor Name: {sensor.nometiposensore}</Text>
                 {this.getLastSensorsMeasurements(sensor.idsensore)}
                 </View>
@@ -66,13 +65,16 @@ class DataBars extends Component {
     }
 
     getLastSensorsMeasurements(sensorId){
-
+      let b = this.props.data2.filter((sensor)=>sensor.idsensore==sensorId);
+      let x = b.unitamisura;
+      console.log(b[0].unitamisura);
       let sensorsMeasurementsView = this.props.sensorsData.filter((sensor)=>{
         return sensor.idsensore==sensorId})
         .map((sensor) => {
         return <View key = {sensor.data} style={styles.measurementItem}>
                 <Text>Time: {sensor.data}</Text>
-                <Text>Value: {sensor.valore}</Text>
+                <Text>Value <Text style={{fontSize:10}}>{[b[0].unitamisura]}</Text>: {sensor.valore}</Text>
+                
                 </View>
       })
       return sensorsMeasurementsView;
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       width: 'auto',
       height: 530,
-      backgroundColor: "rgba(230, 230, 230,1)",
+      backgroundColor: "rgba(255,100,50,0.2)",
       marginTop: 20,
       marginLeft: 30,
       marginRight: 30,
@@ -240,10 +242,10 @@ const styles = StyleSheet.create({
     },
     scrollView:{
         marginLeft:'auto',
-        marginTop:45,
+        marginTop:20,
         padding:10,
         marginRight:'auto',
-        backgroundColor:'rgba(255,100,50,0.1)',
+        backgroundColor:'rgba(255,100,50,0.2)',
     },
     title: {  
       height: 73,
@@ -376,7 +378,7 @@ const styles = StyleSheet.create({
     },
     stationItem: {
       flex: 1,
-      marginTop:45,
+      marginTop:30,
       padding: 15,
       fontSize: 14,
       backgroundColor:'rgba(255,100,50,0.6)',

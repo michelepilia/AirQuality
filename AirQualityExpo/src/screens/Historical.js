@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator,Dimensions } from "react-native";
 import { isLoading } from "expo-font";
 import MapView from 'react-native-maps';
 import {Marker} from 'react-native-maps';
-import { AuthSession } from "expo";
+import {Circle} from 'react-native-maps';
 import ArduinoDataFetch from "../components/ArduinoDataFetch";
 import * as Permissions from 'expo-permissions';
 import DataBars from "../components/DataBars";
+import DatePicker from 'react-native-datepicker';
 
 
 class Historical extends Component{
@@ -16,6 +17,7 @@ class Historical extends Component{
         this.state = {
             arpaStations : [],
             isLoading : true,
+            isLoadingGps:true,
             mapRegion: {
               latitude:      45.47,
               longitude:      9.22,
@@ -37,9 +39,29 @@ class Historical extends Component{
             showClusterInfo: -1,
             isArpaStation: false,
             showArpaInfo:-1,
-
-
+            startDate: '',
+            endDate: '',
         }
+
+        this.today={
+          year: new Date().getFullYear(),
+          month: new Date().getMonth()+1,
+          day: new Date().getDate(),
+        }
+
+        let a = "0";
+        if(this.today.month<10){
+          a = "0"+this.today.month;
+        }
+        else{
+          a=this.today.month;
+        }
+        
+        this.todayUrlRequest="https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="+this.today.year+"-"+a+"-"+(this.today.day)+"T00:00:00Z&endDate="
+          +this.today.year+"-"+a+"-"+this.today.day+"T23:59:59Z";
+
+          //console.log(this.todayUrlRequest);
+
         this.retrieveArpaStationsData.bind(this);
         this.retrieveArpaSensorsData.bind(this);
         this.elaborateData.bind(this);
@@ -52,11 +74,13 @@ class Historical extends Component{
         this.computeDistance.bind(this);
         this.computeMeansForCluster.bind(this);
         this.computeMeansForAllClusters.bind(this);
+        this.handleChangeDate.bind(this);
     
     }
 
     arduinoDataFetch = new ArduinoDataFetch();
     nearestClusterId = 0;
+    defaultClusterRadius = 250;
 
     elaborateArduinoData(){
     
@@ -77,6 +101,7 @@ class Historical extends Component{
             id: clusters.length,
             measures: [element],
             meanValues: [],
+            radius:this.defaultClusterRadius,
           };
           clusters.push(newCluster);
         }
@@ -94,7 +119,7 @@ class Historical extends Component{
       let distance = this.computeDistance(cluster.position,position);
         //console.log("COMPUTED DISTANCE: "+distance);
 
-        if(distance<=250){
+        if(distance<=this.defaultClusterRadius){
           //console.log("IS INSIDE A CLUSTER: "+ clusterId);
           if(distance<=minDistance){
             minDistance = distance;
@@ -223,7 +248,7 @@ class Historical extends Component{
         .then((responseJson) => {
             //console.log(responseJson);
             this.setState({
-                isLoading: false,
+                //isLoading: false,
                 data: responseJson.filter( (station) => station.comune =="Milano").filter((station) => station.datastop==null)
             })
             this.elaborateData();
@@ -355,10 +380,25 @@ class Historical extends Component{
 
     }
 
+    handleChangeDate(){
+      if(this.state.startDate!=''){
+        console.log("This.state.endDate = "+this.state.endDate);
+        if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
+          var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=";
+          var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
+          console.log("URL: "+b);
+          this.arduinoDataFetch.retrieveDataByDate(b,(arduinoData)=>{this.setState({arduinoData:arduinoData})
+          this.elaborateArduinoData();
+          });
+        }
+      }  
+    }
+  
+
 
     componentDidMount() {
         this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
-        this.arduinoDataFetch.retrieveDataByDate("https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=2020-05-17T11:51:48Z&endDate=2020-05-17T16:15:10Z", 
+        this.arduinoDataFetch.retrieveDataByDate(this.todayUrlRequest, 
           (arduinoData)=>{this.setState({arduinoData:arduinoData})
                           this.elaborateArduinoData();
         });
@@ -376,7 +416,8 @@ class Historical extends Component{
           }
           if(this.state.followUserLocation){
             this.setState({
-              mapRegion: region
+              mapRegion: region,
+              isLoadingGps:false,
             });
             this.onRegionChange(region);
           }
@@ -446,14 +487,18 @@ class Historical extends Component{
   }
 
     render() {
-        if(this.state.isLoading){
+        if(this.state.isLoading&&this.state.isLoadingGps){
             return(
-                <View style={styles.container}>
-                    <ActivityIndicator />
+                <View style={styles.ActivityIndicator}>
+                    <ActivityIndicator 
+                      size="large"
+                      color="red"                   
+                    />
                 </View>
             )
         }
         else {
+          //console.log(this.state.arduinoData);
           let stationsText =  this.state.interestedData.map((element) => {
             return  <View key = {element.stationId} style={styles.stationItem}>
                       <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>Station Name: {element.sensors[0].stationName}</Text>
@@ -479,27 +524,18 @@ class Historical extends Component{
                             }
                         />
             });
-          
-            let dataText = this.state.arduinoData.map((element) => {
-              return <View key = {element.id} style = {styles.measurementItem}>
-                        <Text>{element.id}</Text>
-                        <Text>{element.timestamp}</Text>
-                        <Text>{element.latitude}</Text>
-                        <Text>{element.longitude}</Text>
-                    </View>
-            })
-          //console.log(this.state.arduinoData);
-          
+                    
           let dataMarkers = this.state.clusters.map((cluster) => {
             return <View key={cluster.id}>
-                      <MapView.Circle
+                      <Circle
                                 center={
                                   cluster.position
                                 }
-                                radius = {250}
+                                radius = {this.defaultClusterRadius}
                                 strokeWidth = {1}
-                                strkeColor = {'rgba(255,0,0)'}
-                                fillColor = {'rgba(255,100,50,0.2)'}           
+                                strokeColor = {'rgba(255,0,0,0.2)'}
+                                fillColor = {'rgba(255,100,50,0.1)'} 
+                                          
                       />
                       <Marker
                         coordinate={cluster.position}
@@ -560,28 +596,87 @@ class Historical extends Component{
                     style={styles.logoutLogo}
                     ></Image>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button3}
-                    onPress={() => this.props.navigation.navigate("WeeklyReport")}>
-                    <Text style={styles.pm104}>Weekly report</Text>
-                    
-                </TouchableOpacity>
                 </View>
-                <Text>Historical Data</Text>
+                <Text style={styles.title}>Stored Data</Text>
+                <View style={{
+                  marginTop:30,
+                  flexDirection:"row",
+                  marginLeft:'auto',
+                  marginRight:'auto',
+
+                  }}>
+                  <DatePicker
+                    style={styles.dateInput}
+                    date={this.state.startDate}
+                    mode="date"
+                    placeholder="Start Date"
+                    format="YYYY-MM-DD"
+                    minDate={(this.today.year - 120)+"-01-01"}
+                    maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                      dateIcon: {
+                        position: 'absolute',
+                        left: 0,
+                        top: 4,
+                        marginLeft: 0
+                      },
+                      dateInput: {
+                        marginLeft: 35,
+                        height:30,
+                        width:70
+                      }
+                    }}
+                    onDateChange={(date) => {
+                      this.setState({startDate: date});
+                      this.handleChangeDate();
+                    }}
+                  />
+                  <DatePicker
+                    style={styles.dateInput}
+                    date={this.state.endDate}
+                    mode="date"
+                    placeholder="End Date"
+                    format="YYYY-MM-DD"
+                    minDate={(this.today.year - 120)+"-01-01"}
+                    maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                      dateIcon: {
+                        position: 'absolute',
+                        left: 0,
+                        top: 4,
+                        marginLeft: 0
+                      },
+                      dateInput: {
+                        marginLeft: 35,
+                        height:30,
+                        width:70
+                      }
+                    }}
+                    onDateChange={(date) => {
+                      this.setState({endDate: date});
+                      this.handleChangeDate();
+                    }}
+                  />
+                </View>
                 <MapView
                     style={styles.mapImg}
                     initialRegion={this.state.mapRegion}
+                    width={Dimensions.get('window').width - 50}
                     //region = {this.state.mapRegion}
-                    //showsUserLocation={this.state.showsUserLocation}
-                   // followUserLocation={this.state.followUserLocation}
-                   // onUserLocationChange={event => console.log(event.nativeEvent)}
-                   // onPress={() => {}}
+                    showsUserLocation={this.state.showsUserLocation}
+                    //followUserLocation={this.state.followUserLocation}
+                    //onUserLocationChange={event => console.log(event.nativeEvent)}
+                    //onPress={() => {}}
                     //onMoveShouldSetResponder={() => {this.mapDragged()}}
                     >
                     {stations}
                     {dataMarkers}
                 
                 </MapView>
-                {/*selectedClusterMeanValues*/}
                 <DataBars data = {object} 
                           showClusterInfo = {this.state.showClusterInfo} 
                           isArpaStation={this.state.isArpaStation} 
@@ -601,11 +696,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  ActivityIndicator:{
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginBottom:'auto',
+    marginTop:'auto',
+
+  },
   mapImg: {
-    width: 313,
-    height: 403,
-    marginTop: 42,
-    marginLeft: 32
+    height: 250,
+    marginTop: 30,
+    marginLeft:'auto',
+    marginRight:'auto',
   },
   airQualityHeader: {
     width: 91,
@@ -618,16 +720,16 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   title: {  
-    height: 73,
+    height: 60,
     color: "rgba(255,0,0,1)",
-    fontSize: 40,
+    fontSize: 32,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 25
+    marginTop: 5
   },
   retrieveDataBtn: {
     width: 80,
