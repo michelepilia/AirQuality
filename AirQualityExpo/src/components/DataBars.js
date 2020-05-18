@@ -57,7 +57,7 @@ class DataBars extends Component {
         return station.idstazione==stationId})
         .map((sensor) => {
         return <View key = {sensor.idsensore} style={styles.sensorItem}>
-                <Text>Sensor Name: {sensor.nometiposensore}</Text>
+                <Text>{sensor.nometiposensore}</Text>
                 {this.getLastSensorsMeasurements(sensor.idsensore)}
                 </View>
       })
@@ -67,12 +67,19 @@ class DataBars extends Component {
     getLastSensorsMeasurements(sensorId){
       let b = this.props.data2.filter((sensor)=>sensor.idsensore==sensorId);
       let x = b.unitamisura;
-      console.log(b[0].unitamisura);
+      //console.log(b[0].unitamisura);
+      let max ='0000-01-01T00:00:00Z';
+      maxData = max;
+
       let sensorsMeasurementsView = this.props.sensorsData.filter((sensor)=>{
-        return sensor.idsensore==sensorId})
+        return sensor.idsensore==sensorId&&sensor.data>=maxData})
         .map((sensor) => {
+        let time = JSON.stringify(sensor.data).replace("\"","-").replace('T','-').replace('Z','-');
+        let a = time.substring(0,17);
+        let a1=a.split('-');
+        //console.log(a1);
         return <View key = {sensor.data} style={styles.measurementItem}>
-                <Text>Time: {sensor.data}</Text>
+                <Text>Time: {a1[3]+"/"+a1[2]+"/"+a1[1]+" "+a1[4]}</Text>
                 <Text>Value <Text style={{fontSize:10}}>{[b[0].unitamisura]}</Text>: {sensor.valore}</Text>
                 
                 </View>
@@ -208,8 +215,7 @@ class DataBars extends Component {
     else if(this.props.isArpaStation){
       let stationsText =  this.props.interestedData.filter((element)=>element.stationId==this.props.showArpaInfo).map((element) => {
         return  <View key = {element.stationId} style={styles.stationItem}>
-                  <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>Station Name: {element.sensors[0].stationName}</Text>
-                  <Text style={{marginTop:15}}>Latest measurements</Text>
+                  <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>{element.sensors[0].stationName}</Text>
                   {this.getViewOfSensorsByStationId(element.stationId)}
                 </View>
       });
@@ -386,6 +392,8 @@ const styles = StyleSheet.create({
   measurementItem: {
     flex:1,
     marginLeft:25,
+    padding:2,
+    marginTop:5,
 
   },
   });
