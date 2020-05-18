@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, Slider } from "react-native";
 import { TextField } from 'react-native-material-textfield';
+import PasswordInputText from 'react-native-hide-show-password-input';
 
 class Settings extends Component{
 
   state = {
     token: '',
     username: '',
+    password: '',
     email: '',
     firstName: '',
     lastName: '',
@@ -15,6 +17,7 @@ class Settings extends Component{
     delay: global.delay,
   }
 
+  confirmPassword = '';
 
   url = "https://polimi-dima-server.herokuapp.com/api";
 
@@ -36,6 +39,55 @@ class Settings extends Component{
     this.setState({delay: delay});
     //alert(global.delay);
   }
+  
+  handlePassword = (text) => {
+    this.setState({ password: text })
+  }
+  handleConfirmPassword = (text) => {
+    this.confirmPassword = text;
+  }
+
+  storePassword(){
+    console.log("token: " + this.state.token);
+    console.log("confirm: " + this.confirmPassword + "Password: " + this.state.password);
+    passwordMatch = ((this.state.password)==(this.confirmPassword));
+    passwordLength = ((this.state.password).length >= 4);
+    if(passwordMatch&&passwordLength){
+      return fetch(this.url+"/user/me", {
+        method: "put",
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.state.token
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          password: this.state.password,
+          gender: this.state.gender,
+          birthDay: this.state.birthDay.substring(0, 10)
+        }),
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.status == "200"){
+          alert("Password Stored correctely!")
+        }
+        else {
+          alert("Invalid response");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    } else {
+      if (!passwordMatch) {alert("Password and Confirm Password must be equal");}
+      if (!passwordLength) {alert("Password must be longer than 4 characters");}
+    }
+  }
+
+
 
   componentDidMount(){
     const { params } = this.props.navigation.state;
@@ -114,6 +166,26 @@ class Settings extends Component{
               <Text style={{marginTop:5}}>Birthday: {this.state.birthDay}</Text>
               <Text style={{marginTop:5}}>Token status: {this.state.token}</Text>
           </View>
+
+          <View style={styles.inputView}>
+            <PasswordInputText
+              value={this.state.password}
+              onChangeText={this.handlePassword}/>
+          </View>
+
+          <View style={styles.inputView}>
+            <PasswordInputText
+              value={this.confirmPassword}
+              label = "Confirm Password"
+              onChangeText={this.handleConfirmPassword}/>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => this.storePassword()}
+            style={styles.button1}>
+            <Text style={styles.text}>Save New Password</Text>
+          </TouchableOpacity>
+
           <Text style={{marginTop:35, marginLeft: 15}}>Read data from: </Text>
           <View style = {{marginTop:5, marginLeft: 15, marginRight: 15}}>
           <TextField style = {styles.inputUrl}
@@ -256,6 +328,28 @@ const styles = StyleSheet.create({
    marginRight: 20,
    marginTop:10
  },
+ inputView:{
+   margin: 5,
+ },
+ button1: {
+   width: 305,
+   height: 60,
+   backgroundColor: "rgba(255,0,0,1)",
+   marginTop: 50,
+   marginLeft: 35
+ },
+ text: {
+   width: 305,
+   height: 60,
+   color: "rgba(255,255,255,1)",
+   fontSize: 30,
+   fontFamily: "roboto-regular",
+   lineHeight: 60,
+   letterSpacing: 0,
+   textAlign: "center",
+   marginTop: -1,
+ },
+
 });
 
 export default Settings;
