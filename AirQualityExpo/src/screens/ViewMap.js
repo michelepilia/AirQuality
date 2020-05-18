@@ -116,8 +116,10 @@ class ViewMap extends Component{
     console.log("Location changed");
   }
 
-  componentWillUnmount() {
+  endToNavigate(link) {
     navigator.geolocation.clearWatch(this.watchID);
+    this.props.navigation.navigate(link, {token: this.state.token});
+
   }
 
   onMapPress(e) {
@@ -196,11 +198,7 @@ class ViewMap extends Component{
         <View style={styles.airQuality1Row}>
           <Text style={styles.airQuality1}>Air Quality</Text>
           <TouchableOpacity
-            onPress={() => 
-                          {
-                            this.props.navigation.navigate("Settings", {token: this.state.token});
-                          }                                            
-                    }
+            onPress={() => {this.endToNavigate("Settings")}}
             style={styles.settingsButton}>
             <Image
               source={require("../assets/images/settings_logo.jpeg")}
@@ -210,7 +208,7 @@ class ViewMap extends Component{
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Home")}
+            onPress={() => this.endToNavigate("Home")}
             style={styles.homeButton1}
           >
             <Image
@@ -220,7 +218,7 @@ class ViewMap extends Component{
             ></Image>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
+            onPress={() => this.endToNavigate("Login")}
             style={styles.logoutButton1}
           >
             <Image

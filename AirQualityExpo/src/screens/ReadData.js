@@ -152,9 +152,11 @@ class ReadData extends Component {
 
   }
 
-  componentWillUnmount() {
+  endToNavigate(link) {
+    console.log("WillUnmount");
     clearInterval(this.timeInterval);
     navigator.geolocation.clearWatch(this.watchID);
+    this.props.navigation.navigate(link, {token: this.state.token});
   }
   
   // Parser for ArduinoData
@@ -216,11 +218,7 @@ class ReadData extends Component {
           <Text style={styles.airQuality}>Air Quality</Text>
 
           <TouchableOpacity
-            onPress={() => 
-                          {
-                            this.props.navigation.navigate("Settings", {token: this.state.token});
-                          }                                            
-                    }
+            onPress={() => {this.endToNavigate("Settings")}}
             style={styles.settingsButton}>
             <Image
               source={require("../assets/images/settings_logo.jpeg")}
@@ -230,9 +228,7 @@ class ReadData extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {this.props.navigation.navigate("Home")
-                          }
-                          }
+            onPress={() => {this.endToNavigate("Home")}}
             style={styles.homeButton}>
             <Image
               source={require("../assets/images/home_logo.png")}
@@ -242,9 +238,7 @@ class ReadData extends Component {
           </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() =>{this.props.navigation.navigate("Login")
-                        }
-                        }
+            onPress={() =>{this.endToNavigate("Login")}}
             style={styles.logoutButton}
           >
             <Image
@@ -297,7 +291,7 @@ class ReadData extends Component {
             <View style={styles.coordTxt}>
               <Text>Coordinates: {this.cutCoordString(this.state.latitude)}°N, {this.cutCoordString(this.state.longitude)}°E</Text>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("ViewMap")}
+                onPress={() => this.endToNavigate("ViewMap")}
                 style={styles.locationButton}>
                 <Image
                   source={require("../assets/images/location.png")}
