@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialStackedLabelTextbox from "../components/MaterialStackedLabelTextbox";
 import PasswordInputText from 'react-native-hide-show-password-input';
@@ -8,8 +8,12 @@ import { TextField } from 'react-native-material-textfield';
 class Login extends Component{
 
   state = {
-      email: '',
-      password: ''
+
+    isLoading:false,
+    token: '',
+    password:'',
+    email:'',
+
   };
 
 
@@ -24,14 +28,16 @@ class Login extends Component{
   };
 
   loginFunction(){
-
+    this.setState({isLoading:true});
     return fetch(this.url+"/user/login", {
       method: "post",
       headers:{
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify( this.state ),
+      body: JSON.stringify( {email: this.state.email,
+        password: this.state.password
+      }),
     })
     .then((response) => {
       if (response.status == "200"){
@@ -42,7 +48,11 @@ class Login extends Component{
       }
     })
     .then((json)=>{
-      this.props.navigation.navigate("Home", {token: json.token});
+      this.setState({isLoading:false});
+      if(json.token!=null){
+        this.setState({token:json.token});
+        this.props.navigation.navigate("Home", {token: json.token});
+      }
     })
     .catch((error) => {
       console.error(error);
@@ -50,6 +60,13 @@ class Login extends Component{
   }
 
   render(){
+    let loading = <View></View>
+    if(this.state.isLoading){
+      loading = <View><ActivityIndicator
+                        size="large"
+                        color="red"  
+      /></View>
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.airQuality1}>Air Quality</Text>
@@ -64,7 +81,7 @@ class Login extends Component{
         <View style={{margin: 20}}>
           <PasswordInputText
               value={this.state.password}
-              onChangeText={ (password) => this.setState({ password }) }/>
+              onChangeText={ (password) => this.setState({ password:password }) }/>
         </View>
 
         <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
@@ -75,6 +92,7 @@ class Login extends Component{
 
           <Text style={styles.text}>Login</Text>
         </TouchableOpacity>
+        {loading}
       </View>
     );
   }
@@ -192,7 +210,14 @@ const styles = StyleSheet.create({
   inputUser: {
       marginTop: -8,
       height: 40
-   }
+   },
+   ActivityIndicator:{
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginBottom:'auto',
+    marginTop:'auto',
+
+  },
 });
 
 export default Login;
