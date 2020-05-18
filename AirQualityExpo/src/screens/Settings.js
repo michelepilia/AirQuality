@@ -6,7 +6,12 @@ class Settings extends Component{
 
   state = {
     token: '',
-    username: 'test@pry.it',
+    username: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    birthDay: '',
+    gender: '',
     delay: global.delay,
   }
 
@@ -18,6 +23,7 @@ class Settings extends Component{
 
   handleSimulationUrl = (text) => {
     global.urlSimulation= text;
+    console.log
   }
       
   handleArduinoUrl = (text) => {
@@ -39,20 +45,27 @@ class Settings extends Component{
 
     this.setState({token : token});
 
-    fetch(this.url+"/user/me", {
+    return fetch(this.url+"/user/me", {
       method: "get",
       headers:{
         Accept: 'application/json',
+        'Authorization': 'Bearer ' + token,
       }
     })
-    .then((response) => {
-      if (response.status == "200"){
-        let userData = (response.json());
-        console.log(userData);
-      }
-      else {
-        alert("Invalid response");
-      }
+    .then((response) => response.json())
+    .then((responseJson)=>{
+      this.setState({
+        birthDay: responseJson.birthDay,
+        gender: responseJson.gender,
+        email: responseJson.email,
+        firstName: responseJson.firstName,
+        lastName: responseJson.lastName
+      });
+      console.log("First Name: " + this.state.firstName);
+      console.log("Last Name: " + this.state.lastName);
+      console.log("Email: " + this.state.email);
+      console.log("Gender: " + this.state.gender);
+      console.log("Birthday: " + this.state.birthDay);
     })
     .catch((error) => {
       console.error(error);
@@ -94,11 +107,11 @@ class Settings extends Component{
         <View style = {styles.mainView}>
           <Text style={{marginTop:35, marginLeft: 15}}>User Info</Text>
           <View style = {{flexDirection:"column", marginTop: 15, marginLeft: 15}}> 
-              <Text style={{marginTop:5}}>User: {this.state.username}</Text>
-              <Text style={{marginTop:5}}>First Name: Pry</Text>
-              <Text style={{marginTop:5}}>Last Name: Punjabi</Text>
-              <Text style={{marginTop:5}}>Gender: female</Text>
-              <Text style={{marginTop:5}}>Birthday: 11/01/1963</Text>
+              <Text style={{marginTop:5}}>User: {this.state.email}</Text>
+              <Text style={{marginTop:5}}>First Name: {this.state.firstName}</Text>
+              <Text style={{marginTop:5}}>Last Name: {this.state.lastName}</Text>
+              <Text style={{marginTop:5}}>Gender: {this.state.gender}</Text>
+              <Text style={{marginTop:5}}>Birthday: {this.state.birthDay}</Text>
               <Text style={{marginTop:5}}>Token status: {this.state.token}</Text>
           </View>
           <Text style={{marginTop:35, marginLeft: 15}}>Read data from: </Text>
