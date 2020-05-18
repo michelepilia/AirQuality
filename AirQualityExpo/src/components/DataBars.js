@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView,Dimensions } from "react-native";
 import * as Progress from 'react-native-progress';
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
@@ -8,6 +8,7 @@ import * as Permissions from 'expo-permissions';
 class DataBars extends Component {
 
     micron = "\u00b5"
+    cube = "\u33a5"
 
     constructor(props){
         super(props);
@@ -42,145 +43,180 @@ class DataBars extends Component {
         pm4:0
     }
 
+    cifreDecimali = 2;
+
+    width = Dimensions.get('window').width - 20;
+    barsWidth= this.width-35;
+
     normalizeOutput(value, xmin, xmax){
         return ((value-xmin)/(xmax-xmin));
     }
+    getViewOfSensorsByStationId(stationId){
 
-
-    render(){
-        if(this.props.showClusterInfo!=-1){
-            console.log(this.props.data);
-        return(
-            <View>
-            <ScrollView style={styles.scrollView}>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>Altitude: {this.props.data.altitude} mt.</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.altitude, 
-                                            this.minValues.altitude, this.maxValues.altitude)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.altitude}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.altitude}</Text>
-                    </View>
+      let sensorsView = this.props.data2.filter((station)=>{
+        return station.idstazione==stationId})
+        .map((sensor) => {
+        return <View key = {sensor.idsensore} style={styles.sensorItem}>
+                <Text>Sensor Id: {sensor.idsensore}</Text>
+                <Text>Sensor Name: {sensor.nometiposensore}</Text>
+                {this.getLastSensorsMeasurements(sensor.idsensore)}
                 </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>Temperature: {this.props.data.temperature}°</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.temperature, 
-                                            this.minValues.temperature, this.maxValues.temperature)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.temperature}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.temperature}</Text>
-                    </View> 
-                </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>Humidity: {this.props.data.humidity}%</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.humidity, 
-                                            this.minValues.humidity, this.maxValues.humidity)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.humidity}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.humidity}</Text>
-                    </View>
-                </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>Pressure: {this.props.data.pressure} hPa</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pressure, 
-                                            this.minValues.pressure, this.maxValues.pressure)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.pressure}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.pressure}</Text>
-                    </View>
-                </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>TVOCs: {this.props.data.tvocs} ppb</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.tvocs, 
-                                            this.minValues.tvocs, this.maxValues.tvocs)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.tvocs}</Text>
-                    </View>
-                </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.props.data.eco2} ppm</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.eco2, 
-                                            this.minValues.eco2, this.maxValues.eco2)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.eco2}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.eco2}</Text>
-                    </View>
-                </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.props.data.pm05} {this.micron}m</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm05, 
-                                            this.minValues.pm05, this.maxValues.pm05)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.pm05}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.pm05}</Text>
-                    </View>
-                </View>
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.props.data.pm1} {this.micron}m</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm1, 
-                                            this.minValues.pm1, this.maxValues.pm1)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.pm1}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.pm1}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.props.data.pm25} {this.micron}m</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm25, 
-                                            this.minValues.pm25, this.maxValues.pm25)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.pm25}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.pm25}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.props.data.pm4} {this.micron}m</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm4, 
-                                            this.minValues.pm4, this.maxValues.pm4)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.pm4}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.pm4}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.parameterBar}>
-                    <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.props.data.pm10} {this.micron}m</Text>
-                    <Progress.Bar progress={this.normalizeOutput(this.props.data.pm10, 
-                                            this.minValues.pm10, this.maxValues.pm10)} 
-                                            width={270} color="red"/>
-                    <View style={styles.edgesContainer}>
-                        <Text style={styles.minValue}>{this.minValues.pm10}</Text>
-                        <Text style={styles.maxValue}>{this.maxValues.pm10}</Text>
-                    </View>   
-                </View>
-
-                
-
-                
-
-            </ScrollView>
-            </View>
-
-        );
-        }
-        
-        else{
-            return(<View></View>);
-        }
+      })
+      return sensorsView;
     }
+
+    getLastSensorsMeasurements(sensorId){
+
+      let sensorsMeasurementsView = this.props.sensorsData.filter((sensor)=>{
+        return sensor.idsensore==sensorId})
+        .map((sensor) => {
+        return <View key = {sensor.data} style={styles.measurementItem}>
+                <Text>Time: {sensor.data}</Text>
+                <Text>Value: {sensor.valore}</Text>
+                </View>
+      })
+      return sensorsMeasurementsView;
+
+    }
+
+
+  render(){
+    if(this.props.showClusterInfo!=-1){
+      return(
+          <View>
+          <ScrollView style={styles.scrollView} width={this.width}>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>Altitude [mt]: {Number((this.props.data.altitude).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.altitude, 
+                                          this.minValues.altitude, this.maxValues.altitude)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.altitude}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.altitude}</Text>
+                  </View>
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>Temperature [°C]: {Number((this.props.data.temperature).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.temperature, 
+                                          this.minValues.temperature, this.maxValues.temperature)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.temperature}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.temperature}</Text>
+                  </View> 
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>Humidity [%]: {Number((this.props.data.humidity).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.humidity, 
+                                          this.minValues.humidity, this.maxValues.humidity)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.humidity}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.humidity}</Text>
+                  </View>
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>Pressure [hPa]: {Number((this.props.data.pressure/100).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.pressure, 
+                                          this.minValues.pressure, this.maxValues.pressure)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.pressure}</Text>
+                      <Text style={styles.mediumMaxValue}>{this.maxValues.pressure}</Text>
+                  </View>
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>TVOCs [ppb]: {Number((this.props.data.tvocs).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.tvocs, 
+                                          this.minValues.tvocs, this.maxValues.tvocs)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
+                      <Text style={styles.mediumMaxValue}>{this.maxValues.tvocs}</Text>
+                  </View>
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text> [ppm]: {Number((this.props.data.eco2).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.eco2, 
+                                          this.minValues.eco2, this.maxValues.eco2)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.eco2}</Text>
+                      <Text style={styles.largeMaxValue}>{this.maxValues.eco2}</Text>
+                  </View>
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text> [{this.micron}g/{this.cube}]: {Number((this.props.data.pm05).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.pm05, 
+                                          this.minValues.pm05, this.maxValues.pm05)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.pm05}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pm05}</Text>
+                  </View>
+              </View>
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text> [{this.micron}g/{this.cube}]: {Number((this.props.data.pm1).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.pm1, 
+                                          this.minValues.pm1, this.maxValues.pm1)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.pm1}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pm1}</Text>
+                  </View>
+              </View>
+
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text> [{this.micron}g/{this.cube}]: {Number((this.props.data.pm25).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.pm25, 
+                                          this.minValues.pm25, this.maxValues.pm25)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.pm25}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pm25}</Text>
+                  </View>
+              </View>
+
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text> [{this.micron}g/{this.cube}]: {Number((this.props.data.pm4).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.pm4, 
+                                          this.minValues.pm4, this.maxValues.pm4)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.pm4}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pm4}</Text>
+                  </View>
+              </View>
+
+              <View style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text> [{this.micron}g/{this.cube}]: {Number((this.props.data.pm10).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(this.props.data.pm10, 
+                                          this.minValues.pm10, this.maxValues.pm10)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{this.minValues.pm10}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pm10}</Text>
+                  </View>   
+              </View>          
+          </ScrollView>
+          </View>
+
+      );
+    }
+    else if(this.props.isArpaStation){
+      let stationsText =  this.props.interestedData.filter((element)=>element.stationId==this.props.showArpaInfo).map((element) => {
+        return  <View key = {element.stationId} style={styles.stationItem}>
+                  <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>Station Name: {element.sensors[0].stationName}</Text>
+                  <Text style={{marginTop:15}}>Latest measurements</Text>
+                  {this.getViewOfSensorsByStationId(element.stationId)}
+                </View>
+      });
+      return(stationsText);
+    }
+    else {
+        return(<View></View>);
+    }
+  }
 }
 
 export default DataBars;
@@ -285,7 +321,9 @@ const styles = StyleSheet.create({
     },
     parameterBar:{
       marginTop: 15,
-      marginBottom: 5
+      marginBottom: 5,
+      marginLeft:'auto',
+      marginRight:'auto',
     },
     coordTxt:{
       textAlign: 'center',
@@ -297,15 +335,25 @@ const styles = StyleSheet.create({
     pedex:{
       fontSize: 10,
     },
+    apex:{
+      fontSize:10,
+      lineHeight:5,
+    },
     minValue:{
       marginLeft: 0,
     },
     maxValue:{
-      marginLeft: 235,
+      marginLeft:270,
+    },
+    mediumMaxValue:{
+      marginLeft:245,
+    },
+    largeMaxValue:{
+      marginLeft:235,
     },
     edgesContainer:{
       display: "flex",
-      flexDirection: "row"
+      flexDirection: "row",
     },
     parameterLabel:{
       marginBottom: 10
@@ -320,5 +368,22 @@ const styles = StyleSheet.create({
       marginLeft: "auto",
       marginRight: "auto",
       marginTop: 20,
-    }
+    },
+    sensorItem: {
+      flex: 1,
+      marginTop:15,
+      fontSize:10
+    },
+    stationItem: {
+      flex: 1,
+      marginTop:45,
+      padding: 15,
+      fontSize: 14,
+      backgroundColor:'rgba(255,100,50,0.6)',
+  },
+  measurementItem: {
+    flex:1,
+    marginLeft:25,
+
+  },
   });

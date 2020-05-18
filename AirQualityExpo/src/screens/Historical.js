@@ -35,6 +35,9 @@ class Historical extends Component{
             clusters:[],
             meanValues: [],
             showClusterInfo: -1,
+            isArpaStation: false,
+            showArpaInfo:-1,
+
 
         }
         this.retrieveArpaStationsData.bind(this);
@@ -468,6 +471,12 @@ class Historical extends Component{
                             title={station.sensors[0].stationName}
                             description={"ARPA Station"}
                             pinColor={'blue'}
+                            onPress = {()=>{
+                              this.setState({isArpaStation:true});
+                              this.setState({showArpaInfo:station.stationId});
+                              this.setState({showClusterInfo:-1});
+                              }
+                            }
                         />
             });
           
@@ -496,7 +505,10 @@ class Historical extends Component{
                         coordinate={cluster.position}
                         title={"Arduino Data"}
                         description="Arduino air quality data"   
-                        onPress={()=>this.setState({showClusterInfo:cluster.id})}
+                        onPress={()=>{
+                          this.setState({showClusterInfo:cluster.id});
+                          this.setState({isArpaStation:false});
+                        }}
                         pinColor={'green'}
                       />
                     </View>
@@ -570,7 +582,14 @@ class Historical extends Component{
                 
                 </MapView>
                 {/*selectedClusterMeanValues*/}
-                <DataBars data = {object} showClusterInfo = {this.state.showClusterInfo}/>
+                <DataBars data = {object} 
+                          showClusterInfo = {this.state.showClusterInfo} 
+                          isArpaStation={this.state.isArpaStation} 
+                          interestedData={this.state.interestedData} 
+                          data2={this.state.data}
+                          sensorsData={this.state.sensorsData}
+                          showArpaInfo={this.state.showArpaInfo}
+                          />
             </ScrollView>
             
         );
