@@ -10,6 +10,9 @@ class Settings extends Component{
     delay: global.delay,
   }
 
+
+  url = "https://polimi-dima-server.herokuapp.com/api";
+
   username = "admin";
   tokenValid = "valid/expired";
 
@@ -35,6 +38,25 @@ class Settings extends Component{
    //const delay = params ? params.delay : null;
 
     this.setState({token : token});
+
+    fetch(this.url+"/user/me", {
+      method: "get",
+      headers:{
+        Accept: 'application/json',
+      }
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        let userData = (response.json());
+        console.log(userData);
+      }
+      else {
+        alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   render(){

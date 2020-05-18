@@ -19,10 +19,23 @@ class ViewMap extends Component{
     },
     followUserLocation: true,
     showsUserLocation: true,
+    token: ''
   }
   radius = 100;
   coordinatesSet = [{latitude:45.475,longitude:9.22}, {latitude:45.476, longitude:9.225}]
   
+  arrowImg(){
+    let trueImg = require("../assets/images/filledArrow.jpeg");
+    let falseImg = require("../assets/images/emptyArrow.png");
+
+    if(this.state.followUserLocation){
+      return trueImg;
+    }
+    else{
+      return falseImg;
+    }
+  }
+
   componentDidMount() {
     this.geoLocation().then(()=>{
       console.log("First log");
@@ -42,7 +55,11 @@ class ViewMap extends Component{
       }
       
       }, this.errorFunction, this.options)}
-    )
+    );
+
+    const { params } = this.props.navigation.state;
+    const token = params ? params.token : null;
+    this.state.token = token;
   }
 
   mapDragged(){
@@ -54,7 +71,7 @@ class ViewMap extends Component{
 
   pressFollow(){
     this.setState({
-      followUserLocation: true
+      followUserLocation: !(this.state.followUserLocation)
     });
     console.log("pressed arrow");
   }
@@ -117,18 +134,17 @@ class ViewMap extends Component{
   
 
   render(){
-
-    let a = <TouchableOpacity onPress={()=>{this.pressFollow()}}>
-              <Image
-                source={require("../assets/images/arrowMap.jpg")}
-                style={styles.arrowMapImg}>
-              </Image>
-            </TouchableOpacity>
-
     return (
       <View style={styles.container}>
         <Text style={styles.title}>View Map</Text>
         
+        <TouchableOpacity onPress={()=>{this.pressFollow()}} style={styles.arrowBtn}>
+          <Image
+            source={(this.arrowImg())}
+            style={styles.arrowMapImg}>
+          </Image>
+        </TouchableOpacity>
+
         {/* https://snack.expo.io/@michelepilia/5b84d0 */}
         <MapView
           style={styles.mapImg}
@@ -138,7 +154,8 @@ class ViewMap extends Component{
           followUserLocation={this.state.followUserLocation}
           onUserLocationChange={event => console.log(event.nativeEvent)}
           onPress={() => {}}
-          onMoveShouldSetResponder={() => {this.mapDragged()}}>
+          onPanDrag={() => {this.mapDragged()}}>
+          
             <MapView.Circle
               key = {'1'}
               center = {this.state.latlng}
@@ -152,7 +169,6 @@ class ViewMap extends Component{
               strokeColor = {'rgba(20,20,255,0.2)'}
               strokeWidth = {2}
             />
-            {/*a*/}
         </MapView>
         
         <View style={styles.button3Row}>
@@ -179,6 +195,20 @@ class ViewMap extends Component{
         </View>
         <View style={styles.airQuality1Row}>
           <Text style={styles.airQuality1}>Air Quality</Text>
+          <TouchableOpacity
+            onPress={() => 
+                          {
+                            this.props.navigation.navigate("Settings", {token: this.state.token});
+                          }                                            
+                    }
+            style={styles.settingsButton}>
+            <Image
+              source={require("../assets/images/settings_logo.jpeg")}
+              resizeMode="contain"
+              style={styles.settingslogo}
+            ></Image>
+          </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate("Home")}
             style={styles.homeButton1}
@@ -218,7 +248,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center",
     width: 375,
-    alignSelf: "flex-end",
     marginTop: 71
   },
   mapImg: {
@@ -346,11 +375,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     marginTop: 8
   },
+  settingsButton: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 163
+  },
+  settingslogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
   homeButton1: {
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 193
+    marginLeft: 10
   },
   homelogo: {
     width: 27,
@@ -378,7 +418,15 @@ const styles = StyleSheet.create({
   arrowMapImg:{
     width: 50,
     height: 50,
-    transform: [{ rotate: '180deg'}]
+  },
+  arrowBtn:{
+    width: 50,
+    height: 50,
+    zIndex: 2,
+    top: 90,
+    left: 30,
+    display: "flex",
+    margin: 0
   }
 });
 
