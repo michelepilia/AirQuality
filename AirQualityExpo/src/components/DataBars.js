@@ -48,9 +48,6 @@ class DataBars extends Component {
     width = Dimensions.get('window').width - 20;
     barsWidth= this.width-35;
 
-    minValueMargin = -this.barsWidth/2;;
-    maxValueMargin = this.barsWidth/2;;
-
     normalizeOutput(value, xmin, xmax){
         return ((value-xmin)/(xmax-xmin));
     }
@@ -125,7 +122,7 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{this.minValues.pressure}</Text>
-                      <Text style={styles.maxValue}>{this.maxValues.pressure}</Text>
+                      <Text style={styles.mediumMaxValue}>{this.maxValues.pressure}</Text>
                   </View>
               </View>
               <View style={styles.parameterBar}>
@@ -135,7 +132,7 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
-                      <Text style={styles.maxValue}>{this.maxValues.tvocs}</Text>
+                      <Text style={styles.mediumMaxValue}>{this.maxValues.tvocs}</Text>
                   </View>
               </View>
               <View style={styles.parameterBar}>
@@ -145,7 +142,7 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{this.minValues.eco2}</Text>
-                      <Text style={styles.maxValue}>{this.maxValues.eco2}</Text>
+                      <Text style={styles.largeMaxValue}>{this.maxValues.eco2}</Text>
                   </View>
               </View>
               <View style={styles.parameterBar}>
@@ -197,8 +194,8 @@ class DataBars extends Component {
                                           this.minValues.pm10, this.maxValues.pm10)} 
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
-                      <Text style={{marginLeft: this.minValueMargin}}>{this.minValues.pm10}</Text>
-                      <Text style={{marginLeft: this.maxValueMargin}}>{this.maxValues.pm10}</Text>
+                      <Text style={styles.minValue}>{this.minValues.pm10}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pm10}</Text>
                   </View>   
               </View>          
           </ScrollView>
@@ -343,25 +340,20 @@ const styles = StyleSheet.create({
       lineHeight:5,
     },
     minValue:{
-      position:"absolute",
-      marginLeft: -80,
+      marginLeft: 0,
     },
     maxValue:{
-      position:"absolute",
-      marginLeft: 80,
+      marginLeft:270,
     },
     mediumMaxValue:{
-      marginLeft:220,
+      marginLeft:245,
     },
     largeMaxValue:{
-      marginLeft:205,
+      marginLeft:235,
     },
     edgesContainer:{
       display: "flex",
       flexDirection: "row",
-      textAlign:"center",
-      marginLeft:'auto',
-      marginRight:'auto',
     },
     parameterLabel:{
       marginBottom: 10
