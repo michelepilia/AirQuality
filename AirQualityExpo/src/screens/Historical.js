@@ -597,10 +597,20 @@ class Historical extends Component{
                 <Text style={styles.airQualityHeader}>Air Quality</Text>
 
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("Home")}
+                  onPress={() => this.props.navigation.navigate("Settings",{token:this.state.token})}
+                  style={styles.settingsButton}>
+                  <Image
+                    source={require("../assets/images/user-icon.png")}
+                    resizeMode="contain"
+                    style={styles.settingslogo}
+                  ></Image>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate("ReadData")}
                     style={styles.homeButton}>
                     <Image
-                    source={require("../assets/images/home_logo.png")}
+                    source={require("../assets/images/location3.png")}
                     resizeMode="contain"
                     style={styles.homelogo}
                     ></Image>
@@ -786,7 +796,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 193
+    marginLeft: 10
   },
   homelogo: {
     width: 27,
@@ -859,7 +869,18 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     transform: [{ rotate: '180deg'}]
-  }
+  },
+  settingsButton: {
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 180
+  },
+  settingslogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
 });
 
 export default Historical;
