@@ -43,15 +43,24 @@ class Login extends Component{
       if (response.status == "200"){
         return (response.json());
       }
+      if (response.status == "400"){
+        alert("Bad request to server");
+      }
+      if (response.status == "401"){
+        alert("Unauthorized");
+      }
       else {
         alert("Invalid response");
       }
     })
     .then((json)=>{
       this.setState({isLoading:false});
-      if(json.token!=null){
+      if(json!==undefined && json.token!==undefined){
         this.setState({token:json.token});
         this.props.navigation.navigate("Home", {token: json.token});
+      }
+      else{
+        alert("Wrong email or password");
       }
     })
     .catch((error) => {
