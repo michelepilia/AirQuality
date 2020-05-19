@@ -12,6 +12,14 @@ class DataBars extends Component {
 
     constructor(props){
         super(props);
+       // console.log(this.props.sensorsData);
+        this.okSensors = [];
+        this.props.sensorsData.forEach(element => {
+          this.okSensors.push(parseInt(element.idsensore));
+        });
+        console.log(this.okSensors[0]);
+        console.log(this.okSensors[1]);
+
     }
 
     maxValues = {
@@ -43,6 +51,7 @@ class DataBars extends Component {
         pm4:0
     }
 
+
     cifreDecimali = 2;
 
     width = Dimensions.get('window').width - 50;
@@ -55,12 +64,16 @@ class DataBars extends Component {
 
       let sensorsView = this.props.data2.filter((station)=>{
         return station.idstazione==stationId})
+        .filter((sensor)=>{
+          return this.okSensors.includes(parseInt(sensor.idsensore));
+        })
         .map((sensor) => {
         return <View key = {sensor.idsensore} style={styles.sensorItem}>
                 <Text>{sensor.nometiposensore}</Text>
                 {this.getLastSensorsMeasurements(sensor.idsensore)}
                 </View>
       })
+      
       return sensorsView;
     }
 
@@ -69,10 +82,10 @@ class DataBars extends Component {
       let x = b.unitamisura;
       //console.log(b[0].unitamisura);
       let max ='0000-01-01T00:00:00Z';
-      maxData = max;
-
+      //maxData = max;
+      
       let sensorsMeasurementsView = this.props.sensorsData.filter((sensor)=>{
-        return sensor.idsensore==sensorId&&sensor.data>=maxData})
+        return sensor.idsensore==sensorId})
         .map((sensor) => {
         let time = JSON.stringify(sensor.data).replace("\"","-").replace('T','-').replace('Z','-');
         let a = time.substring(0,17);
@@ -84,6 +97,7 @@ class DataBars extends Component {
                 
                 </View>
       })
+
       return sensorsMeasurementsView;
 
     }
@@ -380,7 +394,7 @@ const styles = StyleSheet.create({
     sensorItem: {
       flex: 1,
       marginTop:15,
-      fontSize:10
+      fontSize:13
     },
     stationItem: {
       flex: 1,

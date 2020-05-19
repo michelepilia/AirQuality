@@ -48,6 +48,8 @@ class Historical extends Component{
           month: new Date().getMonth()+1,
           day: new Date().getDate(),
         }
+        this.minDate = this.today;
+
 
         let a = "0";
         if(this.today.month<10){
@@ -75,12 +77,23 @@ class Historical extends Component{
         this.computeMeansForCluster.bind(this);
         this.computeMeansForAllClusters.bind(this);
         this.handleChangeDate.bind(this);
+        this.elaborateMinDate.bind(this);
     
     }
 
     arduinoDataFetch = new ArduinoDataFetch();
     nearestClusterId = 0;
     defaultClusterRadius = 250;
+
+    elaborateMinDate(){
+      var myCurrentDate=new Date();
+      var myPastDate=new Date(myCurrentDate);
+      myPastDate.setDate(myPastDate.getDate() - 14);//myPastDate is now 8 days in the past
+      let a=JSON.stringify(myPastDate).replace('T','-').replace("\"",'-').split('-');
+      let b = a[1] + '-' +a[2]  +'-' + a[3];
+      //console.log(b);
+      return b;
+    }
 
     elaborateArduinoData(){
     
@@ -424,7 +437,6 @@ class Historical extends Component{
           
           }, this.errorFunction, this.options)}
         )
-
     }
 
 
@@ -487,6 +499,7 @@ class Historical extends Component{
   }
 
     render() {
+
         if(this.state.isLoading&&this.state.isLoadingGps){
             return(
                 <View style={styles.ActivityIndicator}>
@@ -498,6 +511,7 @@ class Historical extends Component{
             )
         }
         else {
+
           //console.log(this.state.arduinoData);
           let stationsText =  this.state.interestedData.map((element) => {
             return  <View key = {element.stationId} style={styles.stationItem}>
@@ -569,7 +583,7 @@ class Historical extends Component{
             selectedClusterMeanValues=<View key={1}></View>
           }
 
-
+          let pastDate = this.elaborateMinDate();
         return (
             <ScrollView style={styles.container}>
 
@@ -611,7 +625,7 @@ class Historical extends Component{
                     mode="date"
                     placeholder="Start Date"
                     format="YYYY-MM-DD"
-                    minDate={(this.today.year - 120)+"-01-01"}
+                    minDate={(pastDate)}
                     maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
@@ -639,7 +653,7 @@ class Historical extends Component{
                     mode="date"
                     placeholder="End Date"
                     format="YYYY-MM-DD"
-                    minDate={(this.today.year - 120)+"-01-01"}
+                    minDate={(pastDate)}
                     maxDate={(this.today.year + '-' + this.today.month + '-' + this.today.day)}
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
