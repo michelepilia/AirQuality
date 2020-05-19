@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, Slider } from "react-native";
 import { TextField } from 'react-native-material-textfield';
 import PasswordInputText from 'react-native-hide-show-password-input';
+import { ScrollView } from "react-native-gesture-handler";
 
 class Settings extends Component{
 
@@ -24,13 +25,8 @@ class Settings extends Component{
   username = "admin";
   tokenValid = "valid/expired";
 
-  handleSimulationUrl = (text) => {
-    global.urlSimulation= text;
-    console.log
-  }
-      
   handleArduinoUrl = (text) => {
-    global.urlReal = text;  
+    global.currentUrl = text;  
   }
 
   changeDelayValue = (value) => {
@@ -156,7 +152,7 @@ class Settings extends Component{
 
     return (
       <View style={styles.container}>
-
+        <ScrollView>
         <View style={styles.headerRow}>
           <Text style={styles.airQualityHeader}>Air Quality</Text>
 
@@ -216,13 +212,7 @@ class Settings extends Component{
 
           <Text style={{marginTop:35, marginLeft: 15}}>Read data from: </Text>
           <View style = {{marginTop:5, marginLeft: 15, marginRight: 15}}>
-          <TextField style = {styles.inputUrl}
-                underlineColorAndroid = "transparent"
-                autoCapitalize = "none"
-                onChangeText = {this.handleSimulationUrl}
-                formatText={this.formatText}
-                placeholder = {global.urlSimulation}
-                label="Simulation Server URL"/>
+    
           <TextField style = {styles.inputUrl}
                 underlineColorAndroid = "transparent"
                 autoCapitalize = "none"
@@ -248,6 +238,7 @@ class Settings extends Component{
 
           </View>
         </View>
+        </ScrollView>
       </View>
     );
   }
