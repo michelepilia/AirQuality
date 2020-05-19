@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
-import * as Progress from 'react-native-progress';
+import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView,ActivityIndicator, Dimensions } from "react-native";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
 import DataBarsRealTime from "../components/DataBarsRealTime";
+import MapView from 'react-native-maps';
 
-const micron = "\u00b5"
 
 class ReadData extends Component {
 
@@ -36,6 +35,21 @@ class ReadData extends Component {
       isOnStore: false,
       errorMessage: '',
       isReadingData: false,
+
+      mapRegion: {
+        latitude:       45.4781291,
+        longitude:      9.2277907,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+      },
+      latlng: {
+        latitude: 45.475,
+        longitude: 9.22
+      },
+      followUserLocation: true,
+      showsUserLocation: true,
+      isLoading: true,
+
     }
 
     this.normalizeOutput.bind(this);
@@ -134,18 +148,40 @@ class ReadData extends Component {
     maximumAge: 0
   };
 
+  errorFunction() {
+    console.log("Error");
+  }
 
+  onRegionChange(region) {
+    this.setState({
+      mapRegion: region
+    });
+  }
+
+  onLocationChange(){
+    console.log("Location changed");
+  }
 
   componentDidMount() {
 
-    this.geolocation();
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      this.setState({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
-    }, this.errorFunction, this.options);
-    
+    this.geolocation().then(()=>{
+      this.watchID = navigator.geolocation.watchPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta:  0.000922*1.5,
+        longitudeDelta: 0.000421*1.5
+      }
+      if(this.state.followUserLocation){
+        this.setState({
+          mapRegion: region
+        });
+        this.onRegionChange(region);
+      }
+      this.setState({isLoading:false});
+      
+      }, this.errorFunction, this.options)}
+    );
 
     this.timeInterval = setInterval( () =>  {
       this.readDataFunction().then((a)=> this.arduinoDataParser(a))
@@ -246,7 +282,17 @@ class ReadData extends Component {
 
 
   render(){
-
+    if(this.state.isLoading){
+      return(
+          <View style={styles.ActivityIndicator}>
+              <ActivityIndicator 
+                size="large"
+                color="red"                   
+              />
+          </View>
+      )
+  }
+    else{
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -297,7 +343,20 @@ class ReadData extends Component {
 
         </View>
 
-        <Text style={styles.title}>Read Data</Text>
+        <Text style={styles.title}>Real Time Data</Text>
+      
+        <MapView
+          style={styles.mapImg}
+          initialRegion={this.state.mapRegion}
+          region = {this.state.mapRegion}
+          showsUserLocation={this.state.showsUserLocation}
+          followUserLocation={this.state.followUserLocation}
+          onUserLocationChange={event => console.log(event.nativeEvent)}
+          width={Dimensions.get("window").width-50}
+
+        >
+
+        </MapView>
 
         <View style={styles.toggleContainer}>
           <ToggleSwitch
@@ -320,6 +379,7 @@ class ReadData extends Component {
         </ScrollView>
       </View>
     );
+  }
   }
 }
 
@@ -360,6 +420,12 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     letterSpacing: 0,
     marginTop: 8
+  },
+  mapImg: {
+    height: 200,
+    marginTop: 42,
+    marginLeft: 'auto',
+    marginRight:'auto'
   },
   settingsButton: {
     width: 27,
@@ -449,7 +515,14 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 10,
     
-  }
+  },
+  ActivityIndicator:{
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginBottom:'auto',
+    marginTop:'auto',
+
+  },
 });
 
 export default ReadData;
