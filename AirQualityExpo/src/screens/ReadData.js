@@ -79,7 +79,7 @@ class ReadData extends Component {
   }
 
   readDataFunction(){
-    console.log(global.currentUrl);
+    console.log("Retrieving Arduino Data");
     return fetch(global.currentUrl)
     .then((response) => {
       console.log(response);
@@ -92,7 +92,7 @@ class ReadData extends Component {
       }
     })
     .catch((error) => {
-      console.error(error);
+     
     });
   }
 
@@ -120,7 +120,7 @@ class ReadData extends Component {
       if (response.status != "200"){
         alert(response.status);
       }
-      response.json()
+      response.json();
     }
     )
     //.then((responseJson)=>console.log(responseJson))  
@@ -139,7 +139,6 @@ class ReadData extends Component {
       } else {
       }
     } catch {
-      //console.log("line 34");
       this.errorFunction();}
   }
 
@@ -187,15 +186,22 @@ class ReadData extends Component {
       
       }, this.errorFunction, this.options)}
     );
+    try {
+      this.readDataFunction().then(()=>{
+        this.timeInterval = setInterval( () =>  {
+          this.readDataFunction().then((a)=> {this.arduinoDataParser(a)},this.errorFunction)
+          .then(()=>{
+            if(this.state.isOnStore) {
+              this.saveDataFunction();
+            }
+          },this.errorFunction);        
+        }, global.delay);
+        });
+      } 
+    catch{
 
-    this.timeInterval = setInterval( () =>  {
-      this.readDataFunction().then((a)=> this.arduinoDataParser(a))
-      .then(()=>{
-        if(this.state.isOnStore) {
-          this.saveDataFunction();
-        }
-      });        
-    }, global.delay);
+    }
+    
     const { params } = this.props.navigation.state;
     const token = params ? params.token : null;
     this.state.token = token;
@@ -396,7 +402,7 @@ const styles = StyleSheet.create({
   title: {  
     height: 73,
     color: "rgba(255,0,0,1)",
-    fontSize: 40,
+    fontSize: 30,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,

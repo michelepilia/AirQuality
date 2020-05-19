@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, ImageBackground } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 class Home extends Component{
@@ -11,10 +11,6 @@ class Home extends Component{
   
   constructor() {
     super();
-    global.urlSimulation = "http://192.168.1.4:3000";
-    global.urlReal  = "http://192.168.1.0:3000";
-    global.currentUrl = "http://192.168.1.4:3000";
-    global.delay = 5000;
   }
 
   logoutFunction(){
@@ -53,7 +49,7 @@ class Home extends Component{
 
   render(){
     return (
-      <View style={styles.container}>
+      <View>
 
         <View style={styles.headerRow}>
           
@@ -70,7 +66,7 @@ class Home extends Component{
         
         </View>
         <Text style={styles.airQuality}>Air Quality</Text>
-        <ScrollView style={styles.scrollView}>
+        <View style={styles.scrollView}>
           <TouchableOpacity
             onPress={() => {
 
@@ -78,14 +74,11 @@ class Home extends Component{
               this.props.navigation.navigate("ReadData", {token: this.state.token})}
             
             }
-            style={styles.readDataBtn}>
-            <Text style={styles.readDataLabel}>Read Data</Text>
-          </TouchableOpacity>
+            style={styles.rectangle}>
+              
+            <Text style={styles.readDataLabel}>Real Time data</Text>
+            <Text style={{fontSize:12, marginTop:-20,color:"white"}}>Read real time data, received from your Arduino device</Text>
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("ViewMap")}
-            style={styles.viewMapBtn}>
-            <Text style={styles.viewMapLabel}>View Map</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -93,10 +86,23 @@ class Home extends Component{
               this.props.navigation.navigate("Historical", {token: this.state.token})
             }
             }
-            style={styles.viewMapBtn}>
-            <Text style={styles.viewMapLabel}>Historical Data</Text>
+            style={styles.rectangle}>
+            <Text style={styles.readDataLabel}>Stored Data</Text>
+            <Text style={{fontSize:12, marginTop:-20, color:"white"}}>Get recently stored data from your Arduino device and ARPA stations
+            </Text>
           </TouchableOpacity>
-        </ScrollView>
+
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate("Historical", {token: this.state.token})
+            }
+            }
+            style={styles.rectangle}>
+            <Text style={styles.readDataLabel}>User Info</Text>
+            <Text style={{fontSize:12, color:"white", marginTop:-20}}>Displays user information
+            </Text>
+          </TouchableOpacity>
+        </View>
 
       </View>
     );
@@ -104,9 +110,8 @@ class Home extends Component{
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
+
+
   airQuality: {
     height: 73,
     color: "rgba(255,0,0,1)",
@@ -119,16 +124,18 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginTop: 51
   },
-  viewMapBtn: {
-    width: 305,
-    height: 93,
+  rectangle: {
+    width: 170,
+    height: 150,
     backgroundColor: "rgba(255,0,0,1)",
-    marginTop: 50,
-    marginLeft: 35
+    marginLeft: 15,
+    padding:15,
+    marginTop:20,
+  
   },
   viewMapLabel: {
-    width: 305,
-    height: 93,
+    width: 150,
+    height: 90,
     color: "rgba(255,255,255,1)",
     fontSize: 30,
     fontFamily: "roboto-regular",
@@ -136,23 +143,31 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center"
   },
+  realTimeDataImage:{
+    opacity:0.5,
+    width:130,
+    height:90,
+    marginLeft:'auto',
+    marginRight:'auto',
+
+  },
   readDataBtn: {
-    width: 305,
-    height: 93,
+    width: 150,
+    height: 90,
     backgroundColor: "rgba(255,0,0,1)",
     marginTop: 130,
     marginLeft: 35
   },
   readDataLabel: {
-    width: 305,
-    height: 93,
     color: "rgba(255,255,255,1)",
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: "roboto-regular",
     lineHeight: 93,
     letterSpacing: 0,
     textAlign: "center",
-    marginTop: -1
+  },
+  descriptionLabel:{
+    opacity:1,
   },
   statsButton: {
     width: 27,
@@ -186,8 +201,14 @@ const styles = StyleSheet.create({
     marginTop: 1
   },
   scrollView:{
-    marginBottom: 10,
-  },
+    flexDirection:'row',
+    flexWrap:'wrap',
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginTop:80,
+    marginBottom:'auto',
+  }
+
 });
 
 export default Home;

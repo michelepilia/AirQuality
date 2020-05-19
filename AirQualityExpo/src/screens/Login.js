@@ -57,7 +57,7 @@ class Login extends Component{
       this.setState({isLoading:false});
       if(json!==undefined && json.token!==undefined){
         this.setState({token:json.token});
-        this.props.navigation.navigate("ReadData", {token: json.token});
+        this.props.navigation.navigate("Home", {token: json.token});
       }
       else{
         alert("Wrong email or password");
