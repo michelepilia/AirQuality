@@ -155,16 +155,6 @@ class Settings extends Component{
         <ScrollView>
         <View style={styles.headerRow}>
           <Text style={styles.airQualityHeader}>Air Quality</Text>
-
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Home")}
-            style={styles.homeButton}>
-            <Image
-              source={require("../assets/images/home_logo.png")}
-              resizeMode="contain"
-              style={styles.homelogo}
-            ></Image>
-          </TouchableOpacity>
           
           <TouchableOpacity
             onPress={() => this.logoutFunction()}

@@ -77,7 +77,7 @@ class Home extends Component{
             style={styles.rectangle}>
               
             <Text style={styles.readDataLabel}>Real Time data</Text>
-            <Text style={{fontSize:12, marginTop:-20,color:"white"}}>Read real time data, received from your Arduino device</Text>
+            <Text style={{fontSize:12, marginTop:-30,color:"white", textAlign:'center'}}>Read real time data, received from your Arduino device</Text>
 
           </TouchableOpacity>
 
@@ -88,18 +88,18 @@ class Home extends Component{
             }
             style={styles.rectangle}>
             <Text style={styles.readDataLabel}>Stored Data</Text>
-            <Text style={{fontSize:12, marginTop:-20, color:"white"}}>Get recently stored data from your Arduino device and ARPA stations
+            <Text style={{fontSize:12, marginTop:-30, color:"white",textAlign:'center'}}>Get recently stored data from your Arduino device and ARPA stations
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate("Historical", {token: this.state.token})
+              this.props.navigation.navigate("Settings", {token: this.state.token})
             }
             }
             style={styles.rectangle}>
             <Text style={styles.readDataLabel}>User Info</Text>
-            <Text style={{fontSize:12, color:"white", marginTop:-20}}>Displays user information
+            <Text style={{fontSize:12, color:"white", marginTop:-30,textAlign:'center'}}>Displays user information
             </Text>
           </TouchableOpacity>
         </View>
@@ -115,22 +115,24 @@ const styles = StyleSheet.create({
   airQuality: {
     height: 73,
     color: "rgba(255,0,0,1)",
-    fontSize: 40,
+    fontSize: 32,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 51
+    marginTop: 20
   },
   rectangle: {
-    width: 170,
-    height: 150,
+    width: 300,
+    height: 100,
     backgroundColor: "rgba(255,0,0,1)",
-    marginLeft: 15,
-    padding:15,
-    marginTop:20,
+    marginTop:15,
+    alignItems:"center",
+    borderRadius:5,
+    borderColor:"rgba(255,20,20,0.5)",
+    padding:10,
   
   },
   viewMapLabel: {
@@ -165,6 +167,7 @@ const styles = StyleSheet.create({
     lineHeight: 93,
     letterSpacing: 0,
     textAlign: "center",
+    marginTop:-15,
   },
   descriptionLabel:{
     opacity:1,
@@ -179,14 +182,14 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
-    marginTop: 44,
+    marginTop: 30,
     marginLeft: "auto",
     marginRight: 10,
   },
   logoutLogo: {
     width: 27,
     height: 38,
-    marginTop: 1
+    marginTop: 30
   },
   headerRow: {
     height: 38,
@@ -201,12 +204,15 @@ const styles = StyleSheet.create({
     marginTop: 1
   },
   scrollView:{
-    flexDirection:'row',
+    flexDirection:'column',
     flexWrap:'wrap',
     marginLeft:'auto',
     marginRight:'auto',
-    marginTop:80,
+    marginTop:40,
     marginBottom:'auto',
+    backgroundColor:'rgba(255,100,50,0.3)',
+    padding:20,
+    width:340,
   }
 
 });
