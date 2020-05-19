@@ -698,6 +698,7 @@ class Historical extends Component{
                           data2={this.state.data}
                           sensorsData={this.state.sensorsData}
                           showArpaInfo={this.state.showArpaInfo}
+                          read={false}
                           />
             </ScrollView>
             

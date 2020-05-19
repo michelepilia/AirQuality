@@ -3,6 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "rea
 import * as Progress from 'react-native-progress';
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
+import DataBars from "../components/DataBars";
 
 const micron = "\u00b5"
 
@@ -11,21 +12,20 @@ class ReadData extends Component {
   constructor(props){
     super(props);
     this.state = {
-
-      data:{
-        temperature: [10.0, -10, 45], //[value, minValue, maxValue]
-        humidity: [10.0, 0, 100],
-        pressure: [10.0, 980, 1035],
-        altitude: [150, 0, 800],
-        tvocs: [10.0, 100, 800],
-        eco2: [3750, 2500, 4500],
-        pm05: [0, 0, 10],
-        pm1: [0, 0, 10],
-        pm25: [0, 0, 10],
-        pm4: [0, 0, 10],
-        pm10: [0, 0, 10],
-        lat: [45.47,0,0],
-        lng: [9.22,0,0],
+      data : {
+        temperature: 10.0,
+        humidity:10.0,
+        pressure: 10.0,
+        altitude: 150,
+        tvocs: 10.0,
+        eco2: 3750,
+        pm05: 0,
+        pm1: 0,
+        pm25: 0,
+        pm4: 0,
+        pm10: 0,
+        lat: 45.47,
+        lng:9.22,
       },
 
       latitude: 45.47,
@@ -155,19 +155,20 @@ class ReadData extends Component {
   endToNavigate(link) {
     console.log("WillUnmount");
     clearInterval(this.timeInterval);
+    console.log(this.state.token);
     navigator.geolocation.clearWatch(this.watchID);
-
+    if(link=="Login"){
     return fetch(this.url+"/user/logout", {
       method: "post",
       headers:{
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.state.token
+        'Authorization': 'Bearer ' + this.state.token,
       },
     })
     .then((response) => {
       if (response.status == "200"){
-        return this.props.navigation.navigate(link, {token: this.state.token});;
+        return this.props.navigation.navigate(link, {token: ''});
       }
       else if (response.status == "400"){
         alert("Bad request to server");
@@ -183,6 +184,11 @@ class ReadData extends Component {
       console.error(error);
     });
   }
+  else{
+    this.props.navigation.navigate(link, {token: this.state.token})
+  }
+  }
+
   
   // Parser for ArduinoData
   arduinoDataParser(body){
@@ -192,33 +198,33 @@ class ReadData extends Component {
     this.bodyToSend.data=fullString;
 
     data = {
-      temperature: [10.0, -10, 45], //[value, minValue, maxValue]
-      humidity: [10.0, 0, 100],
-      pressure: [10.0, 980, 1035],
-      altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
-      tvocs: [10.0, 100, 800],
-      eco2: [3750, 2500, 4500],
-      pm05: [0, 0, 10],
-      pm1: [0, 0, 10],
-      pm25: [0, 0, 10],
-      pm4: [0, 0, 10],
-      pm10: [0, 0, 10],
-      lat: [45.47,0,0],
-      lng:[9.22,0,0],
+      temperature: 10.0,
+      humidity:10.0,
+      pressure: 10.0,
+      altitude: 150,
+      tvocs: 10.0,
+      eco2: 3750,
+      pm05: 0,
+      pm1: 0,
+      pm25: 0,
+      pm4: 0,
+      pm10: 0,
+      lat: 45.47,
+      lng:9.22,
     };
 
     let array = body.split(';');
     var keys = Object.keys(data);
     keys.forEach((item, i) => {
-      data[item][0] = array[i];
+      data[item] = array[i];
       if(i==2) {
-        data[item][0]/=100;
+        data[item]/=100;
       }
       if(i==11){
-        data[item][0]=this.state.latitude;
+        data[item]=this.state.latitude;
       }
       if(i==12){
-        data[item][0]=this.state.longitude;
+        data[item]=this.state.longitude;
       }
     });
     this.setState({data:data});
@@ -246,7 +252,7 @@ class ReadData extends Component {
             onPress={() => {this.endToNavigate("Settings")}}
             style={styles.settingsButton}>
             <Image
-              source={require("../assets/images/settings_logo.jpeg")}
+              source={require("../assets/images/user-icon.png")}
               resizeMode="contain"
               style={styles.settingslogo}
             ></Image>
@@ -309,145 +315,11 @@ class ReadData extends Component {
           />
         </View>
 
-        
-
-        <View style={styles.rect}>
-          <ScrollView style={styles.scrollView}>
-            <View style={styles.coordTxt}>
-              <Text>Coordinates: {this.cutCoordString(this.state.latitude)}°N, {this.cutCoordString(this.state.longitude)}°E</Text>
-              <TouchableOpacity
-                onPress={() => this.endToNavigate("ViewMap")}
-                style={styles.locationButton}>
-                <Image
-                  source={require("../assets/images/location.png")}
-                  resizeMode="contain"
-                  style={styles.locationLogo}
-                ></Image>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>Altitude: {this.state.data.altitude[0]} mt.</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.altitude[0], 
-                                      this.state.data.altitude[1], this.state.data.altitude[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.altitude[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.altitude[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>Temperature: {this.state.data.temperature[0]}°</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.temperature[0], 
-                                      this.state.data.temperature[1], this.state.data.temperature[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.temperature[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.temperature[2]}</Text>
-              </View> 
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>Humidity: {this.state.data.humidity[0]}%</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.humidity[0], 
-                                      this.state.data.humidity[1], this.state.data.humidity[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.humidity[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.humidity[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>Pressure: {this.state.data.pressure[0]} hPa</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.pressure[0], 
-                                      this.state.data.pressure[1], this.state.data.pressure[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.pressure[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.pressure[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>TVOCs: {this.state.data.tvocs[0]} ppb</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.tvocs[0], 
-                                      this.state.data.tvocs[1], this.state.data.tvocs[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.tvocs[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.tvocs[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.state.data.eco2[0]} ppm</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.eco2[0], 
-                                      this.state.data.eco2[1], this.state.data.eco2[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.eco2[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.eco2[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.state.data.pm05[0]} {micron}m</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.pm05[0], 
-                                      this.state.data.pm05[1], this.state.data.pm05[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.pm05[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.pm05[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.state.data.pm1[0]} {micron}m</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.pm1[0], 
-                                      this.state.data.pm1[1], this.state.data.pm1[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.pm1[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.pm1[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.state.data.pm25[0]} {micron}m</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.pm25[0], 
-                                      this.state.data.pm25[1], this.state.data.pm25[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.pm25[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.pm25[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.state.data.pm4[0]} {micron}m</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.pm4[0], 
-                                      this.state.data.pm4[1], this.state.data.pm4[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.pm4[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.pm4[2]}</Text>
-              </View>
-            </View>
-
-            <View style={styles.parameterBar}>
-              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.state.data.pm10[0]} {micron}m</Text>
-              <Progress.Bar progress={this.normalizeOutput(this.state.data.pm10[0], 
-                                      this.state.data.pm10[1], this.state.data.pm10[2])} 
-                                      width={270} color="red"/>
-              <View style={styles.edgesContainer}>
-                <Text style={styles.minValue}>{this.state.data.pm10[1]}</Text>
-                <Text style={styles.maxValue}>{this.state.data.pm10[2]}</Text>
-              </View>               
-            </View>
-          </ScrollView>
-          </View>
+        <DataBars         data={this.state.data}
+                          showClusterInfo = {0} 
+                          isArpaStation={false}
+                          read={true} 
+                          />
         
       </View>
     );

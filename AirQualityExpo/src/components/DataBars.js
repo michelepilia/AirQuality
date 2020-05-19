@@ -13,12 +13,14 @@ class DataBars extends Component {
     constructor(props){
         super(props);
        // console.log(this.props.sensorsData);
+        if(!this.props.read){
         this.okSensors = [];
         this.props.sensorsData.forEach(element => {
           this.okSensors.push(parseInt(element.idsensore));
         });
         console.log(this.okSensors[0]);
         console.log(this.okSensors[1]);
+      }
 
     }
 
