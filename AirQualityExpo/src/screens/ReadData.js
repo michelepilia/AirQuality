@@ -10,9 +10,9 @@ class ReadData extends Component {
 
   constructor(props){
     super(props);
-    global.urlSimulation = "http://192.168.1.4:3000";
-    global.urlReal  = "http://192.168.1.0:3000";
-    global.currentUrl = "http://192.168.1.4:3000";
+    global.urlSimulation = "https://192.168.1.4:3000";
+    global.urlReal  = "https://192.168.1.0:3000";
+    global.currentUrl = "https://192.168.1.4:3000";
     global.delay = 5000;
     this.state = {
       data : {
@@ -68,11 +68,11 @@ class ReadData extends Component {
     data:"",
   }
   
-  urlSimulation = "http://192.168.1.4:3000";
-  urlReal = "http://192.168.1.0:3000";
-  //url = "http://192.168.1.4:3000";
+  urlSimulation = "https://192.168.1.4:3000";
+  urlReal = "https://192.168.1.0:3000";
 
   urlSaveData = "https://polimi-dima-server.herokuapp.com/api/data";
+  urlUser = "https://polimi-dima-server.herokuapp.com/api";
  
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
@@ -196,10 +196,10 @@ class ReadData extends Component {
             }
           },this.errorFunction);        
         }, global.delay);
-        });
-      } 
+      });
+    } 
     catch{
-
+      this.errorFunction();
     }
     
     const { params } = this.props.navigation.state;
@@ -216,35 +216,35 @@ class ReadData extends Component {
     console.log(this.state.token);
     navigator.geolocation.clearWatch(this.watchID);
     if(link=="Login"){
-    return fetch(this.url+"/user/logout", {
-      method: "post",
-      headers:{
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.state.token,
-      },
-    })
-    .then((response) => {
-      if (response.status == "200"){
-        return this.props.navigation.navigate(link, {token: ''});
-      }
-      else if (response.status == "400"){
-        alert("Bad request to server");
-      }
-      else if (response.status == "401"){
-        alert("Unauthorized");
-      }
-      else {
-        return alert("Invalid response");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  }
-  else{
-    this.props.navigation.navigate(link, {token: this.state.token});
-  }
+      return fetch(this.urlUser+"/user/logout", {
+        method: "post",
+        headers:{
+          Accept: 'application/json',
+          'Authorization': 'Bearer ' + this.state.token,
+        },
+      })
+      .then((response) => {
+        if (response.status == "200"){
+          return this.props.navigation.navigate(link, {token: ''});
+        }
+        else if (response.status == "400"){
+          alert("Bad request to server");
+        }
+        else if (response.status == "401"){
+          alert("Unauthorized");
+        }
+        else {
+          return alert("Invalid response");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      //alert("logout");
+    }
+    else{
+      this.props.navigation.navigate(link, {token: this.state.token});
+    }
   }
 
   

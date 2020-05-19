@@ -118,32 +118,36 @@ class ViewMap extends Component{
 
   endToNavigate(link) {
     navigator.geolocation.clearWatch(this.watchID);
-
-    return fetch(this.url+"/user/logout", {
-      method: "post",
-      headers:{
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.state.token
-      },
-    })
-    .then((response) => {
-      if (response.status == "200"){
-        return this.props.navigation.navigate(link, {token: this.state.token});;
-      }
-      else if (response.status == "400"){
-        alert("Bad request to server");
-      }
-      else if (response.status == "401"){
-        alert("Unauthorized");
-      }
-      else {
-        return alert("Invalid response");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    if(link!="Login"){
+      return this.props.navigation.navigate(link, {token: this.state.token});
+    }
+    else{
+      return fetch(this.url+"/user/logout", {
+        method: "post",
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.state.token
+        },
+      })
+      .then((response) => {
+        if (response.status == "200"){
+          return this.props.navigation.navigate(link, {token: this.state.token});
+        }
+        else if (response.status == "400"){
+          alert("Bad request to server");
+        }
+        else if (response.status == "401"){
+          alert("Unauthorized");
+        }
+        else {
+          return alert("Invalid response");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   onMapPress(e) {
