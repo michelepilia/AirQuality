@@ -41,6 +41,7 @@ class Historical extends Component{
             showArpaInfo:-1,
             startDate: '',
             endDate: '',
+            token: '',
         }
 
         this.today={
@@ -410,11 +411,16 @@ class Historical extends Component{
 
 
     componentDidMount() {
-        this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json");
-        this.arduinoDataFetch.retrieveDataByDate(this.todayUrlRequest, 
-          (arduinoData)=>{this.setState({arduinoData:arduinoData})
-                          this.elaborateArduinoData();
-        });
+      const { params } = this.props.navigation.state;
+      const token = params ? params.token : null;
+      this.setState({token:token});
+
+      this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json").then(()=>
+      this.arduinoDataFetch.retrieveDataByDate(this.todayUrlRequest, 
+        (arduinoData)=>{this.setState({arduinoData:arduinoData})
+                        this.elaborateArduinoData();
+      })
+      )
 
 
         this.geoLocation().then(()=>{
@@ -500,7 +506,7 @@ class Historical extends Component{
 
     render() {
 
-        if(this.state.isLoading&&this.state.isLoadingGps){
+        if(this.state.isLoading||this.state.isLoadingGps){
             return(
                 <View style={styles.ActivityIndicator}>
                     <ActivityIndicator 

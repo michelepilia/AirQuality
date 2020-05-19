@@ -10,6 +10,10 @@ class ReadData extends Component {
 
   constructor(props){
     super(props);
+    global.urlSimulation = "http://192.168.1.4:3000";
+    global.urlReal  = "http://192.168.1.0:3000";
+    global.currentUrl = "http://192.168.1.4:3000";
+    global.delay = 5000;
     this.state = {
       data : {
         temperature: 10.0,
@@ -75,9 +79,10 @@ class ReadData extends Component {
   }
 
   readDataFunction(){
+    console.log(global.currentUrl);
     return fetch(global.currentUrl)
     .then((response) => {
-      //console.log(response);
+      console.log(response);
       if (response.status == "200"){
         this.setState({isReadingData:true});
         return (response.text());
@@ -310,23 +315,12 @@ class ReadData extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {this.props.navigation.navigate("ViewMap", {token: this.state.token})}}
+            onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})}}
             style={styles.locationButton}>
             <Image
-              source={require("../assets/images/location3.png")}
+              source={require("../assets/images/stats_logo.png")}
               resizeMode="contain"
               style={styles.locationLogo}
-            ></Image>
-          </TouchableOpacity>
-
-
-          <TouchableOpacity
-            onPress={() => {this.endToNavigate("Home")}}
-            style={styles.homeButton}>
-            <Image
-              source={require("../assets/images/home_logo.png")}
-              resizeMode="contain"
-              style={styles.homelogo}
             ></Image>
           </TouchableOpacity>
           
@@ -351,7 +345,7 @@ class ReadData extends Component {
           region = {this.state.mapRegion}
           showsUserLocation={this.state.showsUserLocation}
           followUserLocation={this.state.followUserLocation}
-          onUserLocationChange={event => console.log(event.nativeEvent)}
+         // onUserLocationChange={event => console.log(event.nativeEvent)}
           width={Dimensions.get("window").width-50}
 
         >
@@ -409,7 +403,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 15
+    marginTop: 5
   },
   airQuality: {
     width: 91,
@@ -423,7 +417,7 @@ const styles = StyleSheet.create({
   },
   mapImg: {
     height: 200,
-    marginTop: 42,
+    marginTop: 15,
     marginLeft: 'auto',
     marginRight:'auto'
   },
@@ -513,7 +507,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     marginLeft: 15,
-    marginTop: 10,
+    marginTop: 25,
     
   },
   ActivityIndicator:{
