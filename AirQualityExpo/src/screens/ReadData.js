@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "rea
 import * as Progress from 'react-native-progress';
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
-import DataBars from "../components/DataBars";
+import DataBarsRealTime from "../components/DataBarsRealTime";
 
 const micron = "\u00b5"
 
@@ -35,6 +35,7 @@ class ReadData extends Component {
       token: '',
       isOnStore: false,
       errorMessage: '',
+      isReadingData: false,
     }
 
     this.normalizeOutput.bind(this);
@@ -62,7 +63,9 @@ class ReadData extends Component {
   readDataFunction(){
     return fetch(global.currentUrl)
     .then((response) => {
+      //console.log(response);
       if (response.status == "200"){
+        this.setState({isReadingData:true});
         return (response.text());
       }
       else {
@@ -83,7 +86,7 @@ class ReadData extends Component {
   }
 
   saveDataFunction(){
-    console.log(JSON.stringify(this.bodyToSend));
+    //console.log(JSON.stringify(this.bodyToSend));
 
     return fetch(this.urlSaveData, {
       method: "post",
@@ -94,8 +97,14 @@ class ReadData extends Component {
       },
       body: JSON.stringify(this.bodyToSend),
     })
-    .then((response) => response.json())
-    .then((responseJson)=>console.log(responseJson))  
+    .then((response) => {
+      if (response.status != "200"){
+        alert(response.status);
+      }
+      response.json()
+    }
+    )
+    //.then((responseJson)=>console.log(responseJson))  
     .catch((error) => {
       console.error(error);
     });
@@ -155,6 +164,8 @@ class ReadData extends Component {
   endToNavigate(link) {
     console.log("WillUnmount");
     clearInterval(this.timeInterval);
+    this.setState({isReadingData:false});
+
     console.log(this.state.token);
     navigator.geolocation.clearWatch(this.watchID);
     if(link=="Login"){
@@ -185,7 +196,7 @@ class ReadData extends Component {
     });
   }
   else{
-    this.props.navigation.navigate(link, {token: this.state.token})
+    this.props.navigation.navigate(link, {token: this.state.token});
   }
   }
 
@@ -228,6 +239,7 @@ class ReadData extends Component {
       }
     });
     this.setState({data:data});
+    //console.log(this.state.data);
     return data;
   }
 
@@ -235,16 +247,9 @@ class ReadData extends Component {
 
   render(){
 
-    if(this.state.isOnSimulation){
-      global.currentUrl = global.urlSimulation
-    }
-    else {
-      global.currentUrl = global.urlReal;
-    }
-
     return (
       <View style={styles.container}>
-
+        <ScrollView>
         <View style={styles.headerRow}>
           <Text style={styles.airQuality}>Air Quality</Text>
 
@@ -257,6 +262,17 @@ class ReadData extends Component {
               style={styles.settingslogo}
             ></Image>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {this.props.navigation.navigate("ViewMap", {token: this.state.token})}}
+            style={styles.locationButton}>
+            <Image
+              source={require("../assets/images/location3.png")}
+              resizeMode="contain"
+              style={styles.locationLogo}
+            ></Image>
+          </TouchableOpacity>
+
 
           <TouchableOpacity
             onPress={() => {this.endToNavigate("Home")}}
@@ -288,39 +304,20 @@ class ReadData extends Component {
             isOn={this.state.isOnStore}
             onColor="red"
             offColor="gray"
-            label="Rec"
+            label="Store Data"
             labelStyle={styles.toggleLabel}
             size="large"
             onToggle={isOnStore => {
               this.setState({ isOnStore });
             }}
+            size="small"
           />
 
-          <ToggleSwitch
-            isOn={this.state.isOnSimulation}
-            onColor="orange"
-            offColor="gray"
-            label="Simulate Data"
-            labelStyle={styles.toggleLabel}
-            size="large"
-            onToggle={isOnSimulation => {
-              this.setState({ isOnSimulation });
-              if(isOnSimulation){
-                global.currentUrl=global.urlSimulation
-              }
-              else {
-                global.currentUrl = global.urlReal;
-              }
-            }}
-          />
         </View>
 
-        <DataBars         data={this.state.data}
-                          showClusterInfo = {0} 
-                          isArpaStation={false}
-                          read={true} 
-                          />
+        <DataBarsRealTime  data={this.state.data}/>
         
+        </ScrollView>
       </View>
     );
   }
@@ -352,7 +349,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 25
+    marginTop: 15
   },
   airQuality: {
     width: 91,
@@ -368,7 +365,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 163
+    marginLeft: 150
   },
   settingslogo: {
     width: 27,
@@ -388,15 +385,14 @@ const styles = StyleSheet.create({
   },
   locationButton: {
     width: 27,
-    height: 27,
+    height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 25,
-    marginTop: -15
+    marginLeft: 10,
+    marginTop:10
   },
   locationLogo: {
     width: 27,
     height: 27,
-    marginTop: 10
   },
   logoutButton: {
     width: 27,
@@ -450,9 +446,9 @@ const styles = StyleSheet.create({
   toggleContainer:{
     display: "flex",
     flexDirection: "row",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: 20,
+    marginLeft: 15,
+    marginTop: 10,
+    
   }
 });
 
