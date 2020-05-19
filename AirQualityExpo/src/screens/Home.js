@@ -17,6 +17,34 @@ class Home extends Component{
     global.delay = 5000;
   }
 
+  logoutFunction(){
+    return fetch(this.url+"/user/logout", {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        return this.props.navigation.navigate("Login");
+      }
+      else if (response.status == "400"){
+        alert("Bad request to server");
+      }
+      else if (response.status == "401"){
+        alert("Unauthorized");
+      }
+      else {
+        return alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   componentDidMount(){
     const { params } = this.props.navigation.state;
     const token = params ? params.token : null;
@@ -30,7 +58,7 @@ class Home extends Component{
         <View style={styles.headerRow}>
           
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
+            onPress={() => this.logoutFunction()}
             style={styles.logoutButton1}>
             <Image
               source={require("../assets/images/logout.png")}

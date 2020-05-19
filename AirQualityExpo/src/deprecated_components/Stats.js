@@ -164,6 +164,34 @@ class Stats extends Component{
     console.log("UPDATING");
   }
 
+  logoutFunction(){
+    return fetch(this.url+"/user/logout", {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        return this.props.navigation.navigate("Login");
+      }
+      else if (response.status == "400"){
+        alert("Bad request to server");
+      }
+      else if (response.status == "401"){
+        alert("Unauthorized");
+      }
+      else {
+        return alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+  
   handleChangeDate(){
     if(this.state.startDate!=''){   
         this.retrieveDataByDate(b);
@@ -189,9 +217,8 @@ class Stats extends Component{
           </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
-            style={styles.logoutButton}
-          >
+            onPress={() => this.logoutFunction()}
+            style={styles.logoutButton}>
             <Image
               source={require("../assets/images/logout.png")}
               resizeMode="contain"

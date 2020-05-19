@@ -156,7 +156,32 @@ class ReadData extends Component {
     console.log("WillUnmount");
     clearInterval(this.timeInterval);
     navigator.geolocation.clearWatch(this.watchID);
-    this.props.navigation.navigate(link, {token: this.state.token});
+
+    return fetch(this.url+"/user/logout", {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        return this.props.navigation.navigate(link, {token: this.state.token});;
+      }
+      else if (response.status == "400"){
+        alert("Bad request to server");
+      }
+      else if (response.status == "401"){
+        alert("Unauthorized");
+      }
+      else {
+        return alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
   
   // Parser for ArduinoData

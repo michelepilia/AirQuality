@@ -47,6 +47,34 @@ class Settings extends Component{
     this.confirmPassword = text;
   }
 
+  logoutFunction(){
+    return fetch(this.url+"/user/logout", {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        return this.props.navigation.navigate("Login");
+      }
+      else if (response.status == "400"){
+        alert("Bad request to server");
+      }
+      else if (response.status == "401"){
+        alert("Unauthorized");
+      }
+      else {
+        return alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   storePassword(){
     console.log("token: " + this.state.token);
     console.log("confirm: " + this.confirmPassword + "Password: " + this.state.password);
@@ -143,7 +171,7 @@ class Settings extends Component{
           </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
+            onPress={() => this.logoutFunction()}
             style={styles.logoutButton}
           >
             <Image

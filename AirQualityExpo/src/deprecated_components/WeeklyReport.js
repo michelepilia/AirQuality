@@ -82,6 +82,34 @@ class WeeklyReport extends Component{
 
   }
 
+  logoutFunction(){
+    return fetch(this.url+"/user/logout", {
+      method: "post",
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+    })
+    .then((response) => {
+      if (response.status == "200"){
+        return this.props.navigation.navigate("Login");
+      }
+      else if (response.status == "400"){
+        alert("Bad request to server");
+      }
+      else if (response.status == "401"){
+        alert("Unauthorized");
+      }
+      else {
+        return alert("Invalid response");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   addOneMeasureToState(body){
 
     //alert("reading data: delay is = " +global.delay);
@@ -207,7 +235,7 @@ class WeeklyReport extends Component{
           </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
+            onPress={() => this.logoutFunction()}
             style={styles.logoutButton}
           >
             <Image
