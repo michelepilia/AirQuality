@@ -1,5 +1,5 @@
 // Imports
-const http = require('http');
+const http = require('https');
 const fs = require('fs');
 const os = require('os');
 
@@ -127,4 +127,4 @@ const server = http.createServer(function(request, response) {
 })
 
 server.listen(port, host)
-console.log(`Listening at http://${host}:${port}`)
+console.log(`Listening at https://${host}:${port}`)
