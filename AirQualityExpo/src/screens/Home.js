@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
-    marginTop: 30,
+    marginTop: 10,
     marginLeft: "auto",
     marginRight: 10,
   },
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   headerRow: {
     height: 38,
     flexDirection: "row",
-    marginTop: 44,
+    marginTop: 20,
     marginLeft: 10,
     marginRight: 17
   },

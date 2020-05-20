@@ -263,8 +263,8 @@ class Settings extends Component{
               </View>
             </View>
             <View style={{marginLeft:20}}>
-              <Text style={{marginTop:30, fontSize:14}}>Read data from </Text>
-                <View style={{marginTop:-20,width:200}}>
+              <Text style={{marginTop:40, fontSize:14}}>Read data from </Text>
+                <View style={{marginTop:-30,width:200}}>
                 <TextField
                   underlineColorAndroid = "transparent"
                   autoCapitalize = "none"
@@ -286,8 +286,7 @@ class Settings extends Component{
                   value = {5}
                   onValueChange = {this.changeDelayValue}
                   thumbTintColor = "rgb(255,10,10)"
-
-                  marginTop={10}
+                  marginLeft={-10}
                 />
               </View>
            </View>
