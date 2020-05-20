@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, Slider,ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, Slider,ActivityIndicator, Dimensions } from "react-native";
 import { TextField } from 'react-native-material-textfield';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { ScrollView } from "react-native-gesture-handler";
@@ -17,6 +17,7 @@ class Settings extends Component{
     gender: '',
     delay: global.delay,
     isLoading:true,
+    birthdayRepresentation: '',
   }
 
   confirmPassword = '';
@@ -25,6 +26,8 @@ class Settings extends Component{
 
   username = "admin";
   tokenValid = "valid/expired";
+
+
 
   handleArduinoUrl = (text) => {
     global.currentUrl = text;  
@@ -147,10 +150,19 @@ class Settings extends Component{
       console.log("Email: " + this.state.email);
       console.log("Gender: " + this.state.gender);
       console.log("Birthday: " + this.state.birthDay);
+      this.elaborateBirthday();
     })
     .catch((error) => {
       console.error(error);
     });
+
+  }
+
+  elaborateBirthday(){
+    let a = this.state.birthDay.replace('T','-').split('-');
+    console.log(a);
+    let b =a[2]+"/"+a[1]+"/"+a[0];
+    this.setState({birthdayRepresentation : b});
   }
 
   componentDidMount(){
@@ -177,111 +189,111 @@ class Settings extends Component{
 
     return (
       <View style={styles.container}>
-        <ScrollView>
-        <View style={styles.headerRow}>
-          <Text style={styles.airQualityHeader}>Air Quality</Text>
 
-          <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.navigate("ReadData",{token:this.state.token})
-                      this.componentCleanUp();
-                    }}
-                    style={styles.homeButton}>
-                    <Image
-                    source={require("../assets/images/location3.png")}
-                    resizeMode="contain"
-                    style={styles.homelogo}
-                    ></Image>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})
-            this.componentCleanUp();
-          }}
-            style={styles.locationButton}>
-            <Image
-              source={require("../assets/images/stats_logo.png")}
-              resizeMode="contain"
-              style={styles.locationLogo}
-            ></Image>
-          </TouchableOpacity>
+        <ScrollView>        
           
-          <TouchableOpacity
-            onPress={() => {this.logoutFunction()
+          <View style={styles.headerRow}>
+            <Text style={styles.airQualityHeader}>Air Quality</Text>
+            <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.navigate("ReadData",{token:this.state.token})
+                        this.componentCleanUp();
+                      }}
+                      style={styles.homeButton}>
+                      <Image
+                      source={require("../assets/images/location3.png")}
+                      resizeMode="contain"
+                      style={styles.homelogo}
+                      ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})
               this.componentCleanUp();
-            
             }}
-            style={styles.logoutButton}
-          >
-            <Image
-              source={require("../assets/images/logout.png")}
-              resizeMode="contain"
-              style={styles.logoutLogo}
-            ></Image>
-          </TouchableOpacity>
-
-        </View>
-
-        <Text style={styles.title}>Settings</Text>
-        <View style = {styles.mainView}>
-          <Text style={{marginTop:35, marginLeft: 15}}>User Info</Text>
-          <View style = {{flexDirection:"column", marginTop: 15, marginLeft: 15}}> 
-              <Text style={{marginTop:5}}>User: {this.state.email}</Text>
-              <Text style={{marginTop:5}}>First Name: {this.state.firstName}</Text>
-              <Text style={{marginTop:5}}>Last Name: {this.state.lastName}</Text>
-              <Text style={{marginTop:5}}>Gender: {this.state.gender}</Text>
-              <Text style={{marginTop:5}}>Birthday: {this.state.birthDay}</Text>
-              <Text style={{marginTop:5}}>Token status: {this.state.token}</Text>
+              style={styles.locationButton}>
+              <Image
+                source={require("../assets/images/stats_logo.png")}
+                resizeMode="contain"
+                style={styles.locationLogo}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {this.logoutFunction()
+                this.componentCleanUp();
+              
+              }}
+              style={styles.logoutButton}
+            >
+              <Image
+                source={require("../assets/images/logout.png")}
+                resizeMode="contain"
+                style={styles.logoutLogo}
+              ></Image>
+            </TouchableOpacity>
           </View>
+          
+          <Text style={styles.title}>Settings</Text>
+          <View  style={styles.scrollView}> 
+            <View>
+              <View style = {{flexDirection:"column", marginTop: 15, marginLeft:20, fontSize:14}}> 
+                <Text style={{marginTop:10}}>Email: {this.state.email}</Text>
+                <Text style={{marginTop:10}}>First Name: {this.state.firstName}</Text>
+                <Text style={{marginTop:10}}>Last Name: {this.state.lastName}</Text>
+                <Text style={{marginTop:10}}>Gender: {this.state.gender}</Text>
+                <Text style={{marginTop:10}}>Birthday: {this.state.birthdayRepresentation}</Text>
+              </View>
+              <View style={{marginTop:-30}}>
+                <View style={styles.inputView}>
+                  <PasswordInputText
+                    value={this.state.password}
+                    label= {"New password"}
+                    onChangeText={this.handlePassword}/>
+                </View>
+                <View style={styles.inputView}>
+                  <PasswordInputText
+                    value={this.confirmPassword}
+                    label = {"Confirm Password"}
+                    onChangeText={this.handleConfirmPassword}/>
+                </View>
+                <TouchableOpacity
+                  onPress={() => this.storePassword()}
+                  style={styles.button1}>
+                  <Text style={styles.text}>Change password</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{marginLeft:20}}>
+              <Text style={{marginTop:30, fontSize:14}}>Read data from </Text>
+                <View style={{marginTop:-20,width:200}}>
+                <TextField
+                  underlineColorAndroid = "transparent"
+                  autoCapitalize = "none"
+                  onChangeText = {this.handleArduinoUrl}
+                  formatText={this.formatText}
+                  label={global.currentUrl}
+                  />
+                  </View>
 
-          <View style={styles.inputView}>
-            <PasswordInputText
-              value={this.state.password}
-              onChangeText={this.handlePassword}/>
+              <View style = {{marginTop:20}}>
+                <Text style ={{fontSize:14}}>Read every {global.delay/1000} seconds</Text>
+                <Slider
+                  style={{width: 200, height: 40}}
+                  minimumValue={3}
+                  maximumValue={10}
+                  minimumTrackTintColor="rgb(255,0,0)"
+                  maximumTrackTintColor="rgb(255,0,0)"
+                  step={1}
+                  value = {5}
+                  onValueChange = {this.changeDelayValue}
+                  thumbTintColor = "rgb(255,10,10)"
+
+                  marginTop={10}
+                />
+              </View>
+           </View>
           </View>
-
-          <View style={styles.inputView}>
-            <PasswordInputText
-              value={this.confirmPassword}
-              label = "Confirm Password"
-              onChangeText={this.handleConfirmPassword}/>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => this.storePassword()}
-            style={styles.button1}>
-            <Text style={styles.text}>Save New Password</Text>
-          </TouchableOpacity>
-
-          <Text style={{marginTop:35, marginLeft: 15}}>Read data from: </Text>
-          <View style = {{marginTop:5, marginLeft: 15, marginRight: 15}}>
-    
-          <TextField style = {styles.inputUrl}
-                underlineColorAndroid = "transparent"
-                autoCapitalize = "none"
-                onChangeText = {this.handleArduinoUrl}
-                formatText={this.formatText}
-                placeholder = {global.urlReal}
-                label="Arduino Wi-Fi URL"/>
-          </View>
-
-          <View style = {{marginTop:20}}>
-            <Text style ={{marginLeft:15}}>Read data every {this.state.delay/1000} seconds</Text>
-            <Slider
-              style={{width: 230, height: 40}}
-              minimumValue={3}
-              maximumValue={10}
-              minimumTrackTintColor="rgb(255,0,0)"
-              maximumTrackTintColor="rgb(255,0,0)"
-              step={1}
-              value = {5}
-              onValueChange = {this.changeDelayValue}
-              thumbTintColor = "rgb(255,10,10)"
-            />
-
-          </View>
-        </View>
         </ScrollView>
+
       </View>
     );
   }
@@ -290,8 +302,9 @@ class Settings extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
+
   ActivityIndicator:{
     marginLeft:'auto',
     marginRight:'auto',
@@ -312,14 +325,23 @@ const styles = StyleSheet.create({
   title: {  
     height: 73,
     color: "rgba(255,0,0,1)",
-    fontSize: 40,
+    fontSize: 36,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 25
+    marginTop: 5
+  },
+  scrollView:{
+    padding:15,
+    backgroundColor:'rgba(255,100,50,0.3)',
+    width:Dimensions.get('window').width-40,
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginTop:20,
+    marginBottom:20,
   },
   viewMapBtn: {
     width: 305,
@@ -360,9 +382,22 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 193
+    marginLeft: 170
   },
+
+  locationButton:{
+    width: 27,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,1)",
+    marginLeft: 20
+  },
+
   homelogo: {
+    width: 27,
+    height: 38,
+    marginTop: 1
+  },
+  locationLogo:{
     width: 27,
     height: 38,
     marginTop: 1
@@ -385,39 +420,34 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 17
   },
-  inputUrl: {
-    marginTop: -8,
-    height: 40,
-    marginLeft: 15,
-    marginRight:15,
-    width:300
- }, 
  mainView: {
-   backgroundColor: "rgba(255,5,5,0.05)",
+   backgroundColor: "rgba(255,100,50,0.2)",
    marginLeft: 20,
    marginRight: 20,
    marginTop:10
  },
  inputView:{
-   margin: 5,
+   marginLeft: 20,
+   width:250,
+   height:30,
+   marginTop:15,
+
  },
  button1: {
-   width: 305,
-   height: 60,
-   backgroundColor: "rgba(255,0,0,1)",
+   width: 60,
+   height: 35,
+   backgroundColor: "rgba(255,70,20,1)",
    marginTop: 50,
-   marginLeft: 35
+   marginLeft: 20,
+
  },
  text: {
-   width: 305,
-   height: 60,
    color: "rgba(255,255,255,1)",
-   fontSize: 30,
+   fontSize: 12,
    fontFamily: "roboto-regular",
-   lineHeight: 60,
    letterSpacing: 0,
    textAlign: "center",
-   marginTop: -1,
+
  },
 
 });

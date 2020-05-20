@@ -11,6 +11,11 @@ class Home extends Component{
   
   constructor() {
     super();
+    global.urlSimulation = "http://192.168.1.4:3000";
+    global.urlReal  = "http://192.168.1.0:3000";
+    global.currentUrl = "http://192.168.1.4:3000";
+    global.delay = 5000;
+
   }
 
   logoutFunction(){
