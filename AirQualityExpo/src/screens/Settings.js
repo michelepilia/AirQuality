@@ -188,10 +188,8 @@ class Settings extends Component{
   else{
 
     return (
-      <View style={styles.container}>
+      <ScrollView scrollEnabled={true} style={styles.container}>
 
-        <ScrollView>        
-          
           <View style={styles.headerRow}>
             <Text style={styles.airQualityHeader}>Air Quality</Text>
             <TouchableOpacity
@@ -247,12 +245,14 @@ class Settings extends Component{
                   <PasswordInputText
                     value={this.state.password}
                     label= {"New password"}
+                    tintColor={'rgba(255,50,10,1)'}
                     onChangeText={this.handlePassword}/>
                 </View>
                 <View style={styles.inputView}>
                   <PasswordInputText
                     value={this.confirmPassword}
                     label = {"Confirm Password"}
+                    tintColor={'rgba(255,50,10,1)'}
                     onChangeText={this.handleConfirmPassword}/>
                 </View>
                 <TouchableOpacity
@@ -271,6 +271,7 @@ class Settings extends Component{
                   onChangeText = {this.handleArduinoUrl}
                   formatText={this.formatText}
                   label={global.currentUrl}
+                  tintColor={'rgba(255,50,10,1)'}
                   />
                   </View>
 
@@ -291,9 +292,8 @@ class Settings extends Component{
               </View>
            </View>
           </View>
-        </ScrollView>
-
-      </View>
+          <View style={{marginBottom:20, marginTop:20}}></View>
+      </ScrollView>
     );
   }
   }
@@ -335,12 +335,14 @@ const styles = StyleSheet.create({
   },
   scrollView:{
     padding:15,
-    backgroundColor:'rgba(255,100,50,0.3)',
-    width:Dimensions.get('window').width-40,
+    backgroundColor:'rgba(255,50,10,0.1)',
+    width:Dimensions.get('window').width-60,
     marginLeft:'auto',
     marginRight:'auto',
     marginTop:20,
     marginBottom:20,
+    height:Dimensions.get('window').height-50,
+
   },
   viewMapBtn: {
     width: 305,
