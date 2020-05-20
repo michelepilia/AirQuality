@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, Slider } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, Slider,ActivityIndicator } from "react-native";
 import { TextField } from 'react-native-material-textfield';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { ScrollView } from "react-native-gesture-handler";
@@ -16,6 +16,7 @@ class Settings extends Component{
     birthDay: '',
     gender: '',
     delay: global.delay,
+    isLoading:true,
   }
 
   confirmPassword = '';
@@ -27,6 +28,11 @@ class Settings extends Component{
 
   handleArduinoUrl = (text) => {
     global.currentUrl = text;  
+  }
+
+  componentCleanUp(){
+    console.log("Cleaning");
+    //this.focusListener.remove();
   }
 
   changeDelayValue = (value) => {
@@ -111,9 +117,7 @@ class Settings extends Component{
     }
   }
 
-
-
-  componentDidMount(){
+  onFocusFunction = () => {
     const { params } = this.props.navigation.state;
 
     const token = params ? params.token : null;
@@ -135,7 +139,8 @@ class Settings extends Component{
         gender: responseJson.gender,
         email: responseJson.email,
         firstName: responseJson.firstName,
-        lastName: responseJson.lastName
+        lastName: responseJson.lastName,
+        isLoading:false,
       });
       console.log("First Name: " + this.state.firstName);
       console.log("Last Name: " + this.state.lastName);
@@ -148,16 +153,64 @@ class Settings extends Component{
     });
   }
 
+  componentDidMount(){
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.onFocusFunction();
+    })
+    
+  }
+
   render(){
+
+    if(this.state.isLoading){
+      return(
+          <View style={styles.ActivityIndicator}>
+              <ActivityIndicator 
+                size="large"
+                color="red"                   
+              />
+          </View>
+      )
+  }
+
+  else{
 
     return (
       <View style={styles.container}>
         <ScrollView>
         <View style={styles.headerRow}>
           <Text style={styles.airQualityHeader}>Air Quality</Text>
+
+          <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate("ReadData",{token:this.state.token})
+                      this.componentCleanUp();
+                    }}
+                    style={styles.homeButton}>
+                    <Image
+                    source={require("../assets/images/location3.png")}
+                    resizeMode="contain"
+                    style={styles.homelogo}
+                    ></Image>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})
+            this.componentCleanUp();
+          }}
+            style={styles.locationButton}>
+            <Image
+              source={require("../assets/images/stats_logo.png")}
+              resizeMode="contain"
+              style={styles.locationLogo}
+            ></Image>
+          </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() => this.logoutFunction()}
+            onPress={() => {this.logoutFunction()
+              this.componentCleanUp();
+            
+            }}
             style={styles.logoutButton}
           >
             <Image
@@ -232,11 +285,19 @@ class Settings extends Component{
       </View>
     );
   }
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  ActivityIndicator:{
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginBottom:'auto',
+    marginTop:'auto',
+
   },
   airQualityHeader: {
     width: 91,

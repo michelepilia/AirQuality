@@ -79,7 +79,14 @@ class Historical extends Component{
         this.computeMeansForAllClusters.bind(this);
         this.handleChangeDate.bind(this);
         this.elaborateMinDate.bind(this);
+        this.componentCleanUp.bind(this);
+        this.logoutFunction.bind(this);
     
+    }
+
+    componentCleanUp(){
+      console.log("Cleaning");
+      //this.focusListener.remove();
     }
 
     arduinoDataFetch = new ArduinoDataFetch();
@@ -407,10 +414,8 @@ class Historical extends Component{
         }
       }  
     }
-  
 
-
-    componentDidMount() {
+    onFocusFunction = () => {
       const { params } = this.props.navigation.state;
       const token = params ? params.token : null;
       this.setState({token:token});
@@ -443,6 +448,43 @@ class Historical extends Component{
           
           }, this.errorFunction, this.options)}
         )
+    }
+  
+
+
+    componentDidMount() {
+      this.focusListener = this.props.navigation.addListener('didFocus', () => {
+        this.onFocusFunction();
+      })
+      
+    }
+
+    logoutFunction(){
+      return fetch(this.url+"/user/logout", {
+        method: "post",
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.state.token
+        },
+      })
+      .then((response) => {
+        if (response.status == "200"){
+          return this.props.navigation.navigate("Login");
+        }
+        else if (response.status == "400"){
+          alert("Bad request to server");
+        }
+        else if (response.status == "401"){
+          alert("Unauthorized");
+        }
+        else {
+          return alert("Invalid response");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     }
 
 
@@ -597,7 +639,9 @@ class Historical extends Component{
                 <Text style={styles.airQualityHeader}>Air Quality</Text>
 
                 <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate("Settings",{token:this.state.token})}
+                  onPress={() => {this.props.navigation.navigate("Settings",{token:this.state.token})
+                  this.componentCleanUp();}
+                }
                   style={styles.settingsButton}>
                   <Image
                     source={require("../assets/images/user-icon.png")}
@@ -607,7 +651,9 @@ class Historical extends Component{
                 </TouchableOpacity>
                 
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("ReadData")}
+                    onPress={() => {this.props.navigation.navigate("ReadData",{token:this.state.token})
+                    this.componentCleanUp();
+                    }}
                     style={styles.homeButton}>
                     <Image
                     source={require("../assets/images/location3.png")}
@@ -617,7 +663,10 @@ class Historical extends Component{
                 </TouchableOpacity>
                 
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("Login")}
+                    onPress={() => {this.props.navigation.navigate("Login",{token:''})
+                    this.componentCleanUp();
+                  }                  
+                  }
                     style={styles.logoutButton}
                 >
                     <Image

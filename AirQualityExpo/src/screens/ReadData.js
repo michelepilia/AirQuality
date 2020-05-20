@@ -4,15 +4,15 @@ import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
 import DataBarsRealTime from "../components/DataBarsRealTime";
 import MapView from 'react-native-maps';
-
+import NavigationEvents from 'react-navigation';
 
 class ReadData extends Component {
 
   constructor(props){
     super(props);
-    global.urlSimulation = "https://192.168.1.4:3000";
-    global.urlReal  = "https://192.168.1.0:3000";
-    global.currentUrl = "https://192.168.1.4:3000";
+    global.urlSimulation = "http://192.168.1.4:3000";
+    global.urlReal  = "http://192.168.1.0:3000";
+    global.currentUrl = "http://192.168.1.4:3000";
     global.delay = 5000;
     this.state = {
       data : {
@@ -61,6 +61,8 @@ class ReadData extends Component {
     this.cutCoordString.bind(this);
     this.saveDataFunction.bind(this);
     this.arduinoDataParser.bind(this);
+    this.componentCleanUp.bind(this);
+    this.onFocusFunction.bind(this);
  
   }
 
@@ -68,14 +70,20 @@ class ReadData extends Component {
     data:"",
   }
   
-  urlSimulation = "https://192.168.1.4:3000";
-  urlReal = "https://192.168.1.0:3000";
+  urlSimulation = "http://192.168.1.4:3000";
+  urlReal = "http://192.168.1.0:3000";
 
   urlSaveData = "https://polimi-dima-server.herokuapp.com/api/data";
   urlUser = "https://polimi-dima-server.herokuapp.com/api";
  
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
+  }
+
+  componentCleanUp(){
+    console.log("Cleaning");
+    //this.focusListener.remove();
+
   }
 
   readDataFunction(){
@@ -166,8 +174,10 @@ class ReadData extends Component {
     console.log("Location changed");
   }
 
-  componentDidMount() {
 
+    
+onFocusFunction(){
+    console.log("MOUNTING!");
     this.geolocation().then(()=>{
       this.watchID = navigator.geolocation.watchPosition((position) => {
       let region = {
@@ -206,10 +216,18 @@ class ReadData extends Component {
     const token = params ? params.token : null;
     this.state.token = token;
 
-  }
+  
+}
+
+componentDidMount () {
+  this.focusListener = this.props.navigation.addListener('didFocus', () => {
+    this.onFocusFunction();
+  })
+}
+
+
 
   endToNavigate(link) {
-    console.log("WillUnmount");
     clearInterval(this.timeInterval);
     this.setState({isReadingData:false});
 
@@ -311,7 +329,9 @@ class ReadData extends Component {
           <Text style={styles.airQuality}>Air Quality</Text>
 
           <TouchableOpacity
-            onPress={() => {this.endToNavigate("Settings")}}
+            onPress={() => {this.endToNavigate("Settings")
+            this.componentCleanUp();}
+          }
             style={styles.settingsButton}>
             <Image
               source={require("../assets/images/user-icon.png")}
@@ -321,7 +341,11 @@ class ReadData extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})}}
+            onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})
+            this.componentCleanUp();
+          
+          
+          }}
             style={styles.locationButton}>
             <Image
               source={require("../assets/images/stats_logo.png")}
@@ -331,7 +355,9 @@ class ReadData extends Component {
           </TouchableOpacity>
           
           <TouchableOpacity
-            onPress={() =>{this.endToNavigate("Login")}}
+            onPress={() =>{this.endToNavigate("Login")
+          this.componentCleanUp();
+          }}
             style={styles.logoutButton}
           >
             <Image
