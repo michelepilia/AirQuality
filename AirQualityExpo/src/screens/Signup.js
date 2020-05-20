@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Text, TouchableOpacity, Image, Platform } from "react-native";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialStackedLabelTextbox from "../components/MaterialStackedLabelTextbox";
 import { TextField } from 'react-native-material-textfield';
@@ -7,6 +7,9 @@ import PasswordInputText from 'react-native-hide-show-password-input';
 import RNPickerSelect from 'react-native-picker-select';
 import DatePicker from 'react-native-datepicker';
 import { ScrollView } from "react-native-gesture-handler";
+import RNPasswordStrengthMeter from 'react-native-password-strength-meter';
+import { BarPasswordStrengthDisplay } from 'react-native-password-strength-meter';
+
 
 class Signup extends Component {
 
@@ -119,8 +122,11 @@ class Signup extends Component {
 
   render(){
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
 
+        <KeyboardAvoidingView
+          behavior={"position"}
+          style={styles.keyboardAvoidingView}>
         <View style={styles.airQuality2Row}>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate("Login")}
@@ -132,7 +138,6 @@ class Signup extends Component {
           </TouchableOpacity>
         </View>
         <Text style={styles.airQuality1}>Air Quality</Text>
-        <ScrollView style={styles.scrollView}>
           <View style={styles.inputView}>
             <TextField style = {styles.inputUser}
                 underlineColorAndroid = "transparent"
@@ -217,16 +222,20 @@ class Signup extends Component {
               onChangeText={this.handleConfirmPassword}/>
           </View>
 
+          <BarPasswordStrengthDisplay
+            password={this.state.password}
+          />
 
+          </KeyboardAvoidingView>
+          
           <TouchableOpacity
             onPress={() => this.registerFunction()}
             style={styles.button1}>
             <Text style={styles.text}>Signup</Text>
           </TouchableOpacity>
-        </ScrollView>
         
 
-      </View>
+      </ScrollView>
 
 
     );
@@ -323,8 +332,9 @@ const styles = StyleSheet.create({
   inputView:{
     margin: 5,
   },
-  scrollView:{
+  keyboardAvoidingView:{
     marginBottom: 10,
+    flex: 1
   },
 });
 
