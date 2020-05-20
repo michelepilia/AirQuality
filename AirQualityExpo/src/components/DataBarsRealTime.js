@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
         padding:10,
         marginRight:'auto',
         backgroundColor:'rgba(255,100,50,0.2)',
+        marginBottom:20,
     },
     title: {  
       height: 73,

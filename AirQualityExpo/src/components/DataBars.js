@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
         padding:10,
         marginRight:'auto',
         backgroundColor:'rgba(255,100,50,0.2)',
+        marginBottom:20,
     },
     title: {  
       height: 73,
@@ -404,6 +405,10 @@ const styles = StyleSheet.create({
       padding: 15,
       fontSize: 14,
       backgroundColor:'rgba(255,100,50,0.6)',
+      marginBottom:20,
+      marginLeft:'auto',
+      marginRight:'auto',
+      width:Dimensions.get('window').width-30,
   },
   measurementItem: {
     flex:1,
