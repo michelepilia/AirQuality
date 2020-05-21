@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
       marginBottom:20,
       marginLeft:'auto',
       marginRight:'auto',
-      width:Dimensions.get('window').width-30,
+      width:this.width,
   },
   measurementItem: {
     flex:1,

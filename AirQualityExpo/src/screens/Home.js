@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     marginLeft:'auto',
     marginRight:'auto',
-    marginTop:40,
+    marginTop:80,
     marginBottom:'auto',
     backgroundColor:'rgba(255,100,50,0.3)',
     padding:20,
