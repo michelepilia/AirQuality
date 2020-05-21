@@ -103,6 +103,15 @@ class Historical extends Component{
       return b;
     }
 
+    subtractDaysFromToday(days){
+      var myCurrentDate=new Date();
+      var myPastDate=new Date(myCurrentDate);
+      myPastDate.setDate(myPastDate.getDate() - days);//myPastDate is now 8 days in the past
+      let a=JSON.stringify(myPastDate).replace('T','-').replace("\"",'-').split('-');
+      let b = a[3]+'/'+a[2] + '/' +a[1]; 
+      return b;
+    }
+
     elaborateArduinoData(){
     
       let clusters = [];
@@ -765,6 +774,9 @@ class Historical extends Component{
                           showArpaInfo={this.state.showArpaInfo}
                           read={false}
                           />
+                <Text style={{position:'relative',color:'rgba(255,70,10,0.8)',fontSize:12,marginLeft:'auto',marginRight:'auto',marginTop:20, marginBottom:20, width:Dimensions.get('window').width - 60}}>
+                  ARPA stations displayed values are the mean of all the avaiable measures made recently, from {this.subtractDaysFromToday(2)} to today.
+                  Arduino data displayed by default are taken from today measures and represent the daily mean.</Text>
             </ScrollView>
             
         );
