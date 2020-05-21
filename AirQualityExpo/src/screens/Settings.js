@@ -264,7 +264,7 @@ class Settings extends Component{
             </View>
             <View style={{marginLeft:20}}>
               <Text style={{marginTop:40, fontSize:14}}>Read data from </Text>
-                <View style={{marginTop:-30,width:200}}>
+                <View style={{marginTop:-10,width:200}}>
                 <TextField
                   underlineColorAndroid = "transparent"
                   autoCapitalize = "none"
@@ -383,14 +383,14 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 170
+    marginLeft: 145,
   },
 
   locationButton:{
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 20
+    marginLeft: 10
   },
 
   homelogo: {
@@ -429,9 +429,9 @@ const styles = StyleSheet.create({
  },
  inputView:{
    marginLeft: 20,
-   width:250,
+   width:230,
    height:30,
-   marginTop:15,
+   marginTop:25,
 
  },
  button1: {

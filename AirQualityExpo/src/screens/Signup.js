@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 310, 
+    marginLeft: Dimensions.get('window').width-60, 
     marginTop: 10
   },
   homelogo: {

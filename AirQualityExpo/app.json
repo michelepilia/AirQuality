@@ -13,7 +13,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/logo.png",
+      "image": "./assets/images/logo-splash2.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },

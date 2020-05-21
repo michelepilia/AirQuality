@@ -201,7 +201,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 0
+    marginTop: 0,
+    marginLeft:'auto',
+    marginRight:'auto',
   },
   containerInput: {
     backgroundColor: "transparent",
