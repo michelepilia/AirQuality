@@ -70,13 +70,33 @@ class DataBars extends Component {
           return this.okSensors.includes(parseInt(sensor.idsensore));
         })
         .map((sensor) => {
-        return <View key = {sensor.idsensore} style={styles.sensorItem}>
-                <Text>{sensor.nometiposensore}</Text>
-                {this.getLastSensorsMeasurements(sensor.idsensore)}
-                </View>
+          let mean = this.computeMeanForSensor(sensor.idsensore);
+          return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 50)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{50}</Text>
+                  </View>
+              </View>
       })
       
       return sensorsView;
+    }
+
+    computeMeanForSensor(sensorId){
+      let sum = 0;
+      let correctSensorMeasures = this.props.sensorsData.filter((sensor)=>{return sensor.idsensore==sensorId});
+      console.log("AAAAA#####");
+      console.log(correctSensorMeasures);
+      for (let index = 0; index < correctSensorMeasures.length; index++) {
+        sum+=parseFloat(correctSensorMeasures[index].valore);
+      }
+      console.log(sum);
+      console.log(correctSensorMeasures.length);
+      return sum/correctSensorMeasures.length;
     }
 
     getLastSensorsMeasurements(sensorId){
