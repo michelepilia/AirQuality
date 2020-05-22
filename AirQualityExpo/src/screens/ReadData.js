@@ -341,10 +341,8 @@ componentDidMount () {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {this.props.navigation.navigate("Historical", {token: this.state.token})
-            this.componentCleanUp();
-          
-          
+            onPress={() => {this.endToNavigate("Historical")
+            this.componentCleanUp();          
           }}
             style={styles.locationButton}>
             <Image
@@ -428,7 +426,7 @@ const styles = StyleSheet.create({
   title: {  
     height: 73,
     color: "rgba(255,0,0,1)",
-    fontSize: 30,
+    fontSize: 28,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,

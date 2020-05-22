@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   airQuality1: {
     height: 73,
     color: "rgba(255,10,0,1)",
-    fontSize: 36,
+    fontSize: 32,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,

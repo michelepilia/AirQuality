@@ -814,7 +814,7 @@ const styles = StyleSheet.create({
   title: {  
     height: 60,
     color: "rgba(255,0,0,1)",
-    fontSize: 32,
+    fontSize: 28,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,
