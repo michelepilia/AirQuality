@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 145,
+    marginLeft:Dimensions.get('window').width-220,
   },
 
   locationButton:{

@@ -262,7 +262,8 @@ const styles = StyleSheet.create({
       width: 27,
       height: 38,
       backgroundColor: "rgba(225,96,96,0)",
-      marginLeft: 10
+      marginRight: 10,
+      marginLeft:'auto',
     },
     logoutLogo: {
       width: 27,
@@ -300,7 +301,9 @@ const styles = StyleSheet.create({
       marginLeft: 0,
     },
     maxValue:{
-      marginLeft:270,
+      marginLeft:'auto',
+      textAlign:'right',
+      marginRight:5,
     },
     mediumMaxValue:{
       marginLeft:245,

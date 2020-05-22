@@ -167,7 +167,7 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{this.minValues.pressure}</Text>
-                      <Text style={styles.mediumMaxValue}>{this.maxValues.pressure}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.pressure}</Text>
                   </View>
               </View>
               <View style={styles.parameterBar}>
@@ -177,7 +177,7 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
-                      <Text style={styles.mediumMaxValue}>{this.maxValues.tvocs}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.tvocs}</Text>
                   </View>
               </View>
               <View style={styles.parameterBar}>
@@ -187,7 +187,7 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{this.minValues.eco2}</Text>
-                      <Text style={styles.largeMaxValue}>{this.maxValues.eco2}</Text>
+                      <Text style={styles.maxValue}>{this.maxValues.eco2}</Text>
                   </View>
               </View>
               <View style={styles.parameterBar}>
@@ -388,7 +388,9 @@ const styles = StyleSheet.create({
       marginLeft: 0,
     },
     maxValue:{
-      marginLeft:270,
+      marginLeft:'auto',
+      textAlign:'right',
+      marginRight:5,
     },
     mediumMaxValue:{
       marginLeft:245,
@@ -424,7 +426,7 @@ const styles = StyleSheet.create({
       marginTop:30,
       padding: 15,
       fontSize: 14,
-      backgroundColor:'rgba(255,100,50,0.6)',
+      backgroundColor:'rgba(255,100,50,0.2)',
       marginBottom:20,
       marginLeft:'auto',
       marginRight:'auto',

@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 150,
+    marginLeft:Dimensions.get('window').width-220,
   },
   settingslogo: {
     width: 27,
@@ -479,8 +479,8 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 10,
-    marginTop:10
+    marginLeft:10,
+    marginTop:10,
   },
   locationLogo: {
     width: 27,
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
-    marginLeft: 10
+    marginLeft:10,
   },
   logoutLogo: {
     width: 27,

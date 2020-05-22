@@ -774,7 +774,7 @@ class Historical extends Component{
                           showArpaInfo={this.state.showArpaInfo}
                           read={false}
                           />
-                <Text style={{position:'relative',color:'rgba(255,70,10,0.8)',fontSize:12,marginLeft:'auto',marginRight:'auto',marginTop:20, marginBottom:20, width:Dimensions.get('window').width - 60}}>
+                <Text style={{position:'relative',color:'rgba(255,70,10,0.8)',fontSize:12,marginLeft:'auto',marginRight:'auto',marginTop:10, marginBottom:20, width:Dimensions.get('window').width - 60}}>
                   ARPA stations displayed values are the mean of all the avaiable measures made recently, from {this.subtractDaysFromToday(2)} to today.
                   Arduino data displayed by default are taken from today measures and represent the daily mean.</Text>
             </ScrollView>
@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft: 150,
+    marginLeft:Dimensions.get('window').width-220
   },
   settingslogo: {
     width: 27,
