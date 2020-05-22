@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, ImageBackground } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image, ImageBackground, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 class Home extends Component{
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   rectangle: {
-    width: 300,
+    width: Dimensions.get('window').width-80,
     height: 100,
     backgroundColor: "rgba(255,0,0,1)",
     marginTop:15,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     marginBottom:'auto',
     backgroundColor:'rgba(255,100,50,0.3)',
     padding:20,
-    width:340,
+    width:Dimensions.get('window').width-40,
   }
 
 });

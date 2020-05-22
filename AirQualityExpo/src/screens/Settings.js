@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, Slider,ActivityIndicat
 import { TextField } from 'react-native-material-textfield';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { ScrollView } from "react-native-gesture-handler";
+import { BarPasswordStrengthDisplay } from 'react-native-password-strength-meter';
 
 class Settings extends Component{
 
@@ -240,12 +241,15 @@ class Settings extends Component{
                 <Text style={{marginTop:10}}>Gender: {this.state.gender}</Text>
                 <Text style={{marginTop:10}}>Birthday: {this.state.birthdayRepresentation}</Text>
               </View>
-              <View style={{marginTop:-30}}>
+              <View style={{marginTop:-25}}>
                 <View style={styles.inputView}>
                   <PasswordInputText
                     value={this.state.password}
                     label= {"New password"}
                     tintColor={'rgba(255,50,10,1)'}
+                    fontSize={14}
+                    
+                    
                     onChangeText={this.handlePassword}/>
                 </View>
                 <View style={styles.inputView}>
@@ -253,7 +257,14 @@ class Settings extends Component{
                     value={this.confirmPassword}
                     label = {"Confirm Password"}
                     tintColor={'rgba(255,50,10,1)'}
+                    fontSize={14}
                     onChangeText={this.handleConfirmPassword}/>
+                </View>
+                <View style={{marginLeft:'auto',marginRight:'auto',marginTop:55}}>
+                  <BarPasswordStrengthDisplay
+                    password={this.state.password}
+                    width={Dimensions.get('window').width-110}
+                  />
                 </View>
                 <TouchableOpacity
                   onPress={() => this.storePassword()}
@@ -263,8 +274,8 @@ class Settings extends Component{
               </View>
             </View>
             <View style={{marginLeft:20}}>
-              <Text style={{marginTop:40, fontSize:14}}>Read data from </Text>
-                <View style={{marginTop:-10,width:200}}>
+              <Text style={{marginTop:50, fontSize:14}}>Read data from </Text>
+                <View style={{marginTop:-10,width:Dimensions.get('window').width-110}}>
                 <TextField
                   underlineColorAndroid = "transparent"
                   autoCapitalize = "none"
@@ -278,7 +289,7 @@ class Settings extends Component{
               <View style = {{marginTop:20}}>
                 <Text style ={{fontSize:14}}>Read every {global.delay/1000} seconds</Text>
                 <Slider
-                  style={{width: 200, height: 40}}
+                  style={{width: Dimensions.get('window').width-110, height: 40, marginTop:10}}
                   minimumValue={3}
                   maximumValue={10}
                   minimumTrackTintColor="rgb(255,0,0)"
@@ -336,10 +347,10 @@ const styles = StyleSheet.create({
   scrollView:{
     padding:15,
     backgroundColor:'rgba(255,50,10,0.1)',
-    width:Dimensions.get('window').width-60,
+    width:Dimensions.get('window').width-40,
     marginLeft:'auto',
     marginRight:'auto',
-    marginTop:20,
+    marginTop:10,
     marginBottom:20,
     height:Dimensions.get('window').height-50,
 
@@ -429,17 +440,19 @@ const styles = StyleSheet.create({
  },
  inputView:{
    marginLeft: 20,
-   width:230,
+   width:Dimensions.get('window').width-100,
    height:30,
    marginTop:25,
 
  },
  button1: {
-   width: 60,
+   width: 120,
    height: 35,
    backgroundColor: "rgba(255,70,20,1)",
-   marginTop: 50,
-   marginLeft: 20,
+   marginTop: 15,
+   marginLeft: 'auto',
+   marginRight: 'auto',
+   borderRadius:3,
 
  },
  text: {
@@ -448,6 +461,7 @@ const styles = StyleSheet.create({
    fontFamily: "roboto-regular",
    letterSpacing: 0,
    textAlign: "center",
+   marginTop:10,
 
  },
 
