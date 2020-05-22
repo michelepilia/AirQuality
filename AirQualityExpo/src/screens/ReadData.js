@@ -39,6 +39,7 @@ class ReadData extends Component {
       isOnStore: false,
       errorMessage: '',
       isReadingData: false,
+      correctUrl:false,
 
       mapRegion: {
         latitude:       45.4781291,
@@ -92,15 +93,15 @@ class ReadData extends Component {
     .then((response) => {
       console.log(response);
       if (response.status == "200"){
-        this.setState({isReadingData:true});
+        this.setState({isReadingData:true, correctUrl:true});
         return (response.text());
       }
       else {
-        alert("Invalid response");
+        //alert("Invalid response");
       }
     })
     .catch((error) => {
-     
+     //this.setState({correctUrl:false})
     });
   }
 
@@ -177,7 +178,38 @@ class ReadData extends Component {
 
     
 onFocusFunction(){
-    console.log("MOUNTING!");
+    
+    try {
+      this.readDataFunction().then(()=>{
+
+        if(this.state.correctUrl){
+          this.timeInterval = setInterval( () =>  {
+            this.readDataFunction().then((a)=> {this.arduinoDataParser(a)},this.errorFunction)
+            .then(()=>{
+              if(this.state.isOnStore) {
+                this.saveDataFunction();
+              }
+            },this.errorFunction);        
+          }, global.delay);
+        }
+        else{
+          alert('It seems your Arduino device is not connected!');
+        }
+      }); 
+    }     
+    catch{
+      this.errorFunction();
+    }
+    
+    const { params } = this.props.navigation.state;
+    const token = params ? params.token : null;
+    this.state.token = token;
+
+  
+}
+
+componentDidMount () {
+  console.log("MOUNTING!");
     this.geolocation().then(()=>{
       this.watchID = navigator.geolocation.watchPosition((position) => {
       let region = {
@@ -196,30 +228,7 @@ onFocusFunction(){
       
       }, this.errorFunction, this.options)}
     );
-    try {
-      this.readDataFunction().then(()=>{
-        this.timeInterval = setInterval( () =>  {
-          this.readDataFunction().then((a)=> {this.arduinoDataParser(a)},this.errorFunction)
-          .then(()=>{
-            if(this.state.isOnStore) {
-              this.saveDataFunction();
-            }
-          },this.errorFunction);        
-        }, global.delay);
-      });
-    } 
-    catch{
-      this.errorFunction();
-    }
-    
-    const { params } = this.props.navigation.state;
-    const token = params ? params.token : null;
-    this.state.token = token;
 
-  
-}
-
-componentDidMount () {
   this.focusListener = this.props.navigation.addListener('didFocus', () => {
     this.onFocusFunction();
   })
