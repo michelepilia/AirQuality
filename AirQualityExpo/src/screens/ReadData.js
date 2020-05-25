@@ -152,7 +152,7 @@ class ReadData extends Component {
   }
 
   errorFunction() {
-    console.log("Sarti");
+    console.log("Error");
   }
 
   options = {

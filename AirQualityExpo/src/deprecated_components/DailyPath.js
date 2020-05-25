@@ -74,7 +74,7 @@ class DailyPath extends Component{
   }
 
   errorFunction() {
-    console.log("Sarti");
+    console.log("Error");
   }
 
   onRegionChange(region, lastLat, lastLong) {
