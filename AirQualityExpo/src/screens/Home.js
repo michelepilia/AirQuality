@@ -8,6 +8,7 @@ class Home extends Component{
     token: '',
   }
 
+  url = "https://polimi-dima-server.herokuapp.com/api";
   
   constructor() {
     super();
