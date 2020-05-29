@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "AirQualityExpo",
+    "name": "AirQuality Dima Project",
     "slug": "AirQualityExpo",
     "privacy": "public",
     "sdkVersion": "35.0.0",
@@ -13,7 +13,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/logo-splash2.png",
+      "image": "./assets/images/splash_logo_ok.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -26,6 +26,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "DIMA project at Politecnico Di Milano.\nVersion: BETA 0.0.2\n\nDeveloped by Michele Pilia, Antonino Natoli"
   }
 }

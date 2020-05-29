@@ -78,7 +78,7 @@ class Signup extends Component {
       })
       .then((response) => {
         console.log("Response status: " + response.status);
-        console.log("Response: " + response);
+        console.log(response);
         if (response.status == "200"){
           this.props.navigation.navigate("Login");
         }

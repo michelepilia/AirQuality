@@ -194,6 +194,7 @@ onFocusFunction(){
         }
         else{
           alert('It seems your Arduino device is not connected!');
+
         }
       }); 
     }     
@@ -329,90 +330,172 @@ componentDidMount () {
               />
           </View>
       )
-  }
-    else{
-    return (
-      <View style={styles.container}>
-        <ScrollView>
-        <View style={styles.headerRow}>
-          <Text style={styles.airQuality}>Air Quality</Text>
+   }
+    else if(this.state.isReadingData) {
+      return (
+        <View style={styles.container}>
+          <ScrollView>
+          <View style={styles.headerRow}>
+            <Text style={styles.airQuality}>Air Quality</Text>
 
-          <TouchableOpacity
-            onPress={() => {this.endToNavigate("Settings")
-            this.componentCleanUp();}
-          }
-            style={styles.settingsButton}>
-            <Image
-              source={require("../assets/images/user-icon.png")}
-              resizeMode="contain"
-              style={styles.settingslogo}
-            ></Image>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {this.endToNavigate("Settings")
+              this.componentCleanUp();}
+            }
+              style={styles.settingsButton}>
+              <Image
+                source={require("../assets/images/user-icon.png")}
+                resizeMode="contain"
+                style={styles.settingslogo}
+              ></Image>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {this.endToNavigate("Historical")
-            this.componentCleanUp();          
-          }}
-            style={styles.locationButton}>
-            <Image
-              source={require("../assets/images/stats_logo.png")}
-              resizeMode="contain"
-              style={styles.locationLogo}
-            ></Image>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            onPress={() =>{this.endToNavigate("Login")
-          this.componentCleanUp();
-          }}
-            style={styles.logoutButton}
-          >
-            <Image
-              source={require("../assets/images/logout.png")}
-              resizeMode="contain"
-              style={styles.logoutLogo}
-            ></Image>
-          </TouchableOpacity>
-
-        </View>
-
-        <Text style={styles.title}>Real Time Data</Text>
-      
-        <MapView
-          style={styles.mapImg}
-          initialRegion={this.state.mapRegion}
-          region = {this.state.mapRegion}
-          showsUserLocation={this.state.showsUserLocation}
-          followUserLocation={this.state.followUserLocation}
-         // onUserLocationChange={event => console.log(event.nativeEvent)}
-          width={Dimensions.get("window").width-50}
-
-        >
-
-        </MapView>
-
-        <View style={styles.toggleContainer}>
-          <ToggleSwitch
-            isOn={this.state.isOnStore}
-            onColor="red"
-            offColor="gray"
-            label="Store Data"
-            labelStyle={styles.toggleLabel}
-            size="large"
-            onToggle={isOnStore => {
-              this.setState({ isOnStore });
+            <TouchableOpacity
+              onPress={() => {this.endToNavigate("Historical")
+              this.componentCleanUp();          
             }}
-            size="small"
-          />
+              style={styles.locationButton}>
+              <Image
+                source={require("../assets/images/stats_logo.png")}
+                resizeMode="contain"
+                style={styles.locationLogo}
+              ></Image>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              onPress={() =>{this.endToNavigate("Login")
+            this.componentCleanUp();
+            }}
+              style={styles.logoutButton}
+            >
+              <Image
+                source={require("../assets/images/logout.png")}
+                resizeMode="contain"
+                style={styles.logoutLogo}
+              ></Image>
+            </TouchableOpacity>
 
-        </View>
+          </View>
 
-        <DataBarsRealTime  data={this.state.data}/>
+          <Text style={styles.title}>Real Time Data</Text>
         
-        </ScrollView>
-      </View>
-    );
-  }
+          <MapView
+            style={styles.mapImg}
+            initialRegion={this.state.mapRegion}
+            region = {this.state.mapRegion}
+            showsUserLocation={this.state.showsUserLocation}
+            followUserLocation={this.state.followUserLocation}
+          // onUserLocationChange={event => console.log(event.nativeEvent)}
+            width={Dimensions.get("window").width-50}
+
+          >
+
+          </MapView>
+
+          <View style={styles.toggleContainer}>
+            <ToggleSwitch
+              isOn={this.state.isOnStore}
+              onColor="red"
+              offColor="gray"
+              label="Store Data"
+              labelStyle={styles.toggleLabel}
+              size="large"
+              onToggle={isOnStore => {
+                this.setState({ isOnStore });
+              }}
+              size="small"
+            />
+
+          </View>
+
+          <DataBarsRealTime  data={this.state.data}/>
+          
+          </ScrollView>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <ScrollView>
+          <View style={styles.headerRow}>
+            <Text style={styles.airQuality}>Air Quality</Text>
+
+            <TouchableOpacity
+              onPress={() => {this.endToNavigate("Settings")
+              this.componentCleanUp();}
+            }
+              style={styles.settingsButton}>
+              <Image
+                source={require("../assets/images/user-icon.png")}
+                resizeMode="contain"
+                style={styles.settingslogo}
+              ></Image>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {this.endToNavigate("Historical")
+              this.componentCleanUp();          
+            }}
+              style={styles.locationButton}>
+              <Image
+                source={require("../assets/images/stats_logo.png")}
+                resizeMode="contain"
+                style={styles.locationLogo}
+              ></Image>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              onPress={() =>{this.endToNavigate("Login")
+            this.componentCleanUp();
+            }}
+              style={styles.logoutButton}
+            >
+              <Image
+                source={require("../assets/images/logout.png")}
+                resizeMode="contain"
+                style={styles.logoutLogo}
+              ></Image>
+            </TouchableOpacity>
+
+          </View>
+
+          <Text style={styles.title}>Real Time Data</Text>
+        
+          <MapView
+            style={styles.mapImg}
+            initialRegion={this.state.mapRegion}
+            region = {this.state.mapRegion}
+            showsUserLocation={this.state.showsUserLocation}
+            followUserLocation={this.state.followUserLocation}
+          // onUserLocationChange={event => console.log(event.nativeEvent)}
+            width={Dimensions.get("window").width-50}
+
+          >
+
+          </MapView>
+
+          <View style={styles.toggleContainer}>
+            <ToggleSwitch
+              isOn={this.state.isOnStore}
+              onColor="red"
+              offColor="gray"
+              label="Store Data"
+              labelStyle={styles.toggleLabel}
+              size="large"
+              onToggle={isOnStore => {
+                this.setState({ isOnStore });
+              }}
+              size="small"
+            />
+
+          </View>
+
+          
+          </ScrollView>
+        </View>
+      );
+    }
   }
 }
 
