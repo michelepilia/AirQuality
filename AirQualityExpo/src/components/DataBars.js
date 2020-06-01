@@ -63,13 +63,16 @@ class DataBars extends Component {
         return ((value-xmin)/(xmax-xmin));
     }
     getViewOfSensorsByStationId(stationId){
+      //console.log(this.okSensors);
 
       let sensorsView = this.props.data2.filter((station)=>{
         return station.idstazione==stationId})
         .filter((sensor)=>{
+          console.log(this.okSensors.includes(parseInt(sensor.idsensore)));
           return this.okSensors.includes(parseInt(sensor.idsensore));
         })
         .map((sensor) => {
+          //console.log(sensor);
           let mean = this.computeMeanForSensor(sensor.idsensore);
           return <View key={sensor.idsensore}style={styles.parameterBar}>
                   <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
@@ -126,7 +129,7 @@ class DataBars extends Component {
 
 
   render(){
-    console.log(this.props.data);
+    //console.log(this.props.interestedData);
     if(this.props.showClusterInfo!=-1){
       return(
           <View>
@@ -250,6 +253,7 @@ class DataBars extends Component {
       );
     }
     else if(this.props.isArpaStation){
+      //console.log("HEY SARTIZS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       let stationsText =  this.props.interestedData.filter((element)=>element.stationId==this.props.showArpaInfo).map((element) => {
         return  <View key = {element.stationId} style={styles.stationItem}>
                   <Text style={{marginTop:5, marginLeft:'auto',marginRight:'auto', fontSize:24}}>{element.sensors[0].stationName}</Text>

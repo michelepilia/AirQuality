@@ -312,7 +312,7 @@ class Historical extends Component{
               sensorsData: responseJson.filter( (sensor) => sensor.stato =="VA"),
           })
           this.elaborateData();
-         // console.log(this.state.sensorsData);
+          //console.log(this.state.sensorsData);
       })
       .catch((error) => {
           console.error(error);
@@ -373,8 +373,8 @@ class Historical extends Component{
        }, {});
     
       this.setState({interestedData:stations3});
-     // console.log("INTERESTED DATA: ")
-     // console.log(this.state.interestedData[0]);
+      console.log("INTERESTED DATA: ")
+      //console.log(this.state.interestedData);
      // console.log("REAL RECEIVED DATA: ");
      // console.log(this.state.data[0]);
 
