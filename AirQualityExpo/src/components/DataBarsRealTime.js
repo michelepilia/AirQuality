@@ -92,7 +92,7 @@ class DataBarsRealTime extends Component {
                                         width={this.barsWidth} color="red"/>
                 <View style={styles.edgesContainer}>
                     <Text style={styles.minValue}>{this.minValues.pressure}</Text>
-                    <Text style={styles.mediumMaxValue}>{this.maxValues.pressure}</Text>
+                    <Text style={styles.maxValue}>{this.maxValues.pressure}</Text>
                 </View>
             </View>
             <View style={styles.parameterBar}>
@@ -102,7 +102,7 @@ class DataBarsRealTime extends Component {
                                         width={this.barsWidth} color="red"/>
                 <View style={styles.edgesContainer}>
                     <Text style={styles.minValue}>{this.minValues.tvocs}</Text>
-                    <Text style={styles.mediumMaxValue}>{this.maxValues.tvocs}</Text>
+                    <Text style={styles.maxValue}>{this.maxValues.tvocs}</Text>
                 </View>
             </View>
             <View style={styles.parameterBar}>
@@ -112,7 +112,7 @@ class DataBarsRealTime extends Component {
                                         width={this.barsWidth} color="red"/>
                 <View style={styles.edgesContainer}>
                     <Text style={styles.minValue}>{this.minValues.eco2}</Text>
-                    <Text style={styles.largeMaxValue}>{this.maxValues.eco2}</Text>
+                    <Text style={styles.maxValue}>{this.maxValues.eco2}</Text>
                 </View>
             </View>
             <View style={styles.parameterBar}>
