@@ -51,17 +51,28 @@ class Historical extends Component{
         }
         this.minDate = this.today;
 
+        
+
 
         let a = "0";
+        let b ="0";
+
         if(this.today.month<10){
           a = "0"+this.today.month;
         }
         else{
           a=this.today.month;
         }
+
+        if(this.today.day<10){
+          b = "0"+this.today.month;
+        }
+        else {
+          b = this.today.day;
+        }
         
-        this.todayUrlRequest="https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="+this.today.year+"-"+a+"-"+(this.today.day)+"T00:00:00Z&endDate="
-          +this.today.year+"-"+a+"-"+this.today.day+"T23:59:59Z";
+        this.todayUrlRequest="https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate="+this.today.year+"-"+a+"-"+b+"T00:00:00Z&endDate="
+          +this.today.year+"-"+a+"-"+b+"T23:59:59Z";
 
           //console.log(this.todayUrlRequest);
 

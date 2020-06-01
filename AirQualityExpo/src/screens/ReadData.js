@@ -474,23 +474,6 @@ componentDidMount () {
           >
 
           </MapView>
-
-          <View style={styles.toggleContainer}>
-            <ToggleSwitch
-              isOn={this.state.isOnStore}
-              onColor="red"
-              offColor="gray"
-              label="Store Data"
-              labelStyle={styles.toggleLabel}
-              size="large"
-              onToggle={isOnStore => {
-                this.setState({ isOnStore });
-              }}
-              size="small"
-            />
-
-          </View>
-
           
           </ScrollView>
         </View>

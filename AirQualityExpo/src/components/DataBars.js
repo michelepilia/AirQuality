@@ -126,6 +126,7 @@ class DataBars extends Component {
 
 
   render(){
+    console.log(this.props.data);
     if(this.props.showClusterInfo!=-1){
       return(
           <View>
