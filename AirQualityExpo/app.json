@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AirQualityExpo",
-    "slug": "AirQualityExpo",
+    "name": "Air Quality",
+    "slug": "airquality_dima_project",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -26,6 +26,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "This is a project developed for the DIMA course at Politecnico di Milano.\nThe purpose of this project is that of tracking the quality of air through the use of a generic physical device, and then integrating the measured data with the ARPA ones.\n",
+    "githubUrl": "https://github.com/michelepilia/AirQuality"
   }
 }

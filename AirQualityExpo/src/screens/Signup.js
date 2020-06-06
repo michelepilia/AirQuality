@@ -76,16 +76,34 @@ class Signup extends Component {
           birthDay: this.state.birthDay
         }),
       })
-      .then((response) => {
-        console.log("Response status: " + response.status);
+      .then((response) => { 
         console.log(response);
+        return response.json();})
+        .then((responseJson)=>{
+          console.log(responseJson);
+          if(responseJson.email){
+            this.props.navigation.navigate("Login");
+          }
+          else{
+            alert("The user already exists!")
+          }
+
+        })/*
+        
+
         if (response.status == "200"){
-          this.props.navigation.navigate("Login");
+         
+          if(response.email) {
+            this.props.navigation.navigate("Login");
+          }
+          else{ 
+            alert("Already existing user")
+          }
         }
         else {
           alert("Invalid response");
         }
-      })
+      })*/
       .catch((error) => {
         console.error(error);
       });
