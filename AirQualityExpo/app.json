@@ -27,7 +27,7 @@
     "ios": {
       "supportsTablet": true
     },
-    "description": "This is a project developed for the DIMA course at Politecnico di Milano.\nThe purpose of this project is that of tracking the quality of air through the use of a generic physical device, and then integrating the measured data with the ARPA ones.\n",
+    "description": "Final Project of DIMA course at Politecnico di Milano",
     "githubUrl": "https://github.com/michelepilia/AirQuality"
   }
 }
