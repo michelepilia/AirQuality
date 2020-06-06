@@ -129,6 +129,8 @@ class Historical extends Component{
       //for each received measure see wheter it is near (200 meter radius) an existing clusters, 
       //if yes -> add this measure to the CORRECT cluster
       //else -> create a new cluster with position of the new measure
+      console.log(this.state.arduinoData);
+      if(this.state.arduinoData.length!=0){
       this.state.arduinoData.forEach((element)=>{
         if(this.isInsideCluster({latitude:element.latitude, longitude:element.longitude},clusters)){
           clusters[this.nearestClusterId].measures.push(element);
@@ -149,6 +151,10 @@ class Historical extends Component{
       })
       this.setState({clusters:clusters});
       this.computeMeansForAllClusters();
+    }
+    else{
+      this.setState({clusters:[]});
+    }
     }
 
     isInsideCluster(position, clusters){
@@ -295,7 +301,7 @@ class Historical extends Component{
             this.elaborateData();
             //console.log(this.state.data);
         })
-        .then(this.retrieveArpaSensorsData("https://www.dati.lombardia.it/resource/nicp-bhqi.json"))
+        .then(this.retrieveArpaSensorsData("https://www.dati.lombardia.it/resource/nicp-bhqi.json?%24limit=10000&%24%24app_token=NI5Itf0JX8xWz5ZUNXuorqbaG"))
         .catch((error) => {
             console.error(error);
         });
@@ -424,7 +430,10 @@ class Historical extends Component{
     handleChangeDate(){
       if(this.state.startDate!=''){
         console.log("This.state.endDate = "+this.state.endDate);
-        if(this.state.endDate!='' && this.state.endDate>this.state.startDate){
+        if(this.state.endDate!='' && this.state.endDate<this.state.startDate){
+          alert("End date must be greater or equal than the start date!");
+        }
+        else if(this.state.endDate!='' && this.state.endDate>=this.state.startDate){
           var a = "https://polimi-dima-server.herokuapp.com/api/data/findByDate?startDate=";
           var b = a.concat(this.state.startDate,"T00:00:00Z&endDate=",this.state.endDate,"T23:59:59Z");
           console.log("URL: "+b);
@@ -432,6 +441,7 @@ class Historical extends Component{
           this.elaborateArduinoData();
           });
         }
+
       }  
     }
 
@@ -440,7 +450,7 @@ class Historical extends Component{
       const token = params ? params.token : null;
       this.setState({token:token});
 
-      this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json").then(()=>
+      this.retrieveArpaStationsData("https://www.dati.lombardia.it/resource/ib47-atvt.json?%24limit=5000&%24%24app_token=NI5Itf0JX8xWz5ZUNXuorqbaG").then(()=>
       this.arduinoDataFetch.retrieveDataByDate(this.todayUrlRequest, 
         (arduinoData)=>{this.setState({arduinoData:arduinoData})
                         this.elaborateArduinoData();
@@ -786,7 +796,7 @@ class Historical extends Component{
                           read={false}
                           />
                 <Text style={{position:'relative',color:'rgba(255,70,10,0.8)',fontSize:12,marginLeft:'auto',marginRight:'auto',marginTop:10, marginBottom:20, width:Dimensions.get('window').width - 60}}>
-                  ARPA stations displayed values are the mean of all the avaiable measures made recently, from {this.subtractDaysFromToday(2)} to today.
+                  ARPA stations displayed values are the mean of all the avaiable measures made recently, from {this.subtractDaysFromToday(3)} to today.
                   Arduino data displayed by default are taken from today measures and represent the daily mean.</Text>
             </ScrollView>
             

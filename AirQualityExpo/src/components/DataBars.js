@@ -76,7 +76,7 @@ class DataBars extends Component {
           let mean = this.computeMeanForSensor(sensor.idsensore);
           if(sensor.nometiposensore=="Ozono"){
             return <View key={sensor.idsensore}style={styles.parameterBar}>
-                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Text style={styles.parameterLabel}>{"Ozone"} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
                                           0, 120)} 
                                           width={this.barsWidth} color="red"/>
@@ -88,7 +88,7 @@ class DataBars extends Component {
           }
           else if(sensor.nometiposensore=="Biossido di Zolfo") {
             return <View key={sensor.idsensore}style={styles.parameterBar}>
-                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Text style={styles.parameterLabel}>{"Sulfur Dioxide"} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
                                           0, 125)} 
                                           width={this.barsWidth} color="red"/>
@@ -100,7 +100,7 @@ class DataBars extends Component {
           }
           else if(sensor.nometiposensore=="Biossido di Azoto") {
             return <View key={sensor.idsensore}style={styles.parameterBar}>
-                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Text style={styles.parameterLabel}>{"Nitrogen Dioxide"} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
                                           0, 200)} 
                                           width={this.barsWidth} color="red"/>
@@ -112,7 +112,7 @@ class DataBars extends Component {
           }
           else if(sensor.nometiposensore=="Ossidi di Azoto") {
             return <View key={sensor.idsensore}style={styles.parameterBar}>
-                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Text style={styles.parameterLabel}>{"Nitrogen Oxides"} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
                                           0, 200)} 
                                           width={this.barsWidth} color="red"/>
@@ -124,7 +124,7 @@ class DataBars extends Component {
           }
           else if(sensor.nometiposensore=="Monossido di Carbonio") {
             return <View key={sensor.idsensore}style={styles.parameterBar}>
-                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Text style={styles.parameterLabel}>{"Carbon monoxide"} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
                                           0, 10)} 
                                           width={this.barsWidth} color="red"/>
@@ -134,6 +134,67 @@ class DataBars extends Component {
                   </View>
               </View>
           }
+          else if(sensor.nometiposensore=="Particelle sospese PM2.5") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text> [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 40)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{40}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="PM10 (SM2005)") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>  [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 50)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{50}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="Ammoniaca") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{"Ammonia"}  [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 200)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{200}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="Benzene") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{"Ammonia"}  [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 5)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{5}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="BlackCarbon") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{"Black Carbon"}  [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 10)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{10}</Text>
+                  </View>
+              </View>
+          }
+
           else {
           return <View key={sensor.idsensore}style={styles.parameterBar}>
                   <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
