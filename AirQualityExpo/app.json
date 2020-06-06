@@ -26,6 +26,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Final Project of DIMA course at Politecnico di Milano",
+    "githubUrl": "https://github.com/michelepilia/AirQuality"
   }
 }
