@@ -63,14 +63,14 @@ const roundNumber = function(num,rounder) {
 };
 
 let temperature_base = createRandomValue(20,30,10);
-let humidity_base = createRandomValue(20,30,1);
-let tvocs_base = createRandomValue(580,600,1);
-let eco2_base = createRandomValue(3800,4000,1);
-let pm05_base = createRandomValue(0,.5,1);
-let pm1_base = createRandomValue(0,1,1);
-let pm25_base = createRandomValue(0,2.5,1);
-let pm4_base = createRandomValue(0,4,1);
-let pm10_base = createRandomValue(0,10,1);
+let humidity_base = createRandomValue(10,70,1);
+let tvocs_base = createRandomValue(480,600,1);
+let eco2_base = createRandomValue(280,400,1);
+let pm05_base = createRandomValue(0,10,1);
+let pm1_base = createRandomValue(0,15,1);
+let pm25_base = createRandomValue(0,20,1);
+let pm4_base = createRandomValue(0,5,1);
+let pm10_base = createRandomValue(0,25,1);
 
 
 // Function to create random value to simulate the board

@@ -18,11 +18,11 @@ class DataBarsRealTime extends Component {
         humidity:100,
         pressure:1035,
         tvocs:800,
-        eco2:4500,
+        eco2:450,
         pm05:10,
-        pm1:10,
-        pm25:10,
-        pm10:10,
+        pm1:50,
+        pm25:40,
+        pm10:50,
         pm4:10
 
     }
@@ -33,7 +33,7 @@ class DataBarsRealTime extends Component {
         humidity:0,
         pressure:980,
         tvocs:100,
-        eco2:2500,
+        eco2:150,
         pm05:0,
         pm1:0,
         pm25:0,
@@ -86,7 +86,7 @@ class DataBarsRealTime extends Component {
                 </View>
             </View>
             <View style={styles.parameterBar}>
-                <Text style={styles.parameterLabel}>Pressure [hPa]: {this.props.data.pressure/100}</Text>
+                <Text style={styles.parameterLabel}>Pressure [hPa]: {this.props.data.pressure}</Text>
                 <Progress.Bar progress={this.normalizeOutput(this.props.data.pressure, 
                                         this.minValues.pressure, this.maxValues.pressure)} 
                                         width={this.barsWidth} color="red"/>

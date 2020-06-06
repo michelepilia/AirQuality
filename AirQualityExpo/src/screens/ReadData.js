@@ -16,12 +16,12 @@ class ReadData extends Component {
     global.delay = 5000;
     this.state = {
       data : {
-        temperature: 10.0,
-        humidity:10.0,
-        pressure: 10.0,
-        altitude: 150,
-        tvocs: 10.0,
-        eco2: 3750,
+        temperature: 18.0,
+        humidity:20.0,
+        pressure: 1027.0,
+        altitude: 10,
+        tvocs: 100.0,
+        eco2: 375,
         pm05: 0,
         pm1: 0,
         pm25: 0,

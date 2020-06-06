@@ -30,11 +30,11 @@ class DataBars extends Component {
         humidity:100,
         pressure:1035,
         tvocs:800,
-        eco2:4500,
+        eco2:450,
         pm05:10,
-        pm1:10,
-        pm25:10,
-        pm10:10,
+        pm1:50,
+        pm25:40,
+        pm10:50,
         pm4:10
 
     }
@@ -45,7 +45,7 @@ class DataBars extends Component {
         humidity:0,
         pressure:980,
         tvocs:100,
-        eco2:2500,
+        eco2:150,
         pm05:0,
         pm1:0,
         pm25:0,
@@ -74,6 +74,67 @@ class DataBars extends Component {
         .map((sensor) => {
           //console.log(sensor);
           let mean = this.computeMeanForSensor(sensor.idsensore);
+          if(sensor.nometiposensore=="Ozono"){
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 120)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{120}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="Biossido di Zolfo") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 125)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{125}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="Biossido di Azoto") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 200)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{200}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="Ossidi di Azoto") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 200)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{200}</Text>
+                  </View>
+              </View>
+          }
+          else if(sensor.nometiposensore=="Monossido di Carbonio") {
+            return <View key={sensor.idsensore}style={styles.parameterBar}>
+                  <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Progress.Bar progress={this.normalizeOutput(mean, 
+                                          0, 10)} 
+                                          width={this.barsWidth} color="red"/>
+                  <View style={styles.edgesContainer}>
+                      <Text style={styles.minValue}>{0}</Text>
+                      <Text style={styles.maxValue}>{10}</Text>
+                  </View>
+              </View>
+          }
+          else {
           return <View key={sensor.idsensore}style={styles.parameterBar}>
                   <Text style={styles.parameterLabel}>{sensor.nometiposensore} [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
@@ -81,9 +142,10 @@ class DataBars extends Component {
                                           width={this.barsWidth} color="red"/>
                   <View style={styles.edgesContainer}>
                       <Text style={styles.minValue}>{0}</Text>
-                      <Text style={styles.maxValue}>{50}</Text>
+                      <Text style={styles.maxValue}>{80}</Text>
                   </View>
               </View>
+          }
       })
       
       return sensorsView;
