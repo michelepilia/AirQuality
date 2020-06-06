@@ -221,7 +221,9 @@ componentDidMount () {
       }
       if(this.state.followUserLocation){
         this.setState({
-          mapRegion: region
+          mapRegion: region,
+          latitude: region.latitude,
+          longitude: region.longitude,
         });
         this.onRegionChange(region);
       }
@@ -280,7 +282,7 @@ componentDidMount () {
   arduinoDataParser(body){
 
     let fullString = body;
-    fullString+=";"+this.state.latitude+";"+this.state.longitude;
+    fullString+=";"+this.state.mapRegion.latitude+";"+this.state.mapRegion.longitude;
     this.bodyToSend.data=fullString;
 
     data = {
@@ -295,8 +297,8 @@ componentDidMount () {
       pm25: 0,
       pm4: 0,
       pm10: 0,
-      lat: 45.47,
-      lng:9.22,
+      lat: 45.12,
+      lng:9.10,
     };
 
     let array = body.split(';');
@@ -307,10 +309,10 @@ componentDidMount () {
         data[item]/=100;
       }
       if(i==11){
-        data[item]=this.state.latitude;
+        data[item]=this.state.mapRegion.latitude;
       }
       if(i==12){
-        data[item]=this.state.longitude;
+        data[item]=this.state.mapRegion.longitude;
       }
     });
     this.setState({data:data});
