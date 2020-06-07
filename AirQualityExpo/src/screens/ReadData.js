@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView,ActivityInd
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
 import DataBarsRealTime from "../components/DataBarsRealTime";
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import NavigationEvents from 'react-navigation';
 
 class ReadData extends Component {
@@ -382,6 +382,7 @@ componentDidMount () {
           <Text style={styles.title}>Real Time Data</Text>
         
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={styles.mapImg}
             initialRegion={this.state.mapRegion}
             region = {this.state.mapRegion}
@@ -465,6 +466,7 @@ componentDidMount () {
           <Text style={styles.title}>Real Time Data</Text>
         
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={styles.mapImg}
             initialRegion={this.state.mapRegion}
             region = {this.state.mapRegion}

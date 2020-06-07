@@ -26,6 +26,10 @@
     ],
     "ios": {
       "supportsTablet": true
+      "bundleIdentifier": mae.dima.air-quality,
+      "config": {
+        "googleMapsApiKey": "AIzaSyDadJv6g_zmDGnZfxhMifxVJGNhR9UoVwA"
+      }
     },
     "description": "Final Project of DIMA course at Politecnico di Milano. \nFinal Version 1.0.0",
     "githubUrl": "https://github.com/michelepilia/AirQuality"

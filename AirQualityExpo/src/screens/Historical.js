@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator,Dimensions } from "react-native";
 import { isLoading } from "expo-font";
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import {Marker} from 'react-native-maps';
 import {Circle} from 'react-native-maps';
 import ArduinoDataFetch from "../components/ArduinoDataFetch";
@@ -772,6 +772,7 @@ class Historical extends Component{
                   />
                 </View>
                 <MapView
+                    provider={PROVIDER_GOOGLE}
                     style={styles.mapImg}
                     initialRegion={this.state.mapRegion}
                     width={Dimensions.get('window').width - 50}
