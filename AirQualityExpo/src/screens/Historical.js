@@ -774,6 +774,8 @@ class Historical extends Component{
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     style={styles.mapImg}
+                    showsCompass={true}
+                    showsMyLocationButton={true}
                     initialRegion={this.state.mapRegion}
                     width={Dimensions.get('window').width - 50}
                     //region = {this.state.mapRegion}

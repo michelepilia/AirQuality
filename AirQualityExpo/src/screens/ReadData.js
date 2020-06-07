@@ -383,6 +383,8 @@ componentDidMount () {
           <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.mapImg}
+            showsCompass={true}
+            showsMyLocationButton={true}
             initialRegion={this.state.mapRegion}
             region = {this.state.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
@@ -466,6 +468,8 @@ componentDidMount () {
           <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.mapImg}
+            showsCompass={true}
+            showsMyLocationButton={true}
             initialRegion={this.state.mapRegion}
             region = {this.state.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
