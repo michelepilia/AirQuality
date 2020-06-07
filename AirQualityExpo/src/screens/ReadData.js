@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView,ActivityInd
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Permissions from 'expo-permissions';
 import DataBarsRealTime from "../components/DataBarsRealTime";
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import NavigationEvents from 'react-navigation';
 
 class ReadData extends Component {
@@ -12,7 +12,7 @@ class ReadData extends Component {
     super(props);
     global.urlSimulation = "http://192.168.1.4:3000";
     global.urlReal  = "http://192.168.1.0:3000";
-    global.currentUrl = "http://192.168.1.4:3000";
+    //global.currentUrl = "http://192.168.1.4:3000";
     global.delay = 5000;
     this.state = {
       data : {
@@ -88,7 +88,7 @@ class ReadData extends Component {
   }
 
   readDataFunction(){
-    console.log("Retrieving Arduino Data");
+    console.log("Retrieving Arduino Data " + global.currentUrl);
     return fetch(global.currentUrl)
     .then((response) => {
       console.log(response);
@@ -335,8 +335,7 @@ componentDidMount () {
    }
     else if(this.state.isReadingData) {
       return (
-        <View style={styles.container}>
-          <ScrollView>
+        <ScrollView style={styles.container}>
           <View style={styles.headerRow}>
             <Text style={styles.airQuality}>Air Quality</Text>
 
@@ -382,7 +381,10 @@ componentDidMount () {
           <Text style={styles.title}>Real Time Data</Text>
         
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={styles.mapImg}
+            showsCompass={true}
+            showsMyLocationButton={true}
             initialRegion={this.state.mapRegion}
             region = {this.state.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
@@ -412,8 +414,7 @@ componentDidMount () {
 
           <DataBarsRealTime  data={this.state.data}/>
           
-          </ScrollView>
-        </View>
+        </ScrollView>
       );
     }
     else {
@@ -465,7 +466,10 @@ componentDidMount () {
           <Text style={styles.title}>Real Time Data</Text>
         
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={styles.mapImg}
+            showsCompass={true}
+            showsMyLocationButton={true}
             initialRegion={this.state.mapRegion}
             region = {this.state.mapRegion}
             showsUserLocation={this.state.showsUserLocation}

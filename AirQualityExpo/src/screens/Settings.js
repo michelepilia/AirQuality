@@ -31,6 +31,7 @@ class Settings extends Component{
 
 
   handleArduinoUrl = (text) => {
+    console.log("Change URL " + global.currentUrl);
     global.currentUrl = text;  
   }
 
