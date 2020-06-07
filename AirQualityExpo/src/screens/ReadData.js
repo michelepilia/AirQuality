@@ -12,7 +12,7 @@ class ReadData extends Component {
     super(props);
     global.urlSimulation = "http://192.168.1.4:3000";
     global.urlReal  = "http://192.168.1.0:3000";
-    global.currentUrl = "http://192.168.1.4:3000";
+    //global.currentUrl = "http://192.168.1.4:3000";
     global.delay = 5000;
     this.state = {
       data : {
@@ -88,7 +88,7 @@ class ReadData extends Component {
   }
 
   readDataFunction(){
-    console.log("Retrieving Arduino Data");
+    console.log("Retrieving Arduino Data " + global.currentUrl);
     return fetch(global.currentUrl)
     .then((response) => {
       console.log(response);
@@ -335,8 +335,7 @@ componentDidMount () {
    }
     else if(this.state.isReadingData) {
       return (
-        <View style={styles.container}>
-          <ScrollView>
+        <ScrollView style={styles.container}>
           <View style={styles.headerRow}>
             <Text style={styles.airQuality}>Air Quality</Text>
 
@@ -413,8 +412,7 @@ componentDidMount () {
 
           <DataBarsRealTime  data={this.state.data}/>
           
-          </ScrollView>
-        </View>
+        </ScrollView>
       );
     }
     else {
