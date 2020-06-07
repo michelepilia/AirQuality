@@ -301,7 +301,7 @@ class Historical extends Component{
             this.elaborateData();
             //console.log(this.state.data);
         })
-        .then(this.retrieveArpaSensorsData("https://www.dati.lombardia.it/resource/nicp-bhqi.json?%24limit=10000&%24%24app_token=NI5Itf0JX8xWz5ZUNXuorqbaG"))
+        .then(this.retrieveArpaSensorsData("https://www.dati.lombardia.it/resource/nicp-bhqi.json?%24limit=8570&%24%24app_token=NI5Itf0JX8xWz5ZUNXuorqbaG"))
         .catch((error) => {
             console.error(error);
         });

@@ -172,7 +172,7 @@ class DataBars extends Component {
           }
           else if(sensor.nometiposensore=="Benzene") {
             return <View key={sensor.idsensore}style={styles.parameterBar}>
-                  <Text style={styles.parameterLabel}>{"Ammonia"}  [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
+                  <Text style={styles.parameterLabel}>{"Benzene"}  [{sensor.unitamisura}]: {Number((mean).toFixed(this.cifreDecimali))}</Text>
                   <Progress.Bar progress={this.normalizeOutput(mean, 
                                           0, 5)} 
                                           width={this.barsWidth} color="red"/>
