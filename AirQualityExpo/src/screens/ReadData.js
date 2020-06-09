@@ -1,107 +1,60 @@
 import React, { Component } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView,ActivityIndicator, Dimensions } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
+import * as Progress from 'react-native-progress';
 import ToggleSwitch from 'toggle-switch-react-native'
-import * as Permissions from 'expo-permissions';
-import DataBarsRealTime from "../components/DataBarsRealTime";
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import NavigationEvents from 'react-navigation';
+
+const micron = "\u00b5"
 
 class ReadData extends Component {
 
-  constructor(props){
-    super(props);
-    global.urlSimulation = "http://192.168.1.4:3000";
-    global.urlReal  = "http://192.168.1.0:3000";
-    //global.currentUrl = "http://192.168.1.4:3000";
-    global.delay = 5000;
-    this.state = {
-      data : {
-        temperature: 18.0,
-        humidity:20.0,
-        pressure: 1027.0,
-        altitude: 10,
-        tvocs: 100.0,
-        eco2: 375,
-        pm05: 0,
-        pm1: 0,
-        pm25: 0,
-        pm4: 0,
-        pm10: 0,
-        lat: 45.47,
-        lng:9.22,
-      },
+  state = {
+    temperature: [10.0, -10, 45], //[value, minValue, maxValue]
+    humidity: [10.0, 0, 100],
+    pressure: [10.0, 980, 1035],
+    altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
+    tvocs: [10.0, 100, 800],
+    eco2: [3750, 2500, 4500],
+    pm05: [0, 0, 10],
+    pm1: [0, 0, 10],
+    pm25: [0, 0, 10],
+    pm4: [0, 0, 10],
+    pm10: [0, 0, 10],
+    latitude: [45.47,0,0],
+    longitude: [9.22,0,0],
+    isOnStore: false,
+    isOnSimulation: true,
+    token: '',
+  };
 
-      latitude: 45.47,
-      longitude: 9.22,
-      isOnStore: false,
-      isOnSimulation: true,
-      token: '',
-      isOnStore: false,
-      errorMessage: '',
-      isReadingData: false,
-      correctUrl:false,
 
-      mapRegion: {
-        latitude:       45.4781291,
-        longitude:      9.2277907,
-        latitudeDelta:  0.00922*1.5,
-        longitudeDelta: 0.00421*1.5
-      },
-      latlng: {
-        latitude: 45.475,
-        longitude: 9.22
-      },
-      followUserLocation: true,
-      showsUserLocation: true,
-      isLoading: true,
-
-    }
-
-    this.normalizeOutput.bind(this);
-    this.readDataFunction.bind(this);
-    this.cutCoordString.bind(this);
-    this.saveDataFunction.bind(this);
-    this.arduinoDataParser.bind(this);
-    this.componentCleanUp.bind(this);
-    this.onFocusFunction.bind(this);
- 
-  }
-
-  bodyToSend= {
-    data:"",
-  }
-  
   urlSimulation = "http://192.168.1.4:3000";
   urlReal = "http://192.168.1.0:3000";
 
+  //url = "http://192.168.1.4:3000";
+ // delay = 5000;
+
+  body1 = {
+    data: "",
+  }
+
   urlSaveData = "https://polimi-dima-server.herokuapp.com/api/data";
-  urlUser = "https://polimi-dima-server.herokuapp.com/api";
- 
+  
   normalizeOutput(value, xmin, xmax){
     return ((value-xmin)/(xmax-xmin));
   }
 
-  componentCleanUp(){
-    console.log("Cleaning");
-    //this.focusListener.remove();
-
-  }
-
   readDataFunction(){
-    console.log("Retrieving Arduino Data " + global.currentUrl);
     return fetch(global.currentUrl)
     .then((response) => {
-      console.log(response);
       if (response.status == "200"){
-        this.setState({isReadingData:true, correctUrl:true});
         return (response.text());
       }
       else {
-        //alert("Invalid response");
+        alert("Invalid response");
       }
     })
     .catch((error) => {
-     //this.setState({correctUrl:false})
+      console.error(error);
     });
   }
 
@@ -114,7 +67,6 @@ class ReadData extends Component {
   }
 
   saveDataFunction(){
-    //console.log(JSON.stringify(this.bodyToSend));
 
     return fetch(this.urlSaveData, {
       method: "post",
@@ -123,36 +75,41 @@ class ReadData extends Component {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + this.state.token,
       },
-      body: JSON.stringify(this.bodyToSend),
+      body: JSON.stringify( this.body1 ),
     })
     .then((response) => {
-      if (response.status != "200"){
-        alert(response.status);
+      console.log("RESPONSE CODE: "+response.status);
+      if (response.status == "200"){
+        return (response.json());
       }
-      response.json();
-    }
-    )
-    //.then((responseJson)=>console.log(responseJson))  
+      else {
+        alert("Invalid response");
+      }
+    })
     .catch((error) => {
       console.error(error);
     });
   }
 
-  geolocation = async () => {
+  geoLocation = async () => {
     try{
       const {status} = await Permissions.askAsync(Permissions.LOCATION);
       if (status !== 'granted') {
+        console.log('bruschi');
+
         this.setState({
           errorMessage: 'PERMISSION NOT GRANTED',
         });
       } else {
+        console.log("granted");
       }
     } catch {
+      console.log("line 34");
       this.errorFunction();}
   }
 
   errorFunction() {
-    console.log("Error");
+    console.log("Sarti");
   }
 
   options = {
@@ -161,330 +118,342 @@ class ReadData extends Component {
     maximumAge: 0
   };
 
-  errorFunction() {
-    console.log("Error");
-  }
+  componentWillMount() {
+    //alert("WILL MOUNT EXECUTED");
+    this.geoLocation();
 
-  onRegionChange(region) {
-    this.setState({
-      mapRegion: region
-    });
-  }
-
-  onLocationChange(){
-    console.log("Location changed");
-  }
-
-
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      // Create the object to update this.state.mapRegion through the onRegionChange function
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+      }
+      this.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      })
+      
+    }, this.errorFunction, this.options);
     
-onFocusFunction(){
-    
-    try {
-      this.readDataFunction().then(()=>{
+  }
 
-        if(this.state.correctUrl){
-          this.timeInterval = setInterval( () =>  {
-            this.readDataFunction().then((a)=> {this.arduinoDataParser(a)},this.errorFunction)
-            .then(()=>{
-              if(this.state.isOnStore) {
-                this.saveDataFunction();
-              }
-            },this.errorFunction);        
-          }, global.delay);
+  componentDidMount() {
+    //alert("MOUNTING");
+    this.timeInterval = setInterval( () =>  {
+      this.readDataFunction().then((a)=> {
+        //console.log(a);
+        this.arduinoDataParser(a);
+        if(this.state.isOnStore) {
+          this.saveDataFunction();
         }
-        else{
-          alert('It seems your Arduino device is not connected!');
-
-        }
-      }); 
-    }     
-    catch{
-      this.errorFunction();
-    }
-    
+      });        
+    }, global.delay);
     const { params } = this.props.navigation.state;
     const token = params ? params.token : null;
     this.state.token = token;
 
-  
-}
-
-componentDidMount () {
-  console.log("MOUNTING!");
-    this.geolocation().then(()=>{
-      this.watchID = navigator.geolocation.watchPosition((position) => {
-      let region = {
-        latitude:       position.coords.latitude,
-        longitude:      position.coords.longitude,
-        latitudeDelta:  0.000922*1.5,
-        longitudeDelta: 0.000421*1.5
-      }
-      if(this.state.followUserLocation){
-        this.setState({
-          mapRegion: region,
-          latitude: region.latitude,
-          longitude: region.longitude,
-        });
-        this.onRegionChange(region);
-      }
-      this.setState({isLoading:false});
-      
-      }, this.errorFunction, this.options)}
-    );
-
-  this.focusListener = this.props.navigation.addListener('didFocus', () => {
-    this.onFocusFunction();
-  })
-}
-
-
-
-  endToNavigate(link) {
-    clearInterval(this.timeInterval);
-    this.setState({isReadingData:false});
-
-    console.log(this.state.token);
-    navigator.geolocation.clearWatch(this.watchID);
-    if(link=="Login"){
-      return fetch(this.urlUser+"/user/logout", {
-        method: "post",
-        headers:{
-          Accept: 'application/json',
-          'Authorization': 'Bearer ' + this.state.token,
-        },
-      })
-      .then((response) => {
-        if (response.status == "200"){
-          return this.props.navigation.navigate(link, {token: ''});
-        }
-        else if (response.status == "400"){
-          alert("Bad request to server");
-        }
-        else if (response.status == "401"){
-          alert("Unauthorized");
-        }
-        else {
-          return alert("Invalid response");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-      //alert("logout");
-    }
-    else{
-      this.props.navigation.navigate(link, {token: this.state.token});
-    }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timeInterval);
+    //alert("UNMOUNTING");
+    navigator.geolocation.clearWatch(this.watchID);
+  }
   
   // Parser for ArduinoData
-  arduinoDataParser(body){
+  arduinoDataParser = function(body){
 
-    let fullString = body;
-    fullString+=";"+this.state.mapRegion.latitude+";"+this.state.mapRegion.longitude;
-    this.bodyToSend.data=fullString;
+    //alert("reading data: delay is = " +global.delay);
+    var string1 = body;
+    string1.concat(";",this.state.latitude,";",this.state.longitude);
+    console.log("BODY: "+ string1);
+    this.body1.data = string1;
 
-    data = {
-      temperature: 10.0,
-      humidity:10.0,
-      pressure: 10.0,
-      altitude: 150,
-      tvocs: 10.0,
-      eco2: 3750,
-      pm05: 0,
-      pm1: 0,
-      pm25: 0,
-      pm4: 0,
-      pm10: 0,
-      lat: 45.12,
-      lng:9.10,
-    };
+  // Object
+  data = {
+    temperature: [10.0, -10, 45], //[value, minValue, maxValue]
+    humidity: [10.0, 0, 100],
+    pressure: [10.0, 980, 1035],
+    altitude: [150, 0, 800], //Deciso di lasciare la media in mezzo 68 valore max ok
+    tvocs: [10.0, 100, 800],
+    eco2: [3750, 2500, 4500],
+    pm05: [0, 0, 10],
+    pm1: [0, 0, 10],
+    pm25: [0, 0, 10],
+    pm4: [0, 0, 10],
+    pm10: [0, 0, 10],
+    latitude: [45.47, 0, 0],
+    longitude: [9.22, 0, 0]
+  };
 
-    let array = body.split(';');
-    var keys = Object.keys(data);
-    keys.forEach((item, i) => {
-      data[item] = array[i];
-      if(i==2) {
-        data[item]/=100;
-      }
-      if(i==11){
-        data[item]=this.state.mapRegion.latitude;
-      }
-      if(i==12){
-        data[item]=this.state.mapRegion.longitude;
-      }
-    });
-    this.setState({data:data});
-    //console.log(this.state.data);
-    return data;
-  }
+  // Splitting body of the post
+  let array = body.split(';');
+  // Creating data object keys
+  var keys = Object.keys(data);
+  // Looping on keys to update the values
+  keys.forEach((item, i) => {
+
+    data[item][0] = array[i];
+
+    if(i==2) {
+      data[item][0]/=100;
+    }
+    if(i==11) {
+      data[item][0]=this.state.latitude;
+    }
+    if(i==12){
+      data[item][0]=this.state.longitude;
+    }
+    console.log("##VALUE: " + data[item]);
+  });
+  this.setState(data);
+
+  //data.timestamp = generateTimestamp();
+
+  return data;
+}
 
 
 
   render(){
-    if(this.state.isLoading){
-      return(
-          <View style={styles.ActivityIndicator}>
-              <ActivityIndicator 
-                size="large"
-                color="red"                   
-              />
-          </View>
-      )
-   }
-    else if(this.state.isReadingData) {
-      return (
-        <ScrollView style={styles.container}>
-          <View style={styles.headerRow}>
-            <Text style={styles.airQuality}>Air Quality</Text>
 
-            <TouchableOpacity
-              onPress={() => {this.endToNavigate("Settings")
-              this.componentCleanUp();}
-            }
-              style={styles.settingsButton}>
-              <Image
-                source={require("../assets/images/user-icon.png")}
-                resizeMode="contain"
-                style={styles.settingslogo}
-              ></Image>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {this.endToNavigate("Historical")
-              this.componentCleanUp();          
-            }}
-              style={styles.locationButton}>
-              <Image
-                source={require("../assets/images/stats_logo.png")}
-                resizeMode="contain"
-                style={styles.locationLogo}
-              ></Image>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              onPress={() =>{this.endToNavigate("Login")
-            this.componentCleanUp();
-            }}
-              style={styles.logoutButton}
-            >
-              <Image
-                source={require("../assets/images/logout.png")}
-                resizeMode="contain"
-                style={styles.logoutLogo}
-              ></Image>
-            </TouchableOpacity>
-
-          </View>
-
-          <Text style={styles.title}>Real Time Data</Text>
-        
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.mapImg}
-            showsCompass={true}
-            showsMyLocationButton={true}
-            initialRegion={this.state.mapRegion}
-            region = {this.state.mapRegion}
-            showsUserLocation={this.state.showsUserLocation}
-            followUserLocation={this.state.followUserLocation}
-          // onUserLocationChange={event => console.log(event.nativeEvent)}
-            width={Dimensions.get("window").width-50}
-
-          >
-
-          </MapView>
-
-          <View style={styles.toggleContainer}>
-            <ToggleSwitch
-              isOn={this.state.isOnStore}
-              onColor="red"
-              offColor="gray"
-              label="Store Data"
-              labelStyle={styles.toggleLabel}
-              size="large"
-              onToggle={isOnStore => {
-                this.setState({ isOnStore });
-              }}
-              size="small"
-            />
-
-          </View>
-
-          <DataBarsRealTime  data={this.state.data}/>
-          
-        </ScrollView>
-      );
+    if(this.state.isOnSimulation){
+      global.currentUrl = global.urlSimulation
     }
     else {
-      return (
-        <View style={styles.container}>
-          <ScrollView>
-          <View style={styles.headerRow}>
-            <Text style={styles.airQuality}>Air Quality</Text>
-
-            <TouchableOpacity
-              onPress={() => {this.endToNavigate("Settings")
-              this.componentCleanUp();}
-            }
-              style={styles.settingsButton}>
-              <Image
-                source={require("../assets/images/user-icon.png")}
-                resizeMode="contain"
-                style={styles.settingslogo}
-              ></Image>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {this.endToNavigate("Historical")
-              this.componentCleanUp();          
-            }}
-              style={styles.locationButton}>
-              <Image
-                source={require("../assets/images/stats_logo.png")}
-                resizeMode="contain"
-                style={styles.locationLogo}
-              ></Image>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              onPress={() =>{this.endToNavigate("Login")
-            this.componentCleanUp();
-            }}
-              style={styles.logoutButton}
-            >
-              <Image
-                source={require("../assets/images/logout.png")}
-                resizeMode="contain"
-                style={styles.logoutLogo}
-              ></Image>
-            </TouchableOpacity>
-
-          </View>
-
-          <Text style={styles.title}>Real Time Data</Text>
-        
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.mapImg}
-            showsCompass={true}
-            showsMyLocationButton={true}
-            initialRegion={this.state.mapRegion}
-            region = {this.state.mapRegion}
-            showsUserLocation={this.state.showsUserLocation}
-            followUserLocation={this.state.followUserLocation}
-          // onUserLocationChange={event => console.log(event.nativeEvent)}
-            width={Dimensions.get("window").width-50}
-
-          >
-
-          </MapView>
-          
-          </ScrollView>
-        </View>
-      );
+      global.currentUrl = global.urlReal;
     }
+    //alert("Reading data!");
+
+    return (
+      <View style={styles.container}>
+
+        <View style={styles.headerRow}>
+          <Text style={styles.airQuality}>Air Quality</Text>
+
+          <TouchableOpacity
+            onPress={() => 
+                          {
+                            this.props.navigation.navigate("Settings", {token: this.state.token});
+                            //clearInterval(this.timeInterval);
+                          }                                            
+                    }
+            style={styles.settingsButton}>
+            <Image
+              source={require("../assets/images/settings_logo.jpeg")}
+              resizeMode="contain"
+              style={styles.settingslogo}
+            ></Image>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {this.props.navigation.navigate("Home")
+                           //clearInterval(this.timeInterval)
+                          }
+                          }
+            style={styles.homeButton}>
+            <Image
+              source={require("../assets/images/home_logo.png")}
+              resizeMode="contain"
+              style={styles.homelogo}
+            ></Image>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            onPress={() =>{this.props.navigation.navigate("Login")
+                          //clearInterval(this.timeInterval)
+                        }
+                        }
+            style={styles.logoutButton}
+          >
+            <Image
+              source={require("../assets/images/logout.png")}
+              resizeMode="contain"
+              style={styles.logoutLogo}
+            ></Image>
+          </TouchableOpacity>
+
+        </View>
+
+        <Text style={styles.title}>Read Data</Text>
+
+        <View style={styles.toggleContainer}>
+          <ToggleSwitch
+            isOn={this.state.isOnStore}
+            onColor="red"
+            offColor="gray"
+            label="Rec"
+            labelStyle={styles.toggleLabel}
+            size="large"
+            onToggle={isOnStore => {
+              this.setState({ isOnStore });
+            }}
+          />
+
+          <ToggleSwitch
+            isOn={this.state.isOnSimulation}
+            onColor="orange"
+            offColor="gray"
+            label="Simulate Data"
+            labelStyle={styles.toggleLabel}
+            size="large"
+            onToggle={isOnSimulation => {
+              this.setState({ isOnSimulation });
+              if(isOnSimulation){
+                global.currentUrl=global.urlSimulation
+              }
+              else {
+                global.currentUrl = global.urlReal;
+              }
+              //alert(this.url);
+            }}
+          />
+        </View>
+
+        
+
+        <View style={styles.rect}>
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.coordTxt}>
+              <Text>Coordinates: {this.cutCoordString(this.state.latitude)}°N, {this.cutCoordString(this.state.longitude)}°E</Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("ViewMap")}
+                style={styles.locationButton}>
+                <Image
+                  source={require("../assets/images/location.png")}
+                  resizeMode="contain"
+                  style={styles.locationLogo}
+                ></Image>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Altitude: {this.state.altitude[0]} mt.</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.altitude[0], 
+                                      this.state.altitude[1], this.state.altitude[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.altitude[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.altitude[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Temperature: {this.state.temperature[0]}°</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.temperature[0], 
+                                      this.state.temperature[1], this.state.temperature[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.temperature[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.temperature[2]}</Text>
+              </View> 
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Humidity: {this.state.humidity[0]}%</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.humidity[0], 
+                                      this.state.humidity[1], this.state.humidity[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.humidity[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.humidity[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>Pressure: {this.state.pressure[0]} hPa</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pressure[0], 
+                                      this.state.pressure[1], this.state.pressure[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pressure[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pressure[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>TVOCs: {this.state.tvocs[0]} ppb</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.tvocs[0], 
+                                      this.state.tvocs[1], this.state.tvocs[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.tvocs[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.tvocs[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>CO<Text style={styles.pedex}>2</Text>: {this.state.eco2[0]} ppm</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.eco2[0], 
+                                      this.state.eco2[1], this.state.eco2[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.eco2[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.eco2[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>0.5</Text>: {this.state.pm05[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm05[0], 
+                                      this.state.pm05[1], this.state.pm05[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm05[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm05[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>1</Text>: {this.state.pm1[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm1[0], 
+                                      this.state.pm1[1], this.state.pm1[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm1[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm1[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>2.5</Text>: {this.state.pm25[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm25[0], 
+                                      this.state.pm25[1], this.state.pm25[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm25[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm25[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>4</Text>: {this.state.pm4[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm4[0], 
+                                      this.state.pm4[1], this.state.pm4[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm4[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm4[2]}</Text>
+              </View>
+            </View>
+
+            <View style={styles.parameterBar}>
+              <Text style={styles.parameterLabel}>PM<Text style={styles.pedex}>10</Text>: {this.state.pm10[0]} {micron}m</Text>
+              <Progress.Bar progress={this.normalizeOutput(this.state.pm10[0], 
+                                      this.state.pm10[1], this.state.pm10[2])} 
+                                      width={270} color="red"/>
+              <View style={styles.edgesContainer}>
+                <Text style={styles.minValue}>{this.state.pm10[1]}</Text>
+                <Text style={styles.maxValue}>{this.state.pm10[2]}</Text>
+              </View>               
+            </View>
+          </ScrollView>
+          </View>
+        
+      </View>
+    );
   }
 }
 
@@ -507,14 +476,14 @@ const styles = StyleSheet.create({
   title: {  
     height: 73,
     color: "rgba(255,0,0,1)",
-    fontSize: 28,
+    fontSize: 40,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 5
+    marginTop: 25
   },
   airQuality: {
     width: 91,
@@ -526,17 +495,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     marginTop: 8
   },
-  mapImg: {
-    height: 200,
-    marginTop: 15,
-    marginLeft: 'auto',
-    marginRight:'auto'
-  },
   settingsButton: {
     width: 27,
     height: 38,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft:Dimensions.get('window').width-220,
+    marginLeft: 163
   },
   settingslogo: {
     width: 27,
@@ -556,20 +519,21 @@ const styles = StyleSheet.create({
   },
   locationButton: {
     width: 27,
-    height: 38,
+    height: 27,
     backgroundColor: "rgba(255,255,255,1)",
-    marginLeft:10,
-    marginTop:10,
+    marginLeft: 25,
+    marginTop: -15
   },
   locationLogo: {
     width: 27,
     height: 27,
+    marginTop: 10
   },
   logoutButton: {
     width: 27,
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
-    marginLeft:10,
+    marginLeft: 10
   },
   logoutLogo: {
     width: 27,
@@ -617,17 +581,10 @@ const styles = StyleSheet.create({
   toggleContainer:{
     display: "flex",
     flexDirection: "row",
-    marginLeft: 15,
-    marginTop: 25,
-    
-  },
-  ActivityIndicator:{
-    marginLeft:'auto',
-    marginRight:'auto',
-    marginBottom:'auto',
-    marginTop:'auto',
-
-  },
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 20,
+  }
 });
 
 export default ReadData;

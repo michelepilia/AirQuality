@@ -3,26 +3,28 @@ import { AppRegistry, StyleSheet, View, Text, Image, TouchableOpacity } from "re
 import MapView from 'react-native-maps';
 import * as Permissions from 'expo-permissions';
 
-class ViewMap extends Component{
+class DailyPath extends Component{
 
-  state = {
-    errorMessage: '',
-    mapRegion: null,
-    lastLat: null,
-    lastLong: null,
-    latlng: {
-      latitude: 45.475,
-      longitude: 9.22
+    constructor(){
+        super();
+        this.state = {                
+            errorMessage: '',
+            mapRegion: null,
+            lastLat: null,
+            lastLong: null,
+            latlng: {
+                latitude: 45.475,
+                longitude: 9.22
+            }
+        }
     }
-  }
-  radius = 100;
-  coordinatesSet = [{latitude:45.475,longitude:9.22}, {latitude:45.476, longitude:9.225}]
- 
+
+    radius = 100;
+
   componentWillMount() {
     this.geoLocation();
 
     this.watchID = navigator.geolocation.watchPosition((position) => {
-      // Create the object to update this.state.mapRegion through the onRegionChange function
       let region = {
         latitude:       position.coords.latitude,
         longitude:      position.coords.longitude,
@@ -78,7 +80,6 @@ class ViewMap extends Component{
   onRegionChange(region, lastLat, lastLong) {
     this.setState({
       mapRegion: region,
-      // If there are no new values set use the the current ones
       lastLat: lastLat || this.state.lastLat,
       lastLong: lastLong || this.state.lastLong
     });
@@ -100,33 +101,20 @@ class ViewMap extends Component{
   }
 
   
-
   render(){
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>View Map</Text>
-        
-        {/* https://snack.expo.io/@michelepilia/5b84d0 */}
         <MapView
-          style={styles.mapImg}
-          initialRegion={this.state.mapRegion}
-          showsUserLocation={true}
-          followUserLocation={true}
-          onRegionChange={this.onRegionChange.bind(this)}
-          onPress={this.onMapPress.bind(this)}>
-            <MapView.Circle
-              key = {'1'}
-              center = {this.state.latlng}
-              radius = {this.radius}
-              fillColor = {'rgba(255,0,0,0.2)'}
-              strokeWidth = {2}
-              strokeColor = {'rgba(20,20,255,0.2)'}
-              onRegionChange={this.onRegionChange.bind(this)}
-            />
+            style={styles.mapImg}
+            initialRegion={this.state.mapRegion}
+            showsUserLocation={true}
+            followUserLocation={true}
+            onRegionChange={this.onRegionChange.bind(this)}
+            onPress={this.onMapPress.bind(this)}>
             <MapView.Polyline
-              coordinates = {this.coordinatesSet}
-              strokeColor = {'rgba(20,20,255,0.2)'}
-              strokeWidth = {2}
+                coordinates = {this.props.coordinatesSet}
+                strokeColor = {'rgba(20,20,255,0.2)'}
+                strokeWidth = {2}
             />
         </MapView>
         
@@ -150,29 +138,6 @@ class ViewMap extends Component{
           </TouchableOpacity>
           <TouchableOpacity style={styles.button4}>
             <Text style={styles.pm103}>Var</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.airQuality1Row}>
-          <Text style={styles.airQuality1}>Air Quality</Text>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Home")}
-            style={styles.homeButton1}
-          >
-            <Image
-              source={require("../assets/images/home_logo.png")}
-              resizeMode="contain"
-              style={styles.homelogo}
-            ></Image>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Login")}
-            style={styles.logoutButton1}
-          >
-            <Image
-              source={require("../assets/images/logout.png")}
-              resizeMode="contain"
-              style={styles.logoutLogo}
-            ></Image>
           </TouchableOpacity>
         </View>
       </View>
@@ -352,5 +317,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ViewMap;
+export default DailyPath;
 

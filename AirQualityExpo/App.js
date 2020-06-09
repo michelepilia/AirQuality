@@ -6,21 +6,37 @@ import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import Home from "./src/screens/Home";
 import ReadData from "./src/screens/ReadData";
+import ViewMap from "./src/screens/ViewMap";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import Settings from "./src/screens/Settings";
-import Historical from "./src/screens/Historical"
+import Stats from "./src/screens/Stats";
+import WeeklyReport from "./src/screens/WeeklyReport"
 
+const DrawerNavigation = createDrawerNavigator({
+  Login: Login,
+  Home: Home,
+  ReadData: ReadData,
+  ViewMap: ViewMap,
+  Signup: Signup,
+  Settings: Settings,
+  Stats: Stats,
+  WeeklyReport: WeeklyReport,
+});
 
 const StackNavigation = createStackNavigator(
   {
-
+    DrawerNavigation: {
+      screen: DrawerNavigation
+    },
     Login: Login,
     Home: Home,
     ReadData: ReadData,
+    ViewMap: ViewMap,
     Signup: Signup,
     Settings: Settings,
-    Historical: Historical,
+    Stats: Stats,
+    WeeklyReport: WeeklyReport,
   },
   {
     headerMode: "none"

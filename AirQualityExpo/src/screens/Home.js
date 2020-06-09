@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image, ImageBackground, Dimensions } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 class Home extends Component{
@@ -8,7 +8,6 @@ class Home extends Component{
     token: '',
   }
 
-  url = "https://polimi-dima-server.herokuapp.com/api";
   
   constructor() {
     super();
@@ -16,35 +15,6 @@ class Home extends Component{
     global.urlReal  = "http://192.168.1.0:3000";
     global.currentUrl = "http://192.168.1.4:3000";
     global.delay = 5000;
-
-  }
-
-  logoutFunction(){
-    return fetch(this.url+"/user/logout", {
-      method: "post",
-      headers:{
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.state.token
-      },
-    })
-    .then((response) => {
-      if (response.status == "200"){
-        return this.props.navigation.navigate("Login");
-      }
-      else if (response.status == "400"){
-        alert("Bad request to server");
-      }
-      else if (response.status == "401"){
-        alert("Unauthorized");
-      }
-      else {
-        return alert("Invalid response");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   componentDidMount(){
@@ -55,12 +25,12 @@ class Home extends Component{
 
   render(){
     return (
-      <View>
+      <View style={styles.container}>
 
         <View style={styles.headerRow}>
           
           <TouchableOpacity
-            onPress={() => this.logoutFunction()}
+            onPress={() => this.props.navigation.navigate("Login")}
             style={styles.logoutButton1}>
             <Image
               source={require("../assets/images/logout.png")}
@@ -72,7 +42,7 @@ class Home extends Component{
         
         </View>
         <Text style={styles.airQuality}>Air Quality</Text>
-        <View style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}>
           <TouchableOpacity
             onPress={() => {
 
@@ -80,35 +50,25 @@ class Home extends Component{
               this.props.navigation.navigate("ReadData", {token: this.state.token})}
             
             }
-            style={styles.rectangle}>
-              
-            <Text style={styles.readDataLabel}>Real Time data</Text>
-            <Text style={{fontSize:12, marginTop:-30,color:"white", textAlign:'center'}}>Read real time data, received from your Arduino device</Text>
+            style={styles.readDataBtn}>
+            <Text style={styles.readDataLabel}>Read Data</Text>
+          </TouchableOpacity>
 
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("ViewMap")}
+            style={styles.viewMapBtn}>
+            <Text style={styles.viewMapLabel}>View Map</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate("Historical", {token: this.state.token})
+              this.props.navigation.navigate("Stats", {token: this.state.token})
             }
             }
-            style={styles.rectangle}>
-            <Text style={styles.readDataLabel}>Stored Data</Text>
-            <Text style={{fontSize:12, marginTop:-30, color:"white",textAlign:'center'}}>Get recently stored data from your Arduino device and ARPA stations
-            </Text>
+            style={styles.viewMapBtn}>
+            <Text style={styles.viewMapLabel}>Historical Data</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate("Settings", {token: this.state.token})
-            }
-            }
-            style={styles.rectangle}>
-            <Text style={styles.readDataLabel}>User Info</Text>
-            <Text style={{fontSize:12, color:"white", marginTop:-30,textAlign:'center'}}>Displays user information
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
 
       </View>
     );
@@ -116,34 +76,31 @@ class Home extends Component{
 }
 
 const styles = StyleSheet.create({
-
-
+  container: {
+    flex: 1
+  },
   airQuality: {
     height: 73,
     color: "rgba(255,0,0,1)",
-    fontSize: 32,
+    fontSize: 40,
     fontFamily: "roboto-regular",
     lineHeight: 73,
     letterSpacing: 0,
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 20
+    marginTop: 51
   },
-  rectangle: {
-    width: Dimensions.get('window').width-80,
-    height: 100,
+  viewMapBtn: {
+    width: 305,
+    height: 93,
     backgroundColor: "rgba(255,0,0,1)",
-    marginTop:15,
-    alignItems:"center",
-    borderRadius:5,
-    borderColor:"rgba(255,20,20,0.5)",
-    padding:10,
-  
+    marginTop: 50,
+    marginLeft: 35
   },
   viewMapLabel: {
-    width: 150,
-    height: 90,
+    width: 305,
+    height: 93,
     color: "rgba(255,255,255,1)",
     fontSize: 30,
     fontFamily: "roboto-regular",
@@ -151,32 +108,23 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: "center"
   },
-  realTimeDataImage:{
-    opacity:0.5,
-    width:130,
-    height:90,
-    marginLeft:'auto',
-    marginRight:'auto',
-
-  },
   readDataBtn: {
-    width: 150,
-    height: 90,
+    width: 305,
+    height: 93,
     backgroundColor: "rgba(255,0,0,1)",
     marginTop: 130,
     marginLeft: 35
   },
   readDataLabel: {
+    width: 305,
+    height: 93,
     color: "rgba(255,255,255,1)",
-    fontSize: 20,
+    fontSize: 30,
     fontFamily: "roboto-regular",
     lineHeight: 93,
     letterSpacing: 0,
     textAlign: "center",
-    marginTop:-15,
-  },
-  descriptionLabel:{
-    opacity:1,
+    marginTop: -1
   },
   statsButton: {
     width: 27,
@@ -188,19 +136,19 @@ const styles = StyleSheet.create({
     width: 27,
     height: 38,
     backgroundColor: "rgba(225,96,96,0)",
-    marginTop: 10,
+    marginTop: 44,
     marginLeft: "auto",
     marginRight: 10,
   },
   logoutLogo: {
     width: 27,
     height: 38,
-    marginTop: 30
+    marginTop: 1
   },
   headerRow: {
     height: 38,
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 44,
     marginLeft: 10,
     marginRight: 17
   },
@@ -210,17 +158,8 @@ const styles = StyleSheet.create({
     marginTop: 1
   },
   scrollView:{
-    flexDirection:'column',
-    flexWrap:'wrap',
-    marginLeft:'auto',
-    marginRight:'auto',
-    marginTop:80,
-    marginBottom:'auto',
-    backgroundColor:'rgba(255,100,50,0.3)',
-    padding:20,
-    width:Dimensions.get('window').width-40,
-  }
-
+    marginBottom: 10,
+  },
 });
 
 export default Home;
