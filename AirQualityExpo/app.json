@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AirQualityExpo",
-    "slug": "AirQualityExpo",
+    "name": "Air Quality",
+    "slug": "airquality_dima_project",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -13,8 +13,8 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/images/splash_logo_ok.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "orientation": "portrait",
@@ -25,7 +25,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "mae.dima.air-quality",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDadJv6g_zmDGnZfxhMifxVJGNhR9UoVwA"
+      }
+    },
+    "description": "Final Project of DIMA course at Politecnico di Milano. \nFinal Version 1.0.0",
+    "githubUrl": "https://github.com/michelepilia/AirQuality"
   }
 }

@@ -1,15 +1,20 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 import MaterialStackedLabelTextbox from "../components/MaterialStackedLabelTextbox";
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { TextField } from 'react-native-material-textfield';
+import { ScrollView } from "react-native-gesture-handler";
 
 class Login extends Component{
 
   state = {
-      email: '',
-      password: ''
+
+    isLoading:false,
+    token: '',
+    password:'',
+    email:'',
+
   };
 
 
@@ -24,25 +29,40 @@ class Login extends Component{
   };
 
   loginFunction(){
-
+    this.setState({isLoading:true});
     return fetch(this.url+"/user/login", {
       method: "post",
       headers:{
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify( this.state ),
+      body: JSON.stringify( {email: this.state.email,
+        password: this.state.password
+      }),
     })
     .then((response) => {
       if (response.status == "200"){
         return (response.json());
       }
+      if (response.status == "400"){
+        //alert("Bad request to server");
+      }
+      if (response.status == "401"){
+        //alert("Unauthorized");
+      }
       else {
-        alert("Invalid response");
+        //alert("Invalid response");
       }
     })
     .then((json)=>{
-      this.props.navigation.navigate("Home", {token: json.token});
+      this.setState({isLoading:false});
+      if(json!==undefined && json.token!==undefined){
+        this.setState({token:json.token});
+        this.props.navigation.navigate("Home", {token: json.token});
+      }
+      else{
+        alert("Wrong email or password");
+      }
     })
     .catch((error) => {
       console.error(error);
@@ -50,32 +70,46 @@ class Login extends Component{
   }
 
   render(){
+    let loading = <View></View>
+    if(this.state.isLoading){
+      loading = <View><ActivityIndicator style={styles.ActivityIndicator}
+                        size="large"
+                        color="red"  
+      /></View>
+    }
     return (
-      <View style={styles.container}>
-        <Text style={styles.airQuality1}>Air Quality</Text>
-        <View style={{margin: 20}}>
-          <TextField style = {styles.inputUser}
-               underlineColorAndroid = "transparent"
-               autoCapitalize = "none"
-               onChangeText = {this.handleEmail}
-               formatText={this.formatText}
-               label="Email"/>
-        </View>
-        <View style={{margin: 20}}>
-          <PasswordInputText
-              value={this.state.password}
-              onChangeText={ (password) => this.setState({ password }) }/>
-        </View>
+        <ScrollView style={styles.container} scrollEnabled={true}>
+            <View style={{height:Dimensions.get('window').height}}>
+              <Text style={styles.airQuality1}>Air Quality</Text>
+              <View style={{marginLeft: 'auto',marginRight:'auto', width:Dimensions.get('window').width-100, marginTop:50}}>
+                <TextField style = {styles.inputUser}
+                    underlineColorAndroid = "transparent"
+                    autoCapitalize = "none"
+                    onChangeText = {this.handleEmail}
+                    formatText={this.formatText}
+                    tintColor={'rgba(255,20,10,0.8)'}
+                    label="Email"/>
+              </View>
+              <View style={{marginLeft: 'auto',marginRight:'auto',width:Dimensions.get('window').width-100}}>
+                <PasswordInputText
+                    value={this.state.password}
+                    tintColor={'rgba(255,20,10,0.8)'}
+                    onChangeText={ (password) => this.setState({ password:password }) }/>
+              </View>
 
-        <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
-        
-        <TouchableOpacity
-          onPress={() => this.loginFunction()}
-          style={styles.button1}>
+              
+              <TouchableOpacity
+                onPress={() => this.loginFunction()}
+                style={styles.button1}>
 
-          <Text style={styles.text}>Login</Text>
-        </TouchableOpacity>
-      </View>
+                <Text style={styles.text}>Login</Text>
+              </TouchableOpacity>
+
+              <Text onPress={() => this.props.navigation.navigate("Signup")} style={styles.newUserSignUp}>New User? Sign up</Text>
+
+              {loading}
+            </View>
+        </ScrollView>
     );
   }
 }
@@ -126,37 +160,40 @@ const styles = StyleSheet.create({
     marginLeft: 29
   },
   newUserSignUp: {
-    width: 132,
+    width: 200,
     height: 28,
-    color: "rgba(255,0,0,1)",
+    color: "rgba(255,50,10,1)",
     fontFamily: "roboto-regular",
     lineHeight: 28,
     textAlign: "center",
-    marginTop: 8,
-    marginLeft: 121,
-    textDecorationLine: 'underline'
+    marginTop: 50,
+    fontSize:16,
+    marginLeft: 'auto',
+    marginRight:'auto',
+    textDecorationLine: 'underline',
   },
   button1: {
-    width: 305,
-    height: 60,
-    backgroundColor: "rgba(255,0,0,1)",
-    marginTop: 47,
-    marginLeft: 35
+    width: Dimensions.get('window').width-100,
+    height: 40,
+    backgroundColor: "rgba(255,10,0,1)",
+    marginTop: 45,
+    marginLeft: 'auto',
+    marginRight:'auto',
+    borderRadius:5,
   },
   text: {
-    width: 305,
     height: 60,
     color: "rgba(255,255,255,1)",
-    fontSize: 30,
+    fontSize: 26,
     fontFamily: "roboto-regular",
     lineHeight: 60,
     letterSpacing: 0,
     textAlign: "center",
-    marginTop: -1
+    marginTop: -10
   },
   airQuality1: {
     height: 73,
-    color: "rgba(255,0,0,1)",
+    color: "rgba(255,10,0,1)",
     fontSize: 40,
     fontFamily: "roboto-regular",
     lineHeight: 73,
@@ -164,7 +201,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 375,
     alignSelf: "flex-end",
-    marginTop: 0
+    marginTop: 0,
+    marginLeft:'auto',
+    marginRight:'auto',
   },
   containerInput: {
     backgroundColor: "transparent",
@@ -192,7 +231,13 @@ const styles = StyleSheet.create({
   inputUser: {
       marginTop: -8,
       height: 40
-   }
+   },
+   ActivityIndicator:{
+    marginLeft:'auto',
+    marginRight:'auto',
+    marginTop:60,
+
+  },
 });
 
 export default Login;
