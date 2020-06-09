@@ -44,3 +44,11 @@ A menu that allows the user to see his/her informations, change the password to 
 
 ![picture alt](https://github.com/michelepilia/AirQuality/blob/master/AirQualityExpo/src/assets/images/screens/Settings.png)
 - - - -
+
+## How to use the app
+### Download Expo Client
+* Android: https://play.google.com/store/apps/details?id=host.exp.exponent&hl=it
+* iOS: https://apps.apple.com/it/app/expo-client/id982107779
+
+### Open AirQuality
+[AirQuality](https://exp.host/@michelepilia/airquality_dima_project)
